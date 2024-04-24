@@ -1,0 +1,30 @@
+{
+  "title": "HaUI Food | Ứng dụng đặt đồ ăn trực tuyến tại HaUI",
+  "header": {
+    "na01": "Trang chủ",
+    "na02": "Đăng nhập/Đăng kí"
+  },
+  "button": {
+    "btn01": "Đăng nhập",
+    "btn02": "Quay lại trang chủ"
+  },
+  "form": {
+    "tp01": "Email",
+    "tp02": "Mật khẩu",
+    "lb01": "Hiển thị mật khẩu"
+  },
+  "errors": {
+    "err01": "Vui lòng nhập email.",
+    "err02": "Email không đúng, vui lòng nhập lại.",
+    "err03": "Vui lòng nhập mật khẩu.",
+    "err04": "Mật khẩu phải chứa ít nhất 8 ký tự và 1 ký tự đặc biệt @-_"
+  },
+  "login": {
+    "heading": "Đăng nhập",
+    "desc01": "Chào mừng bạn quay trở lại. Đăng nhập để tiếp tục quản lý cửa hàng, hệ thống.",
+    "desc02": "Khôi phục mật khẩu",
+    "notify01": "Đăng nhập thành công",
+    "notify02": "Đăng xuất thành công",
+    "notify03": "Bạn đã đăng nhập rồi"
+  }
+}

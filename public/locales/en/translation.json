@@ -1,0 +1,30 @@
+{
+  "title": "HaUI Food | Online food ordering application at HaUI",
+  "header": {
+    "na01": "Home",
+    "na02": "Login/Register"
+  },
+  "button": {
+    "btn01": "Login",
+    "btn02": "Back to home"
+  },
+  "form": {
+    "tp01": "Email",
+    "tp02": "Password",
+    "lb01": "Show password"
+  },
+  "errors": {
+    "err01": "Please enter email.",
+    "err02": "Email is incorrect, please re-enter.",
+    "err03": "Please enter password.",
+    "err04": "Password must contain at least 8 characters and 1 special character @-_"
+  },
+  "login": {
+    "heading": "Login",
+    "desc01": "Welcome back. Log in to continue managing the store, system.",
+    "desc02": "Recover password",
+    "notify01": "Login successful",
+    "notify02": "Logout successful",
+    "notify03": "You are already logged in"
+  }
+}
