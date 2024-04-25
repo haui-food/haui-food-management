@@ -4,6 +4,8 @@ const routes = {
   forbidden: '/forbidden',
   internalServer: '/server-error',
   notFound: '*',
+  dashboard: '/dashboards',
+  users: '/users',
 };
 
 export default routes;

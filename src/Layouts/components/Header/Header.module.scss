@@ -1,0 +1,166 @@
+@import 'bootstrap/scss/functions';
+@import 'bootstrap/scss/variables';
+@import 'bootstrap/scss/mixins';
+
+.header-wrapper {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.button-menu {
+  display: flex;
+  height: 58px;
+  align-items: center;
+
+  .icon-wrap {
+    width: 40px;
+    height: 40px;
+    border-radius: 100rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
+
+    .menu-icon {
+      width: 12px;
+      height: 12px;
+    }
+  }
+
+  .icon-wrap:hover {
+    background-color: #00ba5141;
+    cursor: pointer;
+  }
+
+  .menu-logo {
+    width: 120px;
+    height: 49px;
+    margin-top: 10px;
+    background-color: #fff;
+
+    @include media-breakpoint-down(md) {
+      display: none;
+    }
+    @include media-breakpoint-down(sm) {
+      display: none;
+    }
+    .haui-logo {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+}
+
+.button-group {
+  display: flex;
+
+  .btn-flag,
+  .btn-notification {
+    width: 44px;
+    height: 44px;
+    border-radius: 100rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .btn-flag:hover,
+  .btn-notification:hover,
+  .btn-user:hover {
+    cursor: pointer;
+  }
+
+  .btn-flag:hover,
+  .btn-notification:hover {
+    background-color: #00ba5141;
+  }
+
+  .btn-notification {
+    margin: 0 20px;
+
+    .bell-icon {
+      width: 20px;
+      height: 20px;
+    }
+  }
+
+  .btn-user {
+    width: 44px;
+    height: 44px;
+    border-radius: 100rem;
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+}
+
+.flag-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+
+  .lang-menu-open {
+    background-color: #00ba5141;
+  }
+
+  .lang-menu {
+    position: absolute;
+    z-index: 2;
+    top: 52px;
+    right: 10px;
+    width: auto;
+    height: auto;
+    border-radius: 6px;
+    box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 1px, rgba(0, 0, 0, 0.07) 0px 2px 2px, rgba(0, 0, 0, 0.07) 0px 4px 4px,
+      rgba(0, 0, 0, 0.07) 0px 8px 8px, rgba(0, 0, 0, 0.07) 0px 16px 16px;
+    transform: scale(0);
+    transform-origin: top right;
+    transition: transform 0.2s linear;
+
+    &-active {
+      transform: scale(1);
+    }
+
+    .lang-item {
+      display: flex;
+      height: 36px;
+      width: 120px;
+      padding: 6px 10px;
+      align-items: center;
+      span {
+        text-transform: capitalize;
+        margin-left: 10px;
+      }
+
+      .current-lang {
+        background-color: #00ba5141;
+      }
+    }
+
+    .lang-item:first-child {
+      border-top-left-radius: 6px;
+      border-top-right-radius: 6px;
+    }
+
+    .lang-item:last-child {
+      border-bottom-left-radius: 6px;
+      border-bottom-right-radius: 6px;
+    }
+
+    .lang-item:hover {
+      background-color: #00ba5141;
+      cursor: pointer;
+    }
+  }
+}
+
+.lang-img {
+  width: 28px;
+  height: 20px;
+  border-radius: 2px;
+}
