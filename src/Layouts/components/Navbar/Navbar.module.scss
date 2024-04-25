@@ -1,0 +1,63 @@
+@import 'bootstrap/scss/functions';
+@import 'bootstrap/scss/variables';
+@import 'bootstrap/scss/mixins';
+
+.nav-wrapper {
+  padding: 0 8px;
+
+  h1 {
+    font-size: 14px;
+    font-weight: 800;
+    color: #a8afb9;
+    padding-left: 12px;
+    margin: 24px 0;
+    text-transform: uppercase;
+  }
+}
+.nav-item {
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  height: 40px;
+  .nav-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 16px;
+  }
+
+  span {
+    font-size: 14px;
+    text-transform: capitalize;
+    color: #a8afb9;
+  }
+}
+
+.nav-item:hover {
+  cursor: pointer;
+  color: var(--primary-color);
+
+  .icon {
+    filter: brightness(0) saturate(100%) invert(42%) sepia(99%) saturate(787%) hue-rotate(110deg) brightness(97%)
+      contrast(101%);
+  }
+
+  span {
+    color: #00ba51;
+  }
+}
+
+.icon {
+  filter: brightness(0) saturate(100%) invert(80%) sepia(5%) saturate(487%) hue-rotate(174deg) brightness(87%)
+    contrast(89%);
+}
+
+.current-page {
+  .icon {
+    filter: brightness(0) saturate(100%) invert(42%) sepia(99%) saturate(787%) hue-rotate(110deg) brightness(97%)
+      contrast(101%);
+  }
+
+  span {
+    color: #00ba51;
+  }
+}
