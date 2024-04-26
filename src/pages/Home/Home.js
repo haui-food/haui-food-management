@@ -10,7 +10,7 @@ function Home() {
 
   return (
     <div className={cx('home')}>
-      <h1>Home page</h1>
+      <h1 className={cx('home__heading')}>Dashboard</h1>
     </div>
   );
 }

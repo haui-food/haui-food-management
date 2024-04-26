@@ -5,7 +5,7 @@
 .dashboard {
   width: 100%;
   height: auto;
-  padding: 8px 40px;
+  padding: 20px 40px;
   background-color: #f2f8f8;
 
   @include media-breakpoint-down(lg) {
@@ -21,9 +21,21 @@
   }
 
   h1 {
-    font-size: 24px;
+    margin-bottom: 8px;
+    font-size: 2.4rem;
     font-weight: 600;
+    @include media-breakpoint-down(lg) {
+      margin-top: 10px;
+    }
+  }
+
+  &__date {
     margin-bottom: 40px;
+
+    &-weekday {
+      color: var(--primary-bg);
+      font-weight: 500;
+    }
   }
 
   &--pape {
@@ -45,7 +57,7 @@
       grid-column: span 3;
       background-color: #fff;
       display: flex;
-      padding: 40px 24px;
+      padding: 30px 24px;
       border-radius: 16px;
 
       @include media-breakpoint-down(lg) {
@@ -60,11 +72,11 @@
         margin-right: 24px;
       }
       h2 {
-        font-size: 24px;
+        font-size: 2rem;
         font-weight: 600;
       }
       h3 {
-        font-size: 14px;
+        font-size: 1.4rem;
         font-weight: 600;
         color: #919eab;
       }
@@ -103,12 +115,12 @@
         padding: 24px;
 
         h5 {
-          font-size: 18px;
+          font-size: 1.8rem;
           font-weight: 600;
         }
 
         p {
-          font-size: 14px;
+          font-size: 1.4rem;
           color: #637381;
         }
       }
