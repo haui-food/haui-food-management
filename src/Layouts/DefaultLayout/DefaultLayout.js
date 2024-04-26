@@ -24,12 +24,12 @@ function DefaultLayout({ children }) {
 
   return (
     <div className={cx('wrapper')}>
-      <div class={cx('header')}>
+      <div className={cx('header')}>
         <Header toggleNav={toggleNav} />
       </div>
       <div className={cx('content')}>
         <div
-          class={cx(
+          className={cx(
             'content-left',
             { 'content-left-close': isOpenNav === false },
             { 'content-left-show': isOpenNav === true },
