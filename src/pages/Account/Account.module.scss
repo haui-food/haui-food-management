@@ -1,0 +1,252 @@
+@import 'bootstrap/scss/functions';
+@import 'bootstrap/scss/variables';
+@import 'bootstrap/scss/mixins';
+
+.account-wrapper {
+  display: grid;
+  background-color: #e5e9f0;
+  height: auto;
+  padding: 30px;
+  grid-template-columns: repeat(12, 1fr);
+  grid-template-rows: auto auto;
+  gap: 30px;
+
+  @include media-breakpoint-down(lg) {
+    gap: 12px;
+    padding: 20px;
+  }
+
+  @include media-breakpoint-down(md) {
+    gap: 12px;
+    padding: 0px;
+  }
+
+  @include media-breakpoint-down(sm) {
+    gap: 12px;
+    padding: 0px;
+  }
+
+  .account-picture {
+    background-color: #fff;
+    border-radius: 6px;
+    grid-column: span 4;
+    height: 350px;
+
+    @include media-breakpoint-down(lg) {
+      grid-column: span 12;
+    }
+
+    @include media-breakpoint-down(md) {
+      grid-column: span 12;
+    }
+
+    @include media-breakpoint-down(sm) {
+      grid-column: span 12;
+    }
+    &-title {
+      font-size: 16px;
+      color: var(--primary-color);
+
+      h4 {
+        font-weight: 600;
+        padding: 16px 20px;
+        font-size: 15px;
+        border-bottom: 1px solid #e5e9f0;
+        background-color: #f8f8f9;
+        border-top-right-radius: 6px;
+        border-top-left-radius: 6px;
+        text-transform: capitalize;
+      }
+    }
+
+    &-content {
+      width: 100%;
+      height: auto;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      align-items: center;
+
+      .account-picture-img {
+        width: 15rem;
+        height: 15rem;
+
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+
+        span {
+          text-wrap: nowrap;
+          text-align: center;
+        }
+      }
+
+      .picture-text {
+        color: #a7aeb8;
+        font-size: 14px;
+        margin-top: 6px;
+        margin-bottom: 20px;
+      }
+
+      .btn-upload {
+        height: 44px;
+        width: 163px;
+        border-radius: 8px;
+        font-size: 14px;
+        background-color: var(--primary-color);
+        color: #fff;
+        font-weight: 600;
+
+        .label-upload {
+          display: block;
+          height: 100%;
+          width: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .input-upload {
+          display: none;
+          height: 100%;
+          width: 100%;
+        }
+
+        .label-upload:hover {
+          opacity: 0.8;
+          cursor: pointer;
+        }
+      }
+    }
+  }
+
+  .account-detail {
+    grid-column: span 8;
+    background-color: #fff;
+    border-radius: 6px;
+
+    @include media-breakpoint-down(lg) {
+      grid-column: span 12;
+    }
+
+    @include media-breakpoint-down(md) {
+      grid-column: span 12;
+    }
+
+    @include media-breakpoint-down(sm) {
+      grid-column: span 12;
+    }
+
+    h4 {
+      font-weight: 600;
+      padding: 16px 20px;
+      font-size: 15px;
+      border-bottom: 1px solid #e5e9f0;
+      background-color: #f8f8f9;
+      border-top-right-radius: 6px;
+      border-top-left-radius: 6px;
+      color: var(--primary-color);
+      text-transform: capitalize;
+    }
+
+    .button-group {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      padding: 0 20px;
+      margin-top: 16px;
+
+      label {
+        font-size: 15px;
+        margin-bottom: 4px;
+        color: #69707a;
+      }
+
+      .input-detail {
+        &-username,
+        &-firstname,
+        &-lastname,
+        &-address,
+        &-phone,
+        &-email,
+        &-birthday {
+          border: 1px solid #c5ccd6;
+          height: 44px;
+          border-radius: 6px;
+          padding: 0 16px;
+          transition: border linear 0.2s;
+        }
+
+        &-username:hover,
+        &-firstname:hover,
+        &-lastname:hover,
+        &-address:hover,
+        &-phone:hover,
+        &-email:hover,
+        &-birthday:hover {
+          border: 1px solid #00b14f;
+        }
+
+        &-username:focus,
+        &-firstname:focus,
+        &-lastname:focus,
+        &-address:focus,
+        &-phone:focus,
+        &-email:focus,
+        &-birthday:focus {
+          border: 1px solid #00b14f;
+        }
+      }
+    }
+
+    .button-group-wrapper {
+      display: flex;
+
+      @include media-breakpoint-down(lg) {
+        flex-direction: column;
+      }
+
+      @include media-breakpoint-down(md) {
+        flex-direction: column;
+      }
+
+      @include media-breakpoint-down(sm) {
+        flex-direction: column;
+      }
+
+      .button-group-left {
+        padding-left: 0;
+
+        @include media-breakpoint-down(lg) {
+          padding-left: 20px;
+        }
+
+        @include media-breakpoint-down(md) {
+          padding-left: 20px;
+        }
+
+        @include media-breakpoint-down(sm) {
+          padding-left: 20px;
+        }
+      }
+    }
+
+    .btn-save {
+      margin: 20px;
+      width: 130px;
+      height: 44px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #fff;
+      background-color: var(--primary-color);
+    }
+
+    .btn-save:hover {
+      cursor: pointer;
+      opacity: 0.9;
+    }
+  }
+}

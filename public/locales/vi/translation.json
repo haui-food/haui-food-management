@@ -26,5 +26,33 @@
     "notify01": "Đăng nhập thành công",
     "notify02": "Đăng xuất thành công",
     "notify03": "Bạn đã đăng nhập rồi"
+  },
+  "dashboards": {
+    "title01": "Điều khiển chính",
+    "title02": "Bảng điều khiển",
+    "title03": "Người dùng",
+    "title04": "Sản phẩm",
+    "desc01": "Chào mừng trở lại!",
+    "desc02": "Doanh số ",
+    "desc03": "Người dùng mới",
+    "desc04": "Đơn đặt hàng",
+    "desc05": "Tin nhắn",
+    "desc06": "Lượt truy cập",
+    "desc07": "Lượt truy cập hiện tại",
+    "lb01": "so với năm trước"
+  },
+  "account": {
+    "title01": "Hình đại diện",
+    "title02": "Chi tiết tài khoản",
+    "desc01": "JPG hoặc PNG không lớn hơn 5 MB",
+    "btn01": "Tải lên ",
+    "btn02": "Lưu thay đổi",
+    "lb01": "Tên người dùng",
+    "lb02": "Tên",
+    "lb03": "Họ",
+    "lb04": "Địa chỉ",
+    "lb05": "Địa chỉ email",
+    "lb06": "Số điện thoại",
+    "lb07": "Ngày sinh"
   }
 }

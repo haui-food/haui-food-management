@@ -26,5 +26,33 @@
     "notify01": "Login successful",
     "notify02": "Logout successful",
     "notify03": "You are already logged in"
+  },
+  "dashboards": {
+    "title01": "Core",
+    "title02": "Dashboards",
+    "title03": "Users",
+    "title04": "Products",
+    "desc01": "Hi Welcome Back!",
+    "desc02": "Weekly Sales",
+    "desc03": "New Users",
+    "desc04": "Item Orders",
+    "desc05": "Messages",
+    "desc06": "Website visits",
+    "desc07": "Current Visits",
+    "lb01": "than last year"
+  },
+  "account": {
+    "title01": "Profile picture",
+    "title02": "Account details",
+    "desc01": "JPG or PNG no larger than 5 MB",
+    "btn01": "Upload new image",
+    "btn02": "Save changes",
+    "lb01": "Username",
+    "lb02": "First name",
+    "lb03": "Last name",
+    "lb04": "Address",
+    "lb05": "Email address",
+    "lb06": "Phone number",
+    "lb07": "Birthday"
   }
 }
