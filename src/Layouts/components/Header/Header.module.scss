@@ -26,11 +26,16 @@
     .menu-icon {
       width: 12px;
       height: 12px;
+
+      @include media-breakpoint-down(md) {
+        width: 10px;
+        height: 10px;
+      }
     }
   }
 
   .icon-wrap:hover {
-    background-color: #00ba5141;
+    background-color: #d8f0df;
     cursor: pointer;
   }
 
@@ -58,10 +63,21 @@
   display: flex;
 
   .btn-flag,
-  .btn-notification {
+  .btn-notification,
+  .btn-user {
     width: 44px;
     height: 44px;
     border-radius: 100rem;
+
+    @include media-breakpoint-down(md) {
+      width: 32px;
+      height: 32px;
+      border-radius: 100rem;
+    }
+  }
+
+  .btn-flag,
+  .btn-notification {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -75,7 +91,7 @@
 
   .btn-flag:hover,
   .btn-notification:hover {
-    background-color: #00ba5141;
+    background-color: #d8f0df;
   }
 
   .btn-notification {
@@ -85,12 +101,13 @@
       width: 20px;
       height: 20px;
     }
+
+    @include media-breakpoint-down(md) {
+      margin: 0 8px;
+    }
   }
 
   .btn-user {
-    width: 44px;
-    height: 44px;
-    border-radius: 100rem;
     img {
       width: 100%;
       height: 100%;
@@ -105,22 +122,22 @@
   flex-direction: column;
 
   .lang-menu-open {
-    background-color: #00ba5141;
+    background-color: #d8f0df;
   }
 
   .lang-menu {
     position: absolute;
     z-index: 2;
     top: 52px;
-    right: 10px;
+    right: 0px;
     width: auto;
     height: auto;
     border-radius: 6px;
-    box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 1px, rgba(0, 0, 0, 0.07) 0px 2px 2px, rgba(0, 0, 0, 0.07) 0px 4px 4px,
-      rgba(0, 0, 0, 0.07) 0px 8px 8px, rgba(0, 0, 0, 0.07) 0px 16px 16px;
+    box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
     transform: scale(0);
     transform-origin: top right;
     transition: transform 0.2s linear;
+    background-color: #fff;
 
     &-active {
       transform: scale(1);
@@ -128,13 +145,15 @@
 
     .lang-item {
       display: flex;
-      height: 36px;
-      width: 120px;
+      height: 40px;
+      width: 160px;
+      text-wrap: nowrap;
       padding: 6px 10px;
       align-items: center;
+      justify-content: space-between;
       span {
         text-transform: capitalize;
-        margin-left: 10px;
+        // margin-left: 10px;
       }
 
       .current-lang {
@@ -153,14 +172,114 @@
     }
 
     .lang-item:hover {
-      background-color: #00ba5141;
+      background-color: #d8f0df;
       cursor: pointer;
+    }
+  }
+  .lang-img {
+    width: 28px;
+    height: 20px;
+    border-radius: 2px;
+
+    @include media-breakpoint-down(md) {
+      width: 24px;
+      height: 16px;
+      border-radius: 2px;
     }
   }
 }
 
-.lang-img {
-  width: 28px;
-  height: 20px;
-  border-radius: 2px;
+.admin-menu-wrapper {
+  position: relative;
+
+  .admin-menu {
+    position: absolute;
+    width: auto;
+    width: 240px;
+    box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
+    background-color: #fff;
+    right: 0;
+    margin-top: 16px;
+    border-radius: 6px;
+    animation: showMenu 0.2s linear;
+
+    @keyframes showMenu {
+      0% {
+        transform: translateY(10%);
+        opacity: 0.6;
+      }
+      100% {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .admin-infor {
+      display: flex;
+      border-bottom: 1px solid #eff1f5;
+      padding: 12px 16px;
+
+      .image-wrapper {
+        width: 36px;
+        height: 36px;
+        margin-right: 12px;
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+      }
+
+      .admin-detail {
+        h5 {
+          font-size: 14px;
+          margin: 0;
+        }
+        span {
+          font-size: 13px;
+          color: #969ba2;
+        }
+      }
+    }
+  }
+
+  .admin-button-group {
+    padding: 6px 0;
+
+    .account,
+    .logout {
+      padding: 4px 20px;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+    }
+
+    .account:hover,
+    .logout:hover {
+      background-color: #d8f0df;
+      cursor: pointer;
+    }
+
+    .account {
+      .setting-icon {
+        margin-left: -4px;
+      }
+    }
+
+    .setting-icon {
+      width: 24px;
+      height: 24px;
+      filter: brightness(0) saturate(100%) invert(63%) sepia(87%) saturate(33%) hue-rotate(185deg) brightness(92%)
+        contrast(95%);
+      margin-right: 8px;
+    }
+
+    .logout-icon {
+      width: 16px;
+      height: 16px;
+      filter: brightness(0) saturate(100%) invert(63%) sepia(87%) saturate(33%) hue-rotate(185deg) brightness(92%)
+        contrast(95%);
+      margin-right: 12px;
+    }
+  }
 }

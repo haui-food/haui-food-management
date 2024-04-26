@@ -10,17 +10,28 @@ import React, { useEffect, useState } from 'react';
 const cx = classNames.bind(styles);
 
 function DefaultLayout({ children }) {
-  const [isOpenNav, setIsOpenNav] = useState(true);
+  const [isOpenNav, setIsOpenNav] = useState(null);
+  // const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 992);
 
   const toggleNav = () => {
+    if (isOpenNav === null) {
+      setIsOpenNav(false);
+      return;
+    }
     setIsOpenNav(!isOpenNav);
   };
 
   useEffect(() => {
-    if (window.innerWidth < 992) {
-      setIsOpenNav(false);
-    }
-  }, [window.innerWidth]);
+    const handleResize = () => {
+      setIsOpenNav(window.innerWidth > 992);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   return (
     <div className={cx('wrapper')}>
