@@ -1,18 +1,25 @@
+<<<<<<< HEAD
 import React, { useState } from 'react';
+=======
+import React, { useEffect, useState } from 'react';
+>>>>>>> a529c5d4b9709933d3b026c4474626ecd96fda9e
 import classNames from 'classnames/bind';
+import Cookies from 'js-cookie';
+
 import styles from './Dashboard.module.scss';
+
 import item1 from '~/assets/images/dashboard/ic_glass_bag.png';
 import item2 from '~/assets/images/dashboard/ic_glass_users.png';
 import item3 from '~/assets/images/dashboard/ic_glass_buy.png';
 import item4 from '~/assets/images/dashboard/ic_glass_message.png';
-
-import BarChart from '~/components/Charts/BarChart';
+import BiaxialLineChart from '~/components/Charts/BiaxialLineChart/BiaxialLineChart';
 import PieChart from '~/components/Charts/PieChart';
 import { useTranslation } from 'react-i18next';
 
 const cx = classNames.bind(styles);
 
 const DashBoard = () => {
+<<<<<<< HEAD
   const { t } = useTranslation();
   const [data, setData] = useState([
     { imgUrl: item1, data: '714k', name: t('dashboards.desc02') },
@@ -23,6 +30,41 @@ const DashBoard = () => {
   return (
     <div className={cx('dashboard')}>
       <h1>{t('dashboards.desc01')}👋</h1>
+=======
+  const [time, setTime] = useState(new Date()); // Khởi tạo state với thời gian hiện tại
+
+  // Cập nhật thời gian mỗi giây
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTime(new Date());
+    }, 1000);
+
+    return () => {
+      clearInterval(timer);
+    };
+  }, []);
+
+  return (
+    <div className={cx('dashboard')}>
+      <h1>Hi welcome back 👋</h1>
+      <div className={cx('dashboard__date')}>
+        <span className={cx('dashboard__date-weekday')}>
+          {time.toLocaleDateString(`${Cookies.get('lang')}-US`, {
+            weekday: 'long',
+          })}
+        </span>
+        {` · ${time.toLocaleDateString(`${Cookies.get('lang')}-US`, {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+        })} · ${time.toLocaleTimeString(`${Cookies.get('lang')}-US`, {
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: ['en', 'zh'].includes(Cookies.get('lang')),
+          hour24: Cookies.get('lang') === 'vi',
+        })}`}
+      </div>
+>>>>>>> a529c5d4b9709933d3b026c4474626ecd96fda9e
       <div className={cx('dashboard--pape')}>
         {data.map((item, index) => {
           return (
@@ -40,7 +82,7 @@ const DashBoard = () => {
           <h5>{t('dashboards.desc06')}</h5>
           <p>+43% {t('dashboards.lb01')}</p>
           <div className={cx('bar-chart')}>
-            <BarChart />
+            <BiaxialLineChart />
           </div>
         </div>
         <div className={cx('dashboard--pape--chart-circle')}>

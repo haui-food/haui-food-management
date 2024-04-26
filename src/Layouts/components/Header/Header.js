@@ -78,15 +78,16 @@ function Header({ toggleNav }) {
           <img src={HauiLogo} alt="logo" className={cx('haui-logo')} />
         </div>
       </div>
-      <div class="button-active">
+      <div className="button-active">
         <div className={cx('button-group')}>
           <div className={cx('flag-wrapper')} ref={langRef} onClick={toggleLangMenu}>
             <div className={cx('btn-flag', { 'lang-menu-open': isOpenLangMenu })}>
               <img src={selectedLang} alt="flag" className={cx('lang-img')} />
             </div>
             <div className={cx('lang-menu', { 'lang-menu-active': isOpenLangMenu })}>
-              {langData.map((lang) => (
+              {langData.map((lang, index) => (
                 <div
+                  key={index}
                   className={cx('lang-item', { 'current-lang': lang.flag === selectedLang })}
                   onClick={() => handleSelectedLang(lang)}
                 >
