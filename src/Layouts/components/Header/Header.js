@@ -100,7 +100,7 @@ function Header({ toggleNav }) {
           <div className={cx('btn-notification')}>
             <BellIcon className={cx('bell-icon')} />
           </div>
-          <div class={cx('admin-menu-wrapper')} ref={adminRef} onClick={handleOpenAdminMenu}>
+          <div className={cx('admin-menu-wrapper')} ref={adminRef} onClick={handleOpenAdminMenu}>
             <div className={cx('btn-user')}>
               <img src={logo} alt="ảnh" />
             </div>
