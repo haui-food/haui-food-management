@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 import classNames from 'classnames/bind';
-import Cookies from 'js-cookie';
 
 import styles from './Dashboard.module.scss';
 
@@ -12,6 +11,7 @@ import item4 from '~/assets/images/dashboard/ic_glass_message.png';
 import BiaxialLineChart from '~/components/Charts/BiaxialLineChart/BiaxialLineChart';
 import PieChart from '~/components/Charts/PieChart';
 import { useTranslation } from 'react-i18next';
+import RealTime from '~/components/RealTime';
 
 const cx = classNames.bind(styles);
 
@@ -19,49 +19,20 @@ const DashBoard = () => {
   const { t } = useTranslation();
 
   const [data, setData] = useState([
-    { imgUrl: item1, data: '714k', name: t('dashboards.desc02') },
-    { imgUrl: item2, data: '2m', name: t('dashboards.desc03') },
-    { imgUrl: item3, data: '1.2m', name: t('dashboards.desc04') },
-    { imgUrl: item4, data: '2.3k', name: t('dashboards.desc05') },
+    { imgUrl: item1, data: '714k', name: t('dashboards.desc02'), border: '#21b77e' },
+    { imgUrl: item2, data: '2m', name: t('dashboards.desc03'), border: '#3584e8' },
+    { imgUrl: item3, data: '1.2m', name: t('dashboards.desc04'), border: '#fab72e' },
+    { imgUrl: item4, data: '2.3k', name: t('dashboards.desc05'), border: '#fc8c66' },
   ]);
-
-  const [time, setTime] = useState(new Date()); // Khởi tạo state với thời gian hiện tại
-
-  // Cập nhật thời gian mỗi giây
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTime(new Date());
-    }, 1000);
-
-    return () => {
-      clearInterval(timer);
-    };
-  }, []);
 
   return (
     <div className={cx('dashboard')}>
       <h1>{t('dashboards.desc01')} 👋</h1>
-      <div className={cx('dashboard__date')}>
-        <span className={cx('dashboard__date-weekday')}>
-          {time.toLocaleDateString(`${Cookies.get('lang')}-US`, {
-            weekday: 'long',
-          })}
-        </span>
-        {` · ${time.toLocaleDateString(`${Cookies.get('lang')}-US`, {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-        })} · ${time.toLocaleTimeString(`${Cookies.get('lang')}-US`, {
-          hour: '2-digit',
-          minute: '2-digit',
-          hour12: ['en', 'zh'].includes(Cookies.get('lang')),
-          hour24: Cookies.get('lang') === 'vi',
-        })}`}
-      </div>
+      <RealTime />
       <div className={cx('dashboard--pape')}>
         {data.map((item, index) => {
           return (
-            <div key={index} className={cx('dashboard--pape--item')}>
+            <div key={index} className={cx('dashboard--pape--item')} style={{ '--dashboard-border': `${item.border}` }}>
               <img src={item.imgUrl} alt="img" style={{ width: '64px', height: '64px' }} />
               <div className={cx('dashboard--pape--description')}>
                 <h2>{item.data}</h2>

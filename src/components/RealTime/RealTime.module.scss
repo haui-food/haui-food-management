@@ -1,0 +1,10 @@
+.real-time {
+  &__date {
+    margin-bottom: 40px;
+
+    &-weekday {
+      color: var(--primary-bg);
+      font-weight: 500;
+    }
+  }
+}
