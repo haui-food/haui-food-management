@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-import React, { useState } from 'react';
-=======
-import React, { useEffect, useState } from 'react';
->>>>>>> a529c5d4b9709933d3b026c4474626ecd96fda9e
+import React, { useState, useEffect } from 'react';
 import classNames from 'classnames/bind';
 import Cookies from 'js-cookie';
 
@@ -19,7 +15,6 @@ import { useTranslation } from 'react-i18next';
 const cx = classNames.bind(styles);
 
 const DashBoard = () => {
-<<<<<<< HEAD
   const { t } = useTranslation();
   const [data, setData] = useState([
     { imgUrl: item1, data: '714k', name: t('dashboards.desc02') },
@@ -27,13 +22,9 @@ const DashBoard = () => {
     { imgUrl: item3, data: '1.2m', name: t('dashboards.desc04') },
     { imgUrl: item4, data: '2.3k', name: t('dashboards.desc05 ') },
   ]);
-  return (
-    <div className={cx('dashboard')}>
-      <h1>{t('dashboards.desc01')}👋</h1>
-=======
-  const [time, setTime] = useState(new Date()); // Khởi tạo state với thời gian hiện tại
 
-  // Cập nhật thời gian mỗi giây
+  const [time, setTime] = useState(new Date());
+
   useEffect(() => {
     const timer = setInterval(() => {
       setTime(new Date());
@@ -46,7 +37,7 @@ const DashBoard = () => {
 
   return (
     <div className={cx('dashboard')}>
-      <h1>Hi welcome back 👋</h1>
+      <h1>{t('dashboards.desc01')} 👋</h1>
       <div className={cx('dashboard__date')}>
         <span className={cx('dashboard__date-weekday')}>
           {time.toLocaleDateString(`${Cookies.get('lang')}-US`, {
@@ -64,7 +55,6 @@ const DashBoard = () => {
           hour24: Cookies.get('lang') === 'vi',
         })}`}
       </div>
->>>>>>> a529c5d4b9709933d3b026c4474626ecd96fda9e
       <div className={cx('dashboard--pape')}>
         {data.map((item, index) => {
           return (
