@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+
 import classNames from 'classnames/bind';
 import Cookies from 'js-cookie';
 
@@ -16,6 +17,7 @@ const cx = classNames.bind(styles);
 
 const DashBoard = () => {
   const { t } = useTranslation();
+
   const [data, setData] = useState([
     { imgUrl: item1, data: '714k', name: t('dashboards.desc02') },
     { imgUrl: item2, data: '2m', name: t('dashboards.desc03') },
@@ -23,8 +25,9 @@ const DashBoard = () => {
     { imgUrl: item4, data: '2.3k', name: t('dashboards.desc05 ') },
   ]);
 
-  const [time, setTime] = useState(new Date());
+  const [time, setTime] = useState(new Date()); // Khởi tạo state với thời gian hiện tại
 
+  // Cập nhật thời gian mỗi giây
   useEffect(() => {
     const timer = setInterval(() => {
       setTime(new Date());
@@ -58,7 +61,7 @@ const DashBoard = () => {
       <div className={cx('dashboard--pape')}>
         {data.map((item, index) => {
           return (
-            <div className={cx('dashboard--pape--item')}>
+            <div key={index} className={cx('dashboard--pape--item')}>
               <img src={item.imgUrl} alt="img" style={{ width: '64px', height: '64px' }} />
               <div className={cx('dashboard--pape--description')}>
                 <h2>{item.data}</h2>
