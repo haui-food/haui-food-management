@@ -22,7 +22,7 @@ const DashBoard = () => {
     { imgUrl: item1, data: '714k', name: t('dashboards.desc02') },
     { imgUrl: item2, data: '2m', name: t('dashboards.desc03') },
     { imgUrl: item3, data: '1.2m', name: t('dashboards.desc04') },
-    { imgUrl: item4, data: '2.3k', name: t('dashboards.desc05 ') },
+    { imgUrl: item4, data: '2.3k', name: t('dashboards.desc05') },
   ]);
 
   const [time, setTime] = useState(new Date()); // Khởi tạo state với thời gian hiện tại
