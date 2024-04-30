@@ -5,8 +5,9 @@
     "na02": "Login/Register"
   },
   "button": {
-    "btn01": "Login",
-    "btn02": "Back to home"
+    "btnLogin": "Login",
+    "btn02": "Back to home",
+    "btnLoginLoading": "...Logging in"
   },
   "form": {
     "tp01": "Email",
@@ -54,5 +55,8 @@
     "lb05": "Email address",
     "lb06": "Phone number",
     "lb07": "Birthday"
+  },
+  "toast": {
+    "Unauthorized": "You do not have access."
   }
 }

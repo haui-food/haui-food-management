@@ -5,8 +5,9 @@
     "na02": "Đăng nhập/Đăng kí"
   },
   "button": {
-    "btn01": "Đăng nhập",
-    "btn02": "Quay lại trang chủ"
+    "btnLogin": "Đăng nhập",
+    "btn02": "Quay lại trang chủ",
+    "btnLoginLoading": "...Đang đăng nhập"
   },
   "form": {
     "tp01": "Email",
@@ -54,5 +55,8 @@
     "lb05": "Địa chỉ email",
     "lb06": "Số điện thoại",
     "lb07": "Ngày sinh"
+  },
+  "toast": {
+    "unauthorized": "Bạn không có quyền truy cập"
   }
 }
