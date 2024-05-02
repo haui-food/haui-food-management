@@ -7,11 +7,19 @@ import { Oval } from '@agney/react-loading';
 import styles from './SignIn.module.scss';
 import { EmailIcon, PasswordIcon } from '~/components/Icons';
 import Button from '~/components/Button';
+import { useDispatch } from 'react-redux';
+import { loginUser } from '~/apiService/authService';
+import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import config from '~/config';
 
 const cx = classNames.bind(styles);
 
 function SignIn() {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const reduxData = useSelector((prop) => prop.auth);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -73,8 +81,26 @@ function SignIn() {
     }));
     checkSubmit();
   };
+  useEffect(() => {
+    console.log(reduxData);
+  }, [reduxData]);
 
-  const handleSubmit = (e) => {};
+
+  const handleSubmit = (e) => {
+    dispatch(loginUser(loginForm)).then((result) => {
+      // console.log(result);
+      if (result.payload.code === 200) {
+        if (['admin', 'shop'].includes(result.payload.data.user.role)) {
+          toast.success(result.payload.message);
+          navigate(config.routes.dashboard, { replace: true });
+        } else {
+          toast.warning(t('toast.unauthorized'));
+        }
+      } else {
+        toast.error(result.payload.message);
+      }
+    });
+  };
 
   useEffect(() => {
     if (passwordRegex.test(password) && emailRegex.test(email)) {
@@ -92,7 +118,11 @@ function SignIn() {
       <h1 className={cx('login__heading', 'shine')}>{t('login.heading')}</h1>
       <p className={cx('login__desc')}>{t('login.desc01')}</p>
 
-      <form className={cx('form')} onSubmit={(e) => e.preventDefault()}>
+      <form
+        className={cx('form')}
+        onSubmit={(e) => e.preventDefault()}
+        style={reduxData.loading ? { pointerEvents: 'none', opacity: '0.7' } : {}}
+      >
         <div className={cx('form__group')}>
           <div className={cx('form__text-input')} style={errors.email !== '' ? { border: '1px solid #f44336' } : {}}>
             <input
@@ -146,15 +176,15 @@ function SignIn() {
           </a>
         </div>
 
-        <div style={submit ? { cursor: 'no-drop' } : {}} className={cx('form__group', 'login__btn-group')}>
+        <div style={reduxData.loading ? { cursor: 'no-drop' } : {}} className={cx('form__group', 'login__btn-group')}>
           <Button
             primary
             auth
-            disabled={submit}
+            disabled={submit || reduxData.loading}
             onClick={handleSubmit}
             // leftIcon={loading && <Oval width="20" color="#fff" />}
           >
-            {t('button.btn01')}
+            {reduxData.loading ? t('button.btnLoginLoading') : t('button.btnLogin')}
           </Button>
         </div>
       </form>
