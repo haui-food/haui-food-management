@@ -19,6 +19,7 @@ function Button({
   more = false,
   order = false,
   send = false,
+  addUser = false,
   className,
   children,
   leftIcon,
@@ -63,6 +64,7 @@ function Button({
     more,
     order,
     send,
+    addUser
   });
   return (
     <Comp className={classes} {...props}>

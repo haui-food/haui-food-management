@@ -1,6 +1,8 @@
 import { useMemo, useState } from 'react';
 import classNames from 'classnames/bind';
 
+import { useTranslation } from 'react-i18next';
+
 import PropTypes from 'prop-types';
 import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -20,13 +22,19 @@ import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
-import DeleteIcon from '@mui/icons-material/Delete';
-import FilterListIcon from '@mui/icons-material/FilterList';
+import DeleteIcon from '@mui/icons-material/DeleteOutlined';
+import CheckIcon from '@mui/icons-material/Check';
+import CloseIcon from '@mui/icons-material/Close';
 import { visuallyHidden } from '@mui/utils';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 import styles from './User.module.scss';
 import RealTime from '~/components/RealTime';
+import Button from '~/components/Button';
+import { EditIcon, EmailIcon, PhoneIcon, PlusIcon, UserIcon } from '~/components/Icons';
+import { Avatar, Chip } from '@mui/material';
+import ConfirmModal from '~/components/ConfirmModal';
+import FormModal from '~/components/FormModal';
 
 const cx = classNames.bind(styles);
 
@@ -67,106 +75,297 @@ const theme = createTheme({
             color: 'var(--primary-color)',
 
             '& + .MuiSwitch-track': {
-              backgroundColor: 'rgba(140, 238, 184, 0.5)'
+              backgroundColor: 'rgba(140, 238, 184, 0.5)',
             },
           },
         },
-        
-      
+      },
+    },
+    MuiTableCell: {
+      styleOverrides: {
+        root: {
+          maxWidth: '300px',
+          minWidth: '100px',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap',
+        },
       },
     },
   },
 });
 
-function createData(id, name, calories, fat, carbs, protein) {
+function createData(
+  id,
+  fullname,
+  email,
+  password,
+  phone,
+  dateOfBirth,
+  gender,
+  isVerify,
+  isLocked,
+  lastActive,
+  role,
+  avatar,
+  address,
+) {
   return {
     id,
-    name,
-    calories,
-    fat,
-    carbs,
-    protein,
+    fullname,
+    email,
+    password,
+    phone,
+    dateOfBirth,
+    gender,
+    isVerify,
+    isLocked,
+    lastActive,
+    role,
+    avatar,
+    address,
   };
 }
 
 const rows = [
-  createData(1, 'Cupcake', 305, 3.7, 67, 4.3),
-  createData(2, 'Donut', 452, 25.0, 51, 4.9),
-  createData(3, 'Eclair', 262, 16.0, 24, 6.0),
-  createData(4, 'Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData(5, 'Gingerbread', 356, 16.0, 49, 3.9),
-  createData(6, 'Honeycomb', 408, 3.2, 87, 6.5),
-  createData(7, 'Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData(8, 'Jelly Bean', 375, 0.0, 94, 0.0),
-  createData(9, 'KitKat', 518, 26.0, 65, 7.0),
-  createData(10, 'Lollipop', 392, 0.2, 98, 0.0),
-  createData(11, 'Marshmallow', 318, 0, 81, 2.0),
-  createData(12, 'Nougat', 360, 19.0, 9, 37.0),
-  createData(13, 'Oreo', 437, 18.0, 63, 4.0),
+  createData(
+    1,
+    'Nguyen Van A Nguyen Van A Nguyen Van A Nguyen Van A',
+    'nva@gmail.com',
+    'password1',
+    '0123456789',
+    '2000-01-01',
+    'male',
+    true,
+    false,
+    '2024-04-29',
+    'admin',
+    'avatar1.png',
+    '123 ABC, Hanoi, Vietnam',
+  ),
+  createData(
+    2,
+    'Tran Thi B',
+    'ttb@gmail.com',
+    'password2',
+    '0123456780',
+    '2001-02-02',
+    'female',
+    true,
+    false,
+    '2024-04-29',
+    'user',
+    'avatar2.png',
+    '456 DEF, Hanoi, Vietnam',
+  ),
+  createData(
+    3,
+    'Le Thi C',
+    'ltc@gmail.com',
+    'password3',
+    '0123456781',
+    '2002-03-03',
+    'female',
+    true,
+    false,
+    '2024-04-29',
+    'user',
+    'avatar3.png',
+    '789 GHI, Hanoi, Vietnam',
+  ),
+  createData(
+    4,
+    'Pham Van D',
+    'pvd@gmail.com',
+    'password4',
+    '0123456782',
+    '2003-04-04',
+    'male',
+    true,
+    false,
+    '2024-04-29',
+    'shop',
+    'avatar4.png',
+    '012 JKL, Hanoi, Vietnam',
+  ),
+  createData(
+    5,
+    'Nguyen Thi E',
+    'nte@gmail.com',
+    'password5',
+    '0123456783',
+    '2004-05-05',
+    'female',
+    true,
+    false,
+    '2024-04-29',
+    'user',
+    'avatar5.png',
+    '345 MNO, Hanoi, Vietnam',
+  ),
+  createData(
+    6,
+    'Tran Van F',
+    'tvf@gmail.com',
+    'password6',
+    '0123456784',
+    '2005-06-06',
+    'male',
+    true,
+    false,
+    '2024-04-29',
+    'admin',
+    'avatar6.png',
+    '678 PQR, Hanoi, Vietnam',
+  ),
+  createData(
+    7,
+    'Le Van G',
+    'lvg@gmail.com',
+    'password7',
+    '0123456785',
+    '2006-07-07',
+    'male',
+    true,
+    false,
+    '2024-04-29',
+    'user',
+    'avatar7.png',
+    '901 STU, Hanoi, Vietnam',
+  ),
+  createData(
+    8,
+    'Pham Thi H',
+    'pth@gmail.com',
+    'password8',
+    '0123456786',
+    '2007-08-08',
+    'female',
+    true,
+    false,
+    '2024-04-29',
+    'admin',
+    'avatar8.png',
+    '234 VWX, Hanoi, Vietnam',
+  ),
+  createData(
+    9,
+    'Nguyen Van I',
+    'nvi@gmail.com',
+    'password9',
+    '0123456787',
+    '2008-09-09',
+    'male',
+    true,
+    false,
+    '2024-04-29',
+    'user',
+    'avatar9.png',
+    '567 YZ, Hanoi, Vietnam',
+  ),
+  createData(
+    10,
+    'Tran Thi J',
+    'ttj@gmail.com',
+    'password10',
+    '0123456788',
+    '2009-10-10',
+    'female',
+    true,
+    false,
+    '2024-04-29',
+    'admin',
+    'avatar10.png',
+    '890 ZAB, Hanoi, Vietnam',
+  ),
+  createData(
+    11,
+    'Le Van K',
+    'lvk@gmail.com',
+    'password11',
+    '0123456789',
+    '2010-11-11',
+    'male',
+    true,
+    false,
+    '2024-04-29',
+    'user',
+    'avatar11.png',
+    '123 CDE, Hanoi, Vietnam',
+  ),
+  createData(
+    12,
+    'Pham Thi L',
+    'ptl@gmail.com',
+    'password12',
+    '0123456780',
+    '2011-12-12',
+    'female',
+    true,
+    false,
+    '2024-04-29',
+    'admin',
+    'avatar12.png',
+    '456 FGH, Hanoi, Vietnam',
+  ),
+  createData(
+    13,
+    'Nguyen Van M',
+    'nvm@gmail.com',
+    'password13',
+    '0123456781',
+    '2012-01-01',
+    'male',
+    true,
+    false,
+    '2024-04-29',
+    'user',
+    'avatar13.png',
+    '789 IJK, Hanoi, Vietnam',
+  ),
 ];
 
-function descendingComparator(a, b, orderBy) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
-}
+const descendingComparator = (a, b, orderBy) => {
+  if (b[orderBy] < a[orderBy]) return -1;
 
-function getComparator(order, orderBy) {
+  if (b[orderBy] > a[orderBy]) return 1;
+
+  return 0;
+};
+
+const getComparator = (order, orderBy) => {
   return order === 'desc'
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy);
-}
+};
 
-function stableSort(array, comparator) {
+const stableSort = (array, comparator) => {
   const stabilizedThis = array.map((el, index) => [el, index]);
   stabilizedThis.sort((a, b) => {
     const order = comparator(a[0], b[0]);
-    if (order !== 0) {
-      return order;
-    }
+    if (order !== 0) return order;
+
     return a[1] - b[1];
   });
   return stabilizedThis.map((el) => el[0]);
-}
+};
 
 const headCells = [
-  {
-    id: 'name',
-    numeric: false,
-    disablePadding: true,
-    label: 'Dessert (100g serving)',
-  },
-  {
-    id: 'calories',
-    numeric: true,
-    disablePadding: false,
-    label: 'Calories',
-  },
-  {
-    id: 'fat',
-    numeric: true,
-    disablePadding: false,
-    label: 'Fat (g)',
-  },
-  {
-    id: 'carbs',
-    numeric: true,
-    disablePadding: false,
-    label: 'Carbs (g)',
-  },
-  {
-    id: 'protein',
-    numeric: true,
-    disablePadding: false,
-    label: 'Protein (g)',
-  },
+  { id: 'fullname', numeric: false, disablePadding: true, label: 'FullName' },
+  { id: 'email', numeric: true, disablePadding: false, label: 'Email' },
+  { id: 'password', numeric: true, disablePadding: false, label: 'Password' },
+  { id: 'phone', numeric: true, disablePadding: false, label: 'Phone' },
+  { id: 'dateOfBirth', numeric: true, disablePadding: false, label: 'Date Of Birth' },
+  { id: 'gender', numeric: true, disablePadding: false, label: 'Gender' },
+  { id: 'isVerify', numeric: true, disablePadding: false, label: 'Is verify' },
+  { id: 'isLocked', numeric: true, disablePadding: false, label: 'Is locked' },
+  { id: 'lastActive', numeric: true, disablePadding: false, label: 'Last active' },
+  { id: 'role', numeric: true, disablePadding: false, label: 'Role' },
+  { id: 'avatar', numeric: true, disablePadding: false, label: 'Avatar' },
+  { id: 'address', numeric: true, disablePadding: false, label: 'Address' },
 ];
 
-function EnhancedTableHead(props) {
+const EnhancedTableHead = (props) => {
   const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
@@ -189,7 +388,7 @@ function EnhancedTableHead(props) {
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
-            align={headCell.numeric ? 'right' : 'left'}
+            align={headCell.numeric ? 'center' : 'left'}
             padding={headCell.disablePadding ? 'none' : 'normal'}
             sortDirection={orderBy === headCell.id ? order : false}
           >
@@ -210,7 +409,7 @@ function EnhancedTableHead(props) {
       </TableRow>
     </TableHead>
   );
-}
+};
 
 EnhancedTableHead.propTypes = {
   numSelected: PropTypes.number.isRequired,
@@ -221,45 +420,183 @@ EnhancedTableHead.propTypes = {
   rowCount: PropTypes.number.isRequired,
 };
 
-function EnhancedTableToolbar(props) {
-  const { numSelected } = props;
+const EnhancedTableToolbar = (props) => {
+  const { t } = useTranslation();
+  const { numSelected, isEdit } = props;
+  const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
+  const [editModalIsOpen, setEditModalIsOpen] = useState(false);
+  const [createModalIsOpen, setCreateModalIsOpen] = useState(false);
+
+  const openConfirmModal = () => {
+    setConfirmModalIsOpen(true);
+  };
+
+  const closeConfirmModal = () => {
+    setConfirmModalIsOpen(false);
+  };
+
+  const openEditModal = () => {
+    setEditModalIsOpen(true);
+  };
+
+  const closeEditModal = () => {
+    setEditModalIsOpen(false);
+  };
+
+  const openCreateModal = () => {
+    setCreateModalIsOpen(true);
+  };
+
+  const closeCreateModal = () => {
+    setCreateModalIsOpen(false);
+  };
+
+  const handleDelete = () => {
+    closeConfirmModal();
+  };
+
+  const handleEdit = () => {
+    closeEditModal();
+  };
 
   return (
-    <Toolbar
-      sx={{
-        pl: { sm: 2 },
-        pr: { xs: 1, sm: 1 },
-        ...(numSelected > 0 && {
-          bgcolor: (theme) => alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
-        }),
-      }}
-    >
-      {numSelected > 0 ? (
-        <Typography sx={{ flex: '1 1 100%' }} color="inherit" variant="subtitle1" component="div">
-          {numSelected} selected
-        </Typography>
-      ) : (
-        <Typography sx={{ flex: '1 1 100%' }} variant="h6" id="tableTitle" component="div">
-          Users
-        </Typography>
-      )}
+    <div>
+      <Toolbar
+        sx={{
+          pl: { sm: 2 },
+          pr: { xs: 1, sm: 1 },
+          ...(numSelected > 0 && {
+            bgcolor: (theme) => alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
+          }),
+        }}
+      >
+        {numSelected > 0 ? (
+          <Typography sx={{ flex: '1 1 100%' }} color="inherit" variant="subtitle1" component="div">
+            {numSelected} selected
+          </Typography>
+        ) : (
+          <Typography sx={{ flex: '1 1 100%' }} variant="h6" id="tableTitle" component="div">
+            Users
+          </Typography>
+        )}
 
-      {numSelected > 0 ? (
-        <Tooltip title="Delete">
-          <IconButton>
-            <DeleteIcon />
-          </IconButton>
-        </Tooltip>
-      ) : (
-        <Tooltip title="Filter list">
-          <IconButton>
-            <FilterListIcon />
-          </IconButton>
-        </Tooltip>
-      )}
-    </Toolbar>
+        {numSelected > 0 ? (
+          <>
+            <Tooltip title="Delete">
+              <IconButton onClick={openConfirmModal}>
+                <DeleteIcon />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Edit">
+              <IconButton disabled={isEdit} onClick={openEditModal}>
+                <EditIcon />
+              </IconButton>
+            </Tooltip>
+          </>
+        ) : (
+          <Button leftIcon={<PlusIcon />} addUser primary>
+            Thêm người dùng
+          </Button>
+        )}
+      </Toolbar>
+
+      <ConfirmModal
+        title="Xác nhận xóa người dùng"
+        desc={
+          isEdit
+            ? 'Bạn có chắc chắn muốn xóa tất cả những người dùng này không?'
+            : 'Bạn có chắc chắn muốn xóa người dùng này không?'
+        }
+        type="Xóa"
+        isOpen={confirmModalIsOpen}
+        closeModal={closeConfirmModal}
+        handle={handleDelete}
+      />
+
+      <FormModal
+        title="Sửa thông tin người dùng"
+        type="Sửa"
+        isOpen={editModalIsOpen}
+        closeModal={closeEditModal}
+        handle={handleEdit}
+      >
+        <form action="" className={cx('form')} autoComplete="off">
+          <div className={cx('form__row', 'form__row--three')}>
+            <div className={cx('form__group')}>
+              <label htmlFor="fullname" className={cx('form__label', 'form__label--medium')}>
+                FullName
+              </label>
+              <div className={cx('form__text-input', 'form__text-input--sm')}>
+                <input type="text" id="fullname" name="fullname" placeholder="FullName" className={cx('form__input')} />
+                <UserIcon />
+              </div>
+            </div>
+            <div className={cx('form__group')}>
+              <label htmlFor="email" className={cx('form__label', 'form__label--medium')}>
+                {t('form.tp01')}
+              </label>
+              <div className={cx('form__text-input', 'form__text-input--sm')}>
+                <input
+                  id="email"
+                  type="email"
+                  name="email"
+                  placeholder={t('form.tp01')}
+                  className={cx('form__input')}
+                />
+                <EmailIcon className={cx('form__input-icon')} />
+              </div>
+            </div>
+            <div className={cx('form__group')}>
+              <label htmlFor="phone" className={cx('form__label', 'form__label--medium')}>
+                Phone
+              </label>
+              <div className={cx('form__text-input', 'form__text-input--sm')}>
+                <input id="phone" type="tel" name="phone" placeholder="Phone" className={cx('form__input')} />
+                <PhoneIcon className={cx('form__input-icon')} />
+              </div>
+            </div>
+          </div>
+
+          <div className={cx('form__row', 'form__row--three')}>
+            <div className={cx('form__group')}>
+              <label htmlFor="fullname" className={cx('form__label', 'form__label--medium')}>
+                FullName
+              </label>
+              <div className={cx('form__text-input', 'form__text-input--sm')}>
+                <input type="text" id="fullname" name="fullname" placeholder="FullName" className={cx('form__input')} />
+                <UserIcon />
+              </div>
+            </div>
+            <div className={cx('form__group')}>
+              <label htmlFor="email" className={cx('form__label', 'form__label--medium')}>
+                {t('form.tp01')}
+              </label>
+              <div className={cx('form__text-input', 'form__text-input--sm')}>
+                <input
+                  id="email"
+                  type="email"
+                  name="email"
+                  placeholder={t('form.tp01')}
+                  className={cx('form__input')}
+                />
+                <EmailIcon className={cx('form__input-icon')} />
+              </div>
+            </div>
+            <div className={cx('form__group')}>
+              <label htmlFor="phone" className={cx('form__label', 'form__label--medium')}>
+                Phone
+              </label>
+              <div className={cx('form__text-input', 'form__text-input--sm')}>
+                <input id="phone" type="tel" name="phone" placeholder="Phone" className={cx('form__input')} />
+                <PhoneIcon className={cx('form__input-icon')} />
+              </div>
+            </div>
+          </div>
+        </form>
+      </FormModal>
+    </div>
   );
-}
+};
 
 EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
@@ -319,7 +656,6 @@ export default function Users() {
 
   const isSelected = (id) => selected.indexOf(id) !== -1;
 
-  // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
   const visibleRows = useMemo(
@@ -334,7 +670,7 @@ export default function Users() {
       <ThemeProvider theme={theme}>
         <Box className={cx('user__list')}>
           <Paper sx={{ width: '100%', mb: 2 }}>
-            <EnhancedTableToolbar numSelected={selected.length} />
+            <EnhancedTableToolbar numSelected={selected.length} isEdit={selected.length > 1} />
             <TableContainer>
               <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle" size={dense ? 'small' : 'medium'}>
                 <EnhancedTableHead
@@ -371,12 +707,52 @@ export default function Users() {
                           />
                         </TableCell>
                         <TableCell component="th" id={labelId} scope="row" padding="none">
-                          {row.name}
+                          {row.fullname}
                         </TableCell>
-                        <TableCell align="right">{row.calories}</TableCell>
-                        <TableCell align="right">{row.fat}</TableCell>
-                        <TableCell align="right">{row.carbs}</TableCell>
-                        <TableCell align="right">{row.protein}</TableCell>
+                        <TableCell align="center">{row.email}</TableCell>
+                        <TableCell align="center">{row.password}</TableCell>
+                        <TableCell align="center">{row.phone}</TableCell>
+                        <TableCell align="center">{row.dateOfBirth}</TableCell>
+                        <TableCell align="center">
+                          <Chip
+                            label={row.gender}
+                            variant="outlined"
+                            style={{
+                              color: row.gender === 'male' ? '#64b5f6' : '#ec407a',
+                              borderColor: row.gender === 'male' ? '#64b5f6' : '#ec407a',
+                            }}
+                          />
+                        </TableCell>
+                        <TableCell align="center">
+                          {row.isVerify ? (
+                            <CheckIcon style={{ color: 'var(--primary-color)' }} />
+                          ) : (
+                            <CloseIcon style={{ color: '#f44336' }} />
+                          )}
+                        </TableCell>
+                        <TableCell align="center">
+                          {row.isLocked ? (
+                            <CheckIcon style={{ color: 'var(--primary-color)' }} />
+                          ) : (
+                            <CloseIcon style={{ color: '#f44336' }} />
+                          )}
+                        </TableCell>
+                        <TableCell align="center">{row.lastActive}</TableCell>
+                        <TableCell align="center">
+                          <Chip
+                            label={row.role}
+                            variant="outlined"
+                            style={{
+                              color: row.role === 'admin' ? '#f44336' : row.role === 'shop' ? '#ff9800' : '#4caf50',
+                              borderColor:
+                                row.role === 'admin' ? '#f44336' : row.role === 'shop' ? '#ff9800' : '#4caf50',
+                            }}
+                          />
+                        </TableCell>
+                        <TableCell align="center">
+                          <Avatar alt={row.fullname} src={row.avatar} />
+                        </TableCell>
+                        <TableCell align="center">{row.address}</TableCell>
                       </TableRow>
                     );
                   })}
