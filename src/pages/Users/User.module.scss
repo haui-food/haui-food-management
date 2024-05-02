@@ -4,6 +4,10 @@
 
 .user {
   padding: 20px 40px;
+  width: 100%;
+  @include media-breakpoint-down(lg) {
+    padding: 20px;
+  }
 
   &__heading {
     margin-bottom: 8px;
@@ -14,13 +18,7 @@
 
   &__list {
     width: auto;
-    height: 400px;
-  }
-}
-
-:global {
-  .css-1whpjm6-MuiToolbar-root,
-  .css-10cbwbc-MuiTableRow-root.Mui-selected {
-    background-color: rgba(140, 238, 184, 0.3) !important;
+    min-height: 400px;
+    overflow: auto;
   }
 }
