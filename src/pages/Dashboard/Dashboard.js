@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import classNames from 'classnames/bind';
 
@@ -12,11 +12,13 @@ import BiaxialLineChart from '~/components/Charts/BiaxialLineChart/BiaxialLineCh
 import PieChart from '~/components/Charts/PieChart';
 import { useTranslation } from 'react-i18next';
 import RealTime from '~/components/RealTime';
+import { ArrowDownIcon } from '~/components/Icons';
 
 const cx = classNames.bind(styles);
 
 const DashBoard = () => {
   const { t } = useTranslation();
+  const revenueRef = useRef();
 
   const [data, setData] = useState([
     { imgUrl: item1, data: '714k', name: t('dashboards.desc02'), border: '#21b77e' },
@@ -24,6 +26,36 @@ const DashBoard = () => {
     { imgUrl: item3, data: '1.2m', name: t('dashboards.desc04'), border: '#fab72e' },
     { imgUrl: item4, data: '2.3k', name: t('dashboards.desc05'), border: '#fc8c66' },
   ]);
+  const [sortTypeData, setSortTypeData] = useState([
+    { name: 'Tuần', type: 'week' },
+    { name: 'Tháng', type: 'month' },
+    { name: 'Quý', type: 'quarter' },
+    { name: 'Năm', type: 'year' },
+  ]);
+  const [currentSortType, setCurrentSortType] = useState(sortTypeData[0]);
+  const [isOpenSortTypeMenu, setIsOpenSortTypeMenu] = useState(false);
+
+  const handleChangeSortType = (sortType) => {
+    setCurrentSortType(sortType);
+  };
+
+  const handleOpenSortTypeMenu = () => {
+    setIsOpenSortTypeMenu(!isOpenSortTypeMenu);
+  };
+
+  useEffect(() => {
+    const handleClickOutSide = (e) => {
+      if (revenueRef.current && !revenueRef.current.contains(e.target)) {
+        setIsOpenSortTypeMenu(false);
+      }
+
+      document.addEventListener('click', handleClickOutSide);
+
+      return () => {
+        document.removeEventListener('click', handleClickOutSide);
+      };
+    };
+  }, []);
 
   return (
     <div className={cx('dashboard')}>
@@ -43,10 +75,35 @@ const DashBoard = () => {
         })}
 
         <div className={cx('dashboard--pape--chart-column')}>
-          <h5>{t('dashboards.desc06')}</h5>
-          <p>+43% {t('dashboards.lb01')}</p>
+          <div className={cx('revenue-header')}>
+            <h5>{t('dashboards.desc06')}</h5>
+            <div className={cx('sort-box-wrapper')} ref={revenueRef}>
+              <div className={cx('sort-box')} onClick={handleOpenSortTypeMenu}>
+                {currentSortType.name}
+                <ArrowDownIcon className={cx('arrow-down-icon', { 'arrow-down-icon--active': isOpenSortTypeMenu })} />
+              </div>
+
+              {isOpenSortTypeMenu && (
+                <div className={cx('sort-box-menu')}>
+                  {sortTypeData.map((item, index) => {
+                    return (
+                      <div
+                        className={cx('sort-item')}
+                        onClick={() => {
+                          handleChangeSortType(item);
+                          setIsOpenSortTypeMenu(false);
+                        }}
+                      >
+                        {item.name}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          </div>
           <div className={cx('bar-chart')}>
-            <BiaxialLineChart />
+            <BiaxialLineChart sortType={currentSortType} />
           </div>
         </div>
         <div className={cx('dashboard--pape--chart-circle')}>
