@@ -84,11 +84,18 @@ const theme = createTheme({
     MuiTableCell: {
       styleOverrides: {
         root: {
-          maxWidth: '300px',
-          minWidth: '100px',
+          maxWidth: '200px',
+          minWidth: '80px',
           overflow: 'hidden',
           textOverflow: 'ellipsis',
           whiteSpace: 'nowrap',
+        },
+      },
+    },
+    MuiFormControlLabel: {
+      styleOverrides: {
+        root: {
+          marginLeft: '0',
         },
       },
     },
@@ -108,7 +115,6 @@ function createData(
   lastActive,
   role,
   avatar,
-  address,
 ) {
   return {
     id,
@@ -123,14 +129,13 @@ function createData(
     lastActive,
     role,
     avatar,
-    address,
   };
 }
 
 const rows = [
   createData(
     1,
-    'Nguyen Van A Nguyen Van A Nguyen Van A Nguyen Van A',
+    'Nguyen Van A',
     'nva@gmail.com',
     'password1',
     '0123456789',
@@ -351,18 +356,17 @@ const stableSort = (array, comparator) => {
 };
 
 const headCells = [
+  { id: 'avatar', numeric: false, disablePadding: false, label: 'Avatar' },
   { id: 'fullname', numeric: false, disablePadding: true, label: 'FullName' },
   { id: 'email', numeric: true, disablePadding: false, label: 'Email' },
-  { id: 'password', numeric: true, disablePadding: false, label: 'Password' },
+  { id: 'password', numeric: false, disablePadding: false, label: 'Password' },
   { id: 'phone', numeric: true, disablePadding: false, label: 'Phone' },
   { id: 'dateOfBirth', numeric: true, disablePadding: false, label: 'Date Of Birth' },
   { id: 'gender', numeric: true, disablePadding: false, label: 'Gender' },
-  { id: 'isVerify', numeric: true, disablePadding: false, label: 'Is verify' },
-  { id: 'isLocked', numeric: true, disablePadding: false, label: 'Is locked' },
+  { id: 'isVerify', numeric: false, disablePadding: true, label: 'Is verify' },
+  { id: 'isLocked', numeric: false, disablePadding: true, label: 'Is locked' },
   { id: 'lastActive', numeric: true, disablePadding: false, label: 'Last active' },
   { id: 'role', numeric: true, disablePadding: false, label: 'Role' },
-  { id: 'avatar', numeric: true, disablePadding: false, label: 'Avatar' },
-  { id: 'address', numeric: true, disablePadding: false, label: 'Address' },
 ];
 
 const EnhancedTableHead = (props) => {
@@ -392,18 +396,22 @@ const EnhancedTableHead = (props) => {
             padding={headCell.disablePadding ? 'none' : 'normal'}
             sortDirection={orderBy === headCell.id ? order : false}
           >
-            <TableSortLabel
-              active={orderBy === headCell.id}
-              direction={orderBy === headCell.id ? order : 'asc'}
-              onClick={createSortHandler(headCell.id)}
-            >
-              {headCell.label}
-              {orderBy === headCell.id ? (
-                <Box component="span" sx={visuallyHidden}>
-                  {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                </Box>
-              ) : null}
-            </TableSortLabel>
+            {headCell.id === 'avatar' ? (
+              headCell.label
+            ) : (
+              <TableSortLabel
+                active={orderBy === headCell.id}
+                direction={orderBy === headCell.id ? order : 'asc'}
+                onClick={createSortHandler(headCell.id)}
+              >
+                {headCell.label}
+                {orderBy === headCell.id ? (
+                  <Box component="span" sx={visuallyHidden}>
+                    {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                  </Box>
+                ) : null}
+              </TableSortLabel>
+            )}
           </TableCell>
         ))}
       </TableRow>
@@ -608,7 +616,7 @@ export default function Users() {
   const [selected, setSelected] = useState([]);
   const [page, setPage] = useState(0);
   const [dense, setDense] = useState(false);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -706,38 +714,42 @@ export default function Users() {
                             }}
                           />
                         </TableCell>
+                        <TableCell align="center">
+                          <Avatar alt={row.fullname} src={row.avatar} />
+                        </TableCell>
                         <TableCell component="th" id={labelId} scope="row" padding="none">
                           {row.fullname}
                         </TableCell>
                         <TableCell align="center">{row.email}</TableCell>
-                        <TableCell align="center">{row.password}</TableCell>
+                        <TableCell align="left">{row.password}</TableCell>
                         <TableCell align="center">{row.phone}</TableCell>
-                        <TableCell align="center">{row.dateOfBirth}</TableCell>
-                        <TableCell align="center">
+                        <TableCell align="left">{row.dateOfBirth}</TableCell>
+                        <TableCell align="left">
                           <Chip
                             label={row.gender}
                             variant="outlined"
                             style={{
-                              color: row.gender === 'male' ? '#64b5f6' : '#ec407a',
+                              color: row.gender === 'male' ? '#5ab0f5' : '#ec407a',
                               borderColor: row.gender === 'male' ? '#64b5f6' : '#ec407a',
+                              backgroundColor: row.gender === 'male' ? '#64b5f633' : '#ec407a14',
                             }}
                           />
                         </TableCell>
-                        <TableCell align="center">
+                        <TableCell align="left">
                           {row.isVerify ? (
                             <CheckIcon style={{ color: 'var(--primary-color)' }} />
                           ) : (
                             <CloseIcon style={{ color: '#f44336' }} />
                           )}
                         </TableCell>
-                        <TableCell align="center">
+                        <TableCell align="left">
                           {row.isLocked ? (
                             <CheckIcon style={{ color: 'var(--primary-color)' }} />
                           ) : (
                             <CloseIcon style={{ color: '#f44336' }} />
                           )}
                         </TableCell>
-                        <TableCell align="center">{row.lastActive}</TableCell>
+                        <TableCell align="left">{row.lastActive}</TableCell>
                         <TableCell align="center">
                           <Chip
                             label={row.role}
@@ -746,13 +758,11 @@ export default function Users() {
                               color: row.role === 'admin' ? '#f44336' : row.role === 'shop' ? '#ff9800' : '#4caf50',
                               borderColor:
                                 row.role === 'admin' ? '#f44336' : row.role === 'shop' ? '#ff9800' : '#4caf50',
+                              backgroundColor:
+                                row.role === 'admin' ? '#f443361c' : row.role === 'shop' ? '#ff980029' : '#4caf5029',
                             }}
                           />
                         </TableCell>
-                        <TableCell align="center">
-                          <Avatar alt={row.fullname} src={row.avatar} />
-                        </TableCell>
-                        <TableCell align="center">{row.address}</TableCell>
                       </TableRow>
                     );
                   })}
@@ -769,7 +779,7 @@ export default function Users() {
               </Table>
             </TableContainer>
             <TablePagination
-              rowsPerPageOptions={[5, 10, 25]}
+              rowsPerPageOptions={[10, 15, 25]}
               component="div"
               count={rows.length}
               rowsPerPage={rowsPerPage}
