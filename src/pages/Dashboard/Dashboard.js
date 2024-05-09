@@ -10,6 +10,7 @@ import item3 from '~/assets/images/dashboard/ic_glass_buy.png';
 import item4 from '~/assets/images/dashboard/ic_glass_message.png';
 import BiaxialLineChart from '~/components/Charts/BiaxialLineChart/BiaxialLineChart';
 import PieChart from '~/components/Charts/PieChart';
+import TwinBarChart from '~/components/Charts/TwinBarChart/TwinBarChart';
 import { useTranslation } from 'react-i18next';
 import RealTime from '~/components/RealTime';
 import { ArrowDownIcon } from '~/components/Icons';
@@ -48,19 +49,51 @@ const DashBoard = () => {
       if (revenueRef.current && !revenueRef.current.contains(e.target)) {
         setIsOpenSortTypeMenu(false);
       }
-
-      document.addEventListener('click', handleClickOutSide);
-
-      return () => {
-        document.removeEventListener('click', handleClickOutSide);
-      };
     };
-  }, []);
+
+    if (isOpenSortTypeMenu) {
+      document.addEventListener('click', handleClickOutSide);
+    } else {
+      document.removeEventListener('click', handleClickOutSide);
+    }
+
+    return () => {
+      document.removeEventListener('click', handleClickOutSide);
+    };
+  }, [isOpenSortTypeMenu]);
 
   return (
     <div className={cx('dashboard')}>
       <h1>{t('dashboards.desc01')} 👋</h1>
-      <RealTime />
+
+      <div className={cx('dashboard-title')}>
+        <RealTime />
+        <div className={cx('sort-box-wrapper')} ref={revenueRef}>
+          <div className={cx('sort-box')} onClick={handleOpenSortTypeMenu}>
+            {currentSortType.name}
+            <ArrowDownIcon className={cx('arrow-down-icon', { 'arrow-down-icon--active': isOpenSortTypeMenu })} />
+          </div>
+
+          {isOpenSortTypeMenu && (
+            <div className={cx('sort-box-menu')}>
+              {sortTypeData.map((item, index) => {
+                return (
+                  <div
+                    className={cx('sort-item')}
+                    onClick={() => {
+                      handleChangeSortType(item);
+                      setIsOpenSortTypeMenu(false);
+                    }}
+                  >
+                    {item.name}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      </div>
+
       <div className={cx('dashboard--pape')}>
         {data.map((item, index) => {
           return (
@@ -77,30 +110,6 @@ const DashBoard = () => {
         <div className={cx('dashboard--pape--chart-column')}>
           <div className={cx('revenue-header')}>
             <h5>{t('dashboards.desc06')}</h5>
-            <div className={cx('sort-box-wrapper')} ref={revenueRef}>
-              <div className={cx('sort-box')} onClick={handleOpenSortTypeMenu}>
-                {currentSortType.name}
-                <ArrowDownIcon className={cx('arrow-down-icon', { 'arrow-down-icon--active': isOpenSortTypeMenu })} />
-              </div>
-
-              {isOpenSortTypeMenu && (
-                <div className={cx('sort-box-menu')}>
-                  {sortTypeData.map((item, index) => {
-                    return (
-                      <div
-                        className={cx('sort-item')}
-                        onClick={() => {
-                          handleChangeSortType(item);
-                          setIsOpenSortTypeMenu(false);
-                        }}
-                      >
-                        {item.name}
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
           </div>
           <div className={cx('bar-chart')}>
             <BiaxialLineChart sortType={currentSortType} />
@@ -114,6 +123,12 @@ const DashBoard = () => {
             <PieChart />
           </div>
         </div>
+
+        <div className={cx('dashboard-hybrid-chart')}>
+          <TwinBarChart sortType={currentSortType} />
+        </div>
+
+        <div> </div>
       </div>
     </div>
   );

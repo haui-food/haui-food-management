@@ -12,6 +12,8 @@ import zhFlag from '~/assets/images/languages/zh.png';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { ToastContainer, toast } from 'react-toastify';
+
 const cx = classNames.bind(styles);
 
 function Header({ toggleNav }) {
@@ -28,6 +30,7 @@ function Header({ toggleNav }) {
   const [selectedLang, setSelectedLang] = useState(null);
   const [isOpenLangMenu, setIsOpenLangMenu] = useState(false);
   const [isOpenAdminMenu, setIsOpenAdminMenu] = useState(false);
+  const [admin, setAdmin] = useState(null);
 
   const toggleLangMenu = () => {
     setIsOpenLangMenu(!isOpenLangMenu);
@@ -64,12 +67,39 @@ function Header({ toggleNav }) {
     };
   }, []);
 
+  useEffect(() => {
+    const _admin = JSON.parse(localStorage.getItem('user'));
+    if (_admin) {
+      setAdmin(_admin);
+    }
+
+    console.log(admin);
+  }, []);
+
   const handleOpenAdminMenu = () => {
     setIsOpenAdminMenu(!isOpenAdminMenu);
   };
 
+  const toggleLogout = () => {
+    try {
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('user');
+      localStorage.removeItem('refreshToken');
+      // toast.success('Đăng xuất thành công');
+      localStorage.setItem('showToast', 'true');
+      window.location.href = '/';
+    } catch (error) {
+      toast.error(error.message);
+    }
+
+    // toast.success('Đăng xuất thành công');
+  };
+
   return (
     <div className={cx('header-wrapper')}>
+      {/* <div className={cx('toast-container')}>
+        <ToastContainer />
+      </div> */}
       <div className={cx('button-menu')}>
         <div className={cx('icon-wrap')} onClick={toggleNav}>
           <MenuIcon className={cx('menu-icon')} />
@@ -102,18 +132,18 @@ function Header({ toggleNav }) {
           </div>
           <div className={cx('admin-menu-wrapper')} ref={adminRef} onClick={handleOpenAdminMenu}>
             <div className={cx('btn-user')}>
-              <img src={logo} alt="ảnh" />
+              <img src={admin?.avatar} alt="ảnh" style={{}} />
             </div>
 
             {isOpenAdminMenu && (
               <div className={cx('admin-menu')}>
                 <div className={cx('admin-infor')}>
                   <div className={cx('image-wrapper')}>
-                    <img src={logo} alt="ảnh" />
+                    <img src={admin?.avatar} alt="ảnh" />
                   </div>
                   <div className={cx('admin-detail')}>
-                    <h5>Admin John</h5>
-                    <span>Admin@haui.vn</span>
+                    <h5>{admin.fullname}</h5>
+                    <span>{admin.email}</span>
                   </div>
                 </div>
 
@@ -127,7 +157,7 @@ function Header({ toggleNav }) {
                     <SettingIcon className={cx('setting-icon')} />
                     <span>Account</span>
                   </div>
-                  <div className={cx('logout')}>
+                  <div className={cx('logout')} onClick={toggleLogout}>
                     <LogOutIcon className={cx('logout-icon')} />
                     <span>Logout</span>
                   </div>
