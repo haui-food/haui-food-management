@@ -20,6 +20,84 @@
     margin-top: -10px;
   }
 
+  &-title {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    .sort-box-wrapper {
+      position: relative;
+
+      .sort-box {
+        width: 80px;
+        height: 28px;
+        border: 1px solid rgb(173, 180, 189);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 8px;
+        border-radius: 4px;
+        transition: border 0.3s linear;
+        font-size: 15px;
+        background-color: #fff;
+
+        .arrow-down-icon {
+          transform: rotate(0);
+          transition: transform 0.3s linear;
+
+          &--active {
+            transform: rotate(180deg);
+          }
+        }
+      }
+
+      .sort-box:hover {
+        border: 1px solid var(--primary-bg);
+        cursor: pointer;
+      }
+
+      .sort-box-menu {
+        position: absolute;
+        animation: fade 0.3s linear;
+        box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+        width: 100%;
+        border-radius: 4px;
+        font-size: 15px;
+        background-color: #fff;
+        margin-top: 4px;
+
+        @keyframes fade {
+          0% {
+            opacity: 0.4;
+          }
+
+          100% {
+            opacity: 1;
+          }
+        }
+
+        .sort-item {
+          padding: 4px 6px;
+          background-color: #fff;
+          transition: background-color 0.2s ease;
+        }
+
+        .sort-item:first-child {
+          border-top-left-radius: 4px;
+          border-top-right-radius: 4px;
+        }
+        .sort-item:last-child {
+          border-bottom-left-radius: 4px;
+          border-bottom-right-radius: 4px;
+        }
+
+        .sort-item:hover {
+          background-color: #d8f0df;
+          cursor: pointer;
+        }
+      }
+    }
+  }
+
   h1 {
     margin-bottom: 8px;
     font-size: 2.4rem;
@@ -48,7 +126,7 @@
       grid-column: span 3;
       background-color: #fff;
       display: flex;
-      padding: 30px 24px;
+      padding: 24px;
       border-radius: 6px;
       border-left: 4px solid var(--dashboard-border);
 
@@ -83,78 +161,6 @@
         .revenue-header {
           display: flex;
           justify-content: space-between;
-
-          .sort-box-wrapper {
-            position: relative;
-
-            .sort-box {
-              width: 80px;
-              height: 28px;
-              border: 1px solid rgb(173, 180, 189);
-              display: flex;
-              align-items: center;
-              justify-content: space-between;
-              padding: 0 8px;
-              border-radius: 4px;
-              transition: border 0.3s linear;
-              font-size: 15px;
-
-              .arrow-down-icon {
-                transform: rotate(0);
-                transition: transform 0.3s linear;
-
-                &--active {
-                  transform: rotate(180deg);
-                }
-              }
-            }
-
-            .sort-box:hover {
-              border: 1px solid var(--primary-bg);
-              cursor: pointer;
-            }
-
-            .sort-box-menu {
-              position: absolute;
-              animation: fade 0.3s linear;
-              box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
-              width: 100%;
-              border-radius: 4px;
-              font-size: 15px;
-              background-color: #fff;
-              margin-top: 4px;
-
-              @keyframes fade {
-                0% {
-                  opacity: 0.4;
-                }
-
-                100% {
-                  opacity: 1;
-                }
-              }
-
-              .sort-item {
-                padding: 4px 6px;
-                background-color: #fff;
-                transition: background-color 0.2s ease;
-              }
-
-              .sort-item:first-child {
-                border-top-left-radius: 4px;
-                border-top-right-radius: 4px;
-              }
-              .sort-item:last-child {
-                border-bottom-left-radius: 4px;
-                border-bottom-right-radius: 4px;
-              }
-
-              .sort-item:hover {
-                background-color: #d8f0df;
-                cursor: pointer;
-              }
-            }
-          }
         }
 
         @include media-breakpoint-down(lg) {
@@ -192,6 +198,30 @@
           font-size: 1.4rem;
           color: #637381;
         }
+      }
+    }
+
+    .dashboard-hybrid-chart {
+      grid-column: span 12;
+      width: 100% !important;
+      height: auto;
+      padding: 24px;
+      background-color: #fff;
+      border-radius: 12px;
+      // display: flex;
+      // align-items: center;
+      // justify-content: center;
+
+      @include media-breakpoint-down(lg) {
+        grid-column: span 2;
+      }
+
+      @include media-breakpoint-down(md) {
+        grid-column: span 1;
+      }
+
+      @include media-breakpoint-down(sm) {
+        grid-column: span 1;
       }
     }
   }

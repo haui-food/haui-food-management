@@ -81,10 +81,9 @@ function SignIn() {
     }));
     checkSubmit();
   };
-  useEffect(() => {
-    console.log(reduxData);
-  }, [reduxData]);
-
+  // useEffect(() => {
+  //   console.log(reduxData);
+  // }, [reduxData]);
 
   const handleSubmit = (e) => {
     dispatch(loginUser(loginForm)).then((result) => {
@@ -112,6 +111,16 @@ function SignIn() {
       setErrors({ ...errors, password: '' });
     }
   }, [password, passwordRegex, email, emailRegex, errors]);
+
+  useEffect(() => {
+    const showToast = localStorage.getItem('showToast');
+    if (showToast) {
+      toast.success('Đăng xuất thành công');
+      setTimeout(() => {
+        localStorage.removeItem('showToast');
+      }, 800);
+    }
+  }, []);
 
   return (
     <div className={cx('login')}>
