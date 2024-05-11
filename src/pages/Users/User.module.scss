@@ -22,3 +22,35 @@
     overflow: auto;
   }
 }
+
+:global {
+  .toolbar {
+    position: relative;
+    // align-items: ;
+
+    @include media-breakpoint-down(md) {
+      height: 120px;
+      align-items: start !important;
+    }
+
+    @include media-breakpoint-down(sm) {
+      align-items: start !important;
+      height: 120px;
+    }
+
+    .text-field {
+      @include media-breakpoint-down(md) {
+        position: absolute;
+        margin-top: 10px;
+        margin-bottom: 80px;
+        width: 90%;
+      }
+
+      @include media-breakpoint-down(sm) {
+        position: absolute;
+        margin-top: 50px;
+        margin-bottom: 20px;
+      }
+    }
+  }
+}

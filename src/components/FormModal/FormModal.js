@@ -116,10 +116,17 @@ export default function FormModal({ title, children, type, isOpen, closeModal, h
                 color={type === 'Xóa' ? 'delete' : 'success'}
                 onClick={handle}
                 sx={{ mt: 4, p: 1 }}
+                className={cx('modal__btn')}
               >
                 {type}
               </Button>
-              <Button variant="outlined" color="exit" onClick={closeModal} sx={{ mt: 4, ml: 2 }}>
+              <Button
+                variant="outlined"
+                color="exit"
+                onClick={closeModal}
+                sx={{ mt: 4, ml: 2 }}
+                className={cx('modal__btn')}
+              >
                 Hủy
               </Button>
             </div>
