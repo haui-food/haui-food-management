@@ -31,17 +31,19 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import styles from './User.module.scss';
 import RealTime from '~/components/RealTime';
 import Button from '~/components/Button';
-import { EditIcon, EmailIcon, PhoneIcon, PlusIcon, UserIcon } from '~/components/Icons';
+import { EditIcon, PlusIcon } from '~/components/Icons';
 import { Avatar, Chip } from '@mui/material';
 import ConfirmModal from '~/components/ConfirmModal';
 import FormModal from '~/components/FormModal';
+import EditUser from '~/components/EditUser';
+import CreateUser from '~/components/CreateUser';
 
 const cx = classNames.bind(styles);
 
 const theme = createTheme({
   typography: {
     color: 'var(--text-color)',
-    fontSize: '1.6rem',
+    fontSize: 26,
     fontFamily: 'var(--font-family)',
   },
   rowChecked: {
@@ -51,7 +53,7 @@ const theme = createTheme({
     MuiSvgIcon: {
       styleOverrides: {
         root: {
-          fontSize: '2rem',
+          fontSize: 20,
         },
       },
     },
@@ -467,6 +469,10 @@ const EnhancedTableToolbar = (props) => {
     closeEditModal();
   };
 
+  const handleCreate = () => {
+    closeEditModal();
+  };
+
   return (
     <div>
       <Toolbar
@@ -502,7 +508,7 @@ const EnhancedTableToolbar = (props) => {
             </Tooltip>
           </>
         ) : (
-          <Button leftIcon={<PlusIcon />} addUser primary>
+          <Button onClick={openCreateModal} leftIcon={<PlusIcon />} addUser primary>
             Thêm người dùng
           </Button>
         )}
@@ -528,79 +534,17 @@ const EnhancedTableToolbar = (props) => {
         closeModal={closeEditModal}
         handle={handleEdit}
       >
-        <form action="" className={cx('form')} autoComplete="off">
-          <div className={cx('form__row', 'form__row--three')}>
-            <div className={cx('form__group')}>
-              <label htmlFor="fullname" className={cx('form__label', 'form__label--medium')}>
-                FullName
-              </label>
-              <div className={cx('form__text-input', 'form__text-input--sm')}>
-                <input type="text" id="fullname" name="fullname" placeholder="FullName" className={cx('form__input')} />
-                <UserIcon />
-              </div>
-            </div>
-            <div className={cx('form__group')}>
-              <label htmlFor="email" className={cx('form__label', 'form__label--medium')}>
-                {t('form.tp01')}
-              </label>
-              <div className={cx('form__text-input', 'form__text-input--sm')}>
-                <input
-                  id="email"
-                  type="email"
-                  name="email"
-                  placeholder={t('form.tp01')}
-                  className={cx('form__input')}
-                />
-                <EmailIcon className={cx('form__input-icon')} />
-              </div>
-            </div>
-            <div className={cx('form__group')}>
-              <label htmlFor="phone" className={cx('form__label', 'form__label--medium')}>
-                Phone
-              </label>
-              <div className={cx('form__text-input', 'form__text-input--sm')}>
-                <input id="phone" type="tel" name="phone" placeholder="Phone" className={cx('form__input')} />
-                <PhoneIcon className={cx('form__input-icon')} />
-              </div>
-            </div>
-          </div>
+        <EditUser />
+      </FormModal>
 
-          <div className={cx('form__row', 'form__row--three')}>
-            <div className={cx('form__group')}>
-              <label htmlFor="fullname" className={cx('form__label', 'form__label--medium')}>
-                FullName
-              </label>
-              <div className={cx('form__text-input', 'form__text-input--sm')}>
-                <input type="text" id="fullname" name="fullname" placeholder="FullName" className={cx('form__input')} />
-                <UserIcon />
-              </div>
-            </div>
-            <div className={cx('form__group')}>
-              <label htmlFor="email" className={cx('form__label', 'form__label--medium')}>
-                {t('form.tp01')}
-              </label>
-              <div className={cx('form__text-input', 'form__text-input--sm')}>
-                <input
-                  id="email"
-                  type="email"
-                  name="email"
-                  placeholder={t('form.tp01')}
-                  className={cx('form__input')}
-                />
-                <EmailIcon className={cx('form__input-icon')} />
-              </div>
-            </div>
-            <div className={cx('form__group')}>
-              <label htmlFor="phone" className={cx('form__label', 'form__label--medium')}>
-                Phone
-              </label>
-              <div className={cx('form__text-input', 'form__text-input--sm')}>
-                <input id="phone" type="tel" name="phone" placeholder="Phone" className={cx('form__input')} />
-                <PhoneIcon className={cx('form__input-icon')} />
-              </div>
-            </div>
-          </div>
-        </form>
+      <FormModal
+        title="Tạo mới người dùng"
+        type="Tạo"
+        isOpen={createModalIsOpen}
+        closeModal={closeCreateModal}
+        handle={handleCreate}
+      >
+        <CreateUser />
       </FormModal>
     </div>
   );
