@@ -521,7 +521,7 @@ export const PasswordIcon = ({ width = '1.8rem', height = '2rem', className }) =
   >
     <path
       d="M13.4228 7.44804V5.30104C13.4228 2.78804 11.3848 0.750045 8.87176 0.750045C6.35876 0.739045 4.31276 2.76704 4.30176 5.28104V5.30104V7.44804"
-      stroke="currentColor"
+      stroke="#9E9DA8"
       strokeWidth="1.5"
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -530,18 +530,12 @@ export const PasswordIcon = ({ width = '1.8rem', height = '2rem', className }) =
       fillRule="evenodd"
       clipRule="evenodd"
       d="M12.683 19.2498H5.042C2.948 19.2498 1.25 17.5528 1.25 15.4578V11.1688C1.25 9.07383 2.948 7.37683 5.042 7.37683H12.683C14.777 7.37683 16.475 9.07383 16.475 11.1688V15.4578C16.475 17.5528 14.777 19.2498 12.683 19.2498Z"
-      stroke="currentColor"
+      stroke="#9E9DA8"
       strokeWidth="1.5"
       strokeLinecap="round"
       strokeLinejoin="round"
     />
-    <path
-      d="M8.8623 12.2031V14.4241"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
+    <path d="M8.8623 12.2031V14.4241" stroke="#9E9DA8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 );
 
@@ -793,14 +787,14 @@ export const PhoneIcon = ({ width = '2.2rem', height = '2.2rem', className }) =>
   >
     <path
       d="M13.353 1.5C17.054 1.911 19.978 4.831 20.393 8.532"
-      stroke="#1A162E"
+      stroke="#9E9DA8"
       strokeWidth="1.5"
       strokeLinecap="round"
       strokeLinejoin="round"
     />
     <path
       d="M13.353 5.04303C15.124 5.38703 16.508 6.77203 16.853 8.54303"
-      stroke="#1A162E"
+      stroke="#9E9DA8"
       strokeWidth="1.5"
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -809,7 +803,7 @@ export const PhoneIcon = ({ width = '2.2rem', height = '2.2rem', className }) =>
       fillRule="evenodd"
       clipRule="evenodd"
       d="M10.0315 11.4724C14.0205 15.4604 14.9254 10.8467 17.4653 13.3848C19.9138 15.8328 21.3222 16.3232 18.2188 19.4247C17.8302 19.737 15.3613 23.4943 6.68447 14.8197C-1.99341 6.144 1.76157 3.67244 2.07394 3.28395C5.18377 0.173846 5.66682 1.58938 8.11539 4.03733C10.6541 6.5765 6.04254 7.48441 10.0315 11.4724Z"
-      stroke="#1A162E"
+      stroke="#9E9DA8"
       strokeWidth="1.5"
       strokeLinecap="round"
       strokeLinejoin="round"
