@@ -9,4 +9,16 @@
     max-height: 450px;
     overflow: auto;
   }
+
+  &__btn {
+    width: 120px;
+
+    @include media-breakpoint-down(md) {
+      width: 100px;
+    }
+
+    @include media-breakpoint-down(sm) {
+      width: 100px;
+    }
+  }
 }

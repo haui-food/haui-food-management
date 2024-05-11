@@ -119,7 +119,10 @@ function Header({ toggleNav }) {
                 <div
                   key={index}
                   className={cx('lang-item', { 'current-lang': lang.flag === selectedLang })}
-                  onClick={() => handleSelectedLang(lang)}
+                  onClick={() => {
+                    handleSelectedLang(lang);
+                    window.location.reload();
+                  }}
                 >
                   <span>{lang.title}</span>
                   <img src={lang.flag} alt="flag" className={cx('lang-img')} />

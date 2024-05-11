@@ -37,6 +37,7 @@ import ConfirmModal from '~/components/ConfirmModal';
 import FormModal from '~/components/FormModal';
 import EditUser from '~/components/EditUser';
 import CreateUser from '~/components/CreateUser';
+import TextField from '@mui/material/TextField';
 
 const cx = classNames.bind(styles);
 
@@ -482,16 +483,33 @@ const EnhancedTableToolbar = (props) => {
           ...(numSelected > 0 && {
             bgcolor: (theme) => alpha(theme.palette.primary.main, theme.palette.action.activatedOpacity),
           }),
+          flex: '1 1 100%',
         }}
+        className={cx('toolbar')}
       >
         {numSelected > 0 ? (
           <Typography sx={{ flex: '1 1 100%' }} color="inherit" variant="subtitle1" component="div">
             {numSelected} selected
           </Typography>
         ) : (
-          <Typography sx={{ flex: '1 1 100%' }} variant="h6" id="tableTitle" component="div">
-            Users
-          </Typography>
+          <>
+            <Typography sx={{ flex: '1 1 100%' }} variant="h6" component="div">
+              Users
+            </Typography>
+            <TextField
+              label="Tìm kiếm"
+              variant="standard"
+              placeholder="Nhập"
+              fullWidth
+              margin="normal"
+              size="small"
+              sx={{ mr: 2, fontSize: '14px', mt: -0.7 }}
+              onChange={(e) => {
+                props.handleChangeSearch(e);
+              }}
+              className={cx('text-field')}
+            />
+          </>
         )}
 
         {numSelected > 0 ? (
@@ -561,6 +579,7 @@ export default function Users() {
   const [page, setPage] = useState(0);
   const [dense, setDense] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [searchKeyword, setSearchKeyword] = useState('');
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -606,13 +625,33 @@ export default function Users() {
     setDense(event.target.checked);
   };
 
+  const handleChangeSearch = (e) => {
+    setSearchKeyword(e.target.value);
+  };
+
+  const filteredRows = useMemo(() => {
+    return rows.filter(
+      (row) =>
+        row.fullname.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+        row.email.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+        row.phone.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+        row.dateOfBirth.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+        row.gender.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+        row.role.toLowerCase().includes(searchKeyword.toLowerCase()),
+    );
+  }, [rows, searchKeyword]);
+
   const isSelected = (id) => selected.indexOf(id) !== -1;
 
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
   const visibleRows = useMemo(
-    () => stableSort(rows, getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
-    [order, orderBy, page, rowsPerPage],
+    () =>
+      stableSort(filteredRows, getComparator(order, orderBy)).slice(
+        page * rowsPerPage,
+        page * rowsPerPage + rowsPerPage,
+      ),
+    [order, orderBy, page, rowsPerPage, filteredRows],
   );
 
   return (
@@ -622,7 +661,14 @@ export default function Users() {
       <ThemeProvider theme={theme}>
         <Box className={cx('user__list')}>
           <Paper sx={{ width: '100%', mb: 2 }}>
-            <EnhancedTableToolbar numSelected={selected.length} isEdit={selected.length > 1} />
+            <EnhancedTableToolbar
+              numSelected={selected.length}
+              isEdit={selected.length > 1}
+              handleChangeSearch={(e) => {
+                handleChangeSearch(e);
+                // console.log(e.target.value);
+              }}
+            />
             <TableContainer>
               <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle" size={dense ? 'small' : 'medium'}>
                 <EnhancedTableHead

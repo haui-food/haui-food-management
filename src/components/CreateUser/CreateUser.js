@@ -11,7 +11,7 @@ import { FormControl, InputLabel, MenuItem, Switch } from '@mui/material';
 
 import styles from './CreateUser.module.scss';
 
-import { EmailIcon, PasswordIcon, PhoneIcon, UserIcon } from '~/components/Icons';
+import { EmailIcon, PasswordIcon, PhoneIcon, UserIcon, CalendarIcon } from '~/components/Icons';
 
 const cx = classNames.bind(styles);
 
@@ -78,12 +78,13 @@ function CreateUser() {
   const [password, setPassword] = useState('');
   const [phone, setPhone] = useState('');
   const [gender, setGender] = useState('male');
+  const [dateOfBirth, setDateOfBirth] = useState('');
   const [isVerify, setIsVerify] = useState(false);
   const [isLocked, setIsLocked] = useState(false);
   const [is2FA, setIs2FA] = useState(false);
   const [role, setRole] = useState('user');
 
-  console.log({ fullname, email, password, gender, isVerify, isLocked, is2FA, role });
+  console.log({ fullname, email, password, gender, dateOfBirth, isVerify, isLocked, is2FA, role });
 
   return (
     <form action="" className={cx('form')} autoComplete="off">
@@ -164,8 +165,40 @@ function CreateUser() {
 
       <div className={cx('form__row', 'form__row--three')}>
         <div className={cx('form__group')}>
+          <label htmlFor="password" className={cx('form__label', 'form__label--medium')}>
+            Ngày sinh
+          </label>
+          <div className={cx('form__text-input', 'form__text-input--sm')}>
+            <input
+              value={dateOfBirth}
+              onChange={(e) => setDateOfBirth(e.target.value)}
+              type="date"
+              id="dateOfBirth"
+              name="dateOfBirth"
+              placeholder={t('form.tp02')}
+              className={cx('form__input')}
+            />
+            <div
+              style={{
+                position: 'absolute',
+                right: '12px',
+                top: '12xpx',
+                width: '24px',
+                height: '24px',
+                backgroundColor: '#fff',
+                pointerEvents: 'none',
+              }}
+            >
+              <CalendarIcon className={cx('icon')} />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className={cx('form__row', 'form__row--three')}>
+        <div className={cx('form__group')}>
           <label htmlFor="gender" className={cx('form__label', 'form__label--medium')}>
-            Gender
+            Giới tính
           </label>
 
           <ThemeProvider theme={theme}>
@@ -182,20 +215,32 @@ function CreateUser() {
           </ThemeProvider>
         </div>
 
-        <div className={cx('form__group')}>
-          <label htmlFor="isVerify" className={cx('form__label', 'form__label--medium')}>
+        <div className={cx('form__group', 'form__active')}>
+          <label
+            htmlFor="isVerify"
+            style={{ display: 'flex', justifyContent: 'space-between' }}
+            className={cx('form__label', 'form__label--medium')}
+          >
             Is verify
             <ThemeProvider theme={theme}>
               <Switch checked={isVerify} onChange={(e) => setIsVerify(e.target.checked)} />
             </ThemeProvider>
           </label>
-          <label htmlFor="isLocked" className={cx('form__label', 'form__label--medium')}>
+          <label
+            htmlFor="isLocked"
+            style={{ display: 'flex', justifyContent: 'space-between' }}
+            className={cx('form__label', 'form__label--medium')}
+          >
             Is locked
             <ThemeProvider theme={theme}>
               <Switch checked={isLocked} onChange={(e) => setIsLocked(e.target.checked)} />
             </ThemeProvider>
           </label>
-          <label htmlFor="is2FA" className={cx('form__label', 'form__label--medium')}>
+          <label
+            htmlFor="is2FA"
+            style={{ display: 'flex', justifyContent: 'space-between' }}
+            className={cx('form__label', 'form__label--medium')}
+          >
             Is 2FA
             <ThemeProvider theme={theme}>
               <Switch checked={is2FA} onChange={(e) => setIs2FA(e.target.checked)} />
@@ -204,7 +249,7 @@ function CreateUser() {
         </div>
 
         <div className={cx('form__group')}>
-          <FormControl fullWidth>
+          <FormControl fullWidth color="info">
             <InputLabel sx={{ fontSize: 16 }} id="role">
               Role
             </InputLabel>
