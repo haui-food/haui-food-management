@@ -64,10 +64,8 @@ const TwinBarChart = ({ sortType }) => {
     if (filtered) {
       const calculatedValues = filtered.values2.map((value2, index) => {
         const value1 = filtered.values1[index];
-        // console.log((value2 / value1) * 100);
         return (value2 / value1) * 100;
       });
-      console.log(calculatedValues);
       const newData = { ...filtered, values: calculatedValues };
       setFilteredData(newData);
     }

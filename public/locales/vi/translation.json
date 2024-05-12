@@ -49,12 +49,13 @@
     "btn01": "Tải lên ",
     "btn02": "Lưu thay đổi",
     "lb01": "Tên người dùng",
-    "lb02": "Tên",
-    "lb03": "Họ",
-    "lb04": "Địa chỉ",
-    "lb05": "Địa chỉ email",
-    "lb06": "Số điện thoại",
-    "lb07": "Ngày sinh"
+    "lb02": "Giới tính",
+    "lb03": "Nam",
+    "lb04": "Nữ",
+    "lb05": "Địa chỉ",
+    "lb06": "Địa chỉ email",
+    "lb07": "Số điện thoại",
+    "lb08": "Ngày sinh"
   },
   "toast": {
     "unauthorized": "Bạn không có quyền truy cập"

@@ -49,12 +49,13 @@
     "btn01": "Upload new image",
     "btn02": "Save changes",
     "lb01": "Username",
-    "lb02": "First name",
-    "lb03": "Last name",
-    "lb04": "Address",
-    "lb05": "Email address",
-    "lb06": "Phone number",
-    "lb07": "Birthday"
+    "lb02": "Gender",
+    "lb03": "Male",
+    "bl04": "Female",
+    "lb05": "Address",
+    "lb06": "Email address",
+    "lb07": "Phone number",
+    "lb08": "Birthday"
   },
   "toast": {
     "Unauthorized": "You do not have access."

@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import classNames from 'classnames/bind';
 
 import { useTranslation } from 'react-i18next';
@@ -27,6 +27,8 @@ import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import { visuallyHidden } from '@mui/utils';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 
 import styles from './User.module.scss';
 import RealTime from '~/components/RealTime';
@@ -38,6 +40,8 @@ import FormModal from '~/components/FormModal';
 import EditUser from '~/components/EditUser';
 import CreateUser from '~/components/CreateUser';
 import TextField from '@mui/material/TextField';
+import { useDispatch } from 'react-redux';
+import { getAllUser } from '~/apiService/userService';
 
 const cx = classNames.bind(styles);
 
@@ -87,7 +91,7 @@ const theme = createTheme({
     MuiTableCell: {
       styleOverrides: {
         root: {
-          maxWidth: '200px',
+          maxWidth: '280px',
           minWidth: '80px',
           overflow: 'hidden',
           textOverflow: 'ellipsis',
@@ -104,234 +108,6 @@ const theme = createTheme({
     },
   },
 });
-
-function createData(
-  id,
-  fullname,
-  email,
-  password,
-  phone,
-  dateOfBirth,
-  gender,
-  isVerify,
-  isLocked,
-  lastActive,
-  role,
-  avatar,
-) {
-  return {
-    id,
-    fullname,
-    email,
-    password,
-    phone,
-    dateOfBirth,
-    gender,
-    isVerify,
-    isLocked,
-    lastActive,
-    role,
-    avatar,
-  };
-}
-
-const rows = [
-  createData(
-    1,
-    'Nguyen Van A',
-    'nva@gmail.com',
-    'password1',
-    '0123456789',
-    '2000-01-01',
-    'male',
-    true,
-    false,
-    '2024-04-29',
-    'admin',
-    'avatar1.png',
-    '123 ABC, Hanoi, Vietnam',
-  ),
-  createData(
-    2,
-    'Tran Thi B',
-    'ttb@gmail.com',
-    'password2',
-    '0123456780',
-    '2001-02-02',
-    'female',
-    true,
-    false,
-    '2024-04-29',
-    'user',
-    'avatar2.png',
-    '456 DEF, Hanoi, Vietnam',
-  ),
-  createData(
-    3,
-    'Le Thi C',
-    'ltc@gmail.com',
-    'password3',
-    '0123456781',
-    '2002-03-03',
-    'female',
-    true,
-    false,
-    '2024-04-29',
-    'user',
-    'avatar3.png',
-    '789 GHI, Hanoi, Vietnam',
-  ),
-  createData(
-    4,
-    'Pham Van D',
-    'pvd@gmail.com',
-    'password4',
-    '0123456782',
-    '2003-04-04',
-    'male',
-    true,
-    false,
-    '2024-04-29',
-    'shop',
-    'avatar4.png',
-    '012 JKL, Hanoi, Vietnam',
-  ),
-  createData(
-    5,
-    'Nguyen Thi E',
-    'nte@gmail.com',
-    'password5',
-    '0123456783',
-    '2004-05-05',
-    'female',
-    true,
-    false,
-    '2024-04-29',
-    'user',
-    'avatar5.png',
-    '345 MNO, Hanoi, Vietnam',
-  ),
-  createData(
-    6,
-    'Tran Van F',
-    'tvf@gmail.com',
-    'password6',
-    '0123456784',
-    '2005-06-06',
-    'male',
-    true,
-    false,
-    '2024-04-29',
-    'admin',
-    'avatar6.png',
-    '678 PQR, Hanoi, Vietnam',
-  ),
-  createData(
-    7,
-    'Le Van G',
-    'lvg@gmail.com',
-    'password7',
-    '0123456785',
-    '2006-07-07',
-    'male',
-    true,
-    false,
-    '2024-04-29',
-    'user',
-    'avatar7.png',
-    '901 STU, Hanoi, Vietnam',
-  ),
-  createData(
-    8,
-    'Pham Thi H',
-    'pth@gmail.com',
-    'password8',
-    '0123456786',
-    '2007-08-08',
-    'female',
-    true,
-    false,
-    '2024-04-29',
-    'admin',
-    'avatar8.png',
-    '234 VWX, Hanoi, Vietnam',
-  ),
-  createData(
-    9,
-    'Nguyen Van I',
-    'nvi@gmail.com',
-    'password9',
-    '0123456787',
-    '2008-09-09',
-    'male',
-    true,
-    false,
-    '2024-04-29',
-    'user',
-    'avatar9.png',
-    '567 YZ, Hanoi, Vietnam',
-  ),
-  createData(
-    10,
-    'Tran Thi J',
-    'ttj@gmail.com',
-    'password10',
-    '0123456788',
-    '2009-10-10',
-    'female',
-    true,
-    false,
-    '2024-04-29',
-    'admin',
-    'avatar10.png',
-    '890 ZAB, Hanoi, Vietnam',
-  ),
-  createData(
-    11,
-    'Le Van K',
-    'lvk@gmail.com',
-    'password11',
-    '0123456789',
-    '2010-11-11',
-    'male',
-    true,
-    false,
-    '2024-04-29',
-    'user',
-    'avatar11.png',
-    '123 CDE, Hanoi, Vietnam',
-  ),
-  createData(
-    12,
-    'Pham Thi L',
-    'ptl@gmail.com',
-    'password12',
-    '0123456780',
-    '2011-12-12',
-    'female',
-    true,
-    false,
-    '2024-04-29',
-    'admin',
-    'avatar12.png',
-    '456 FGH, Hanoi, Vietnam',
-  ),
-  createData(
-    13,
-    'Nguyen Van M',
-    'nvm@gmail.com',
-    'password13',
-    '0123456781',
-    '2012-01-01',
-    'male',
-    true,
-    false,
-    '2024-04-29',
-    'user',
-    'avatar13.png',
-    '789 IJK, Hanoi, Vietnam',
-  ),
-];
 
 const descendingComparator = (a, b, orderBy) => {
   if (b[orderBy] < a[orderBy]) return -1;
@@ -362,7 +138,6 @@ const headCells = [
   { id: 'avatar', numeric: false, disablePadding: false, label: 'Avatar' },
   { id: 'fullname', numeric: false, disablePadding: true, label: 'FullName' },
   { id: 'email', numeric: true, disablePadding: false, label: 'Email' },
-  { id: 'password', numeric: false, disablePadding: false, label: 'Password' },
   { id: 'phone', numeric: true, disablePadding: false, label: 'Phone' },
   { id: 'dateOfBirth', numeric: true, disablePadding: false, label: 'Date Of Birth' },
   { id: 'gender', numeric: true, disablePadding: false, label: 'Gender' },
@@ -573,6 +348,8 @@ EnhancedTableToolbar.propTypes = {
 };
 
 export default function Users() {
+  const dispatch = useDispatch();
+
   const [order, setOrder] = useState('asc');
   const [orderBy, setOrderBy] = useState('calories');
   const [selected, setSelected] = useState([]);
@@ -580,6 +357,8 @@ export default function Users() {
   const [dense, setDense] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [searchKeyword, setSearchKeyword] = useState('');
+  const [rows, setRows] = useState([]);
+  const [timeForSkeleton, setTimeForSkeleton] = useState(true);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -633,11 +412,11 @@ export default function Users() {
     return rows.filter(
       (row) =>
         row.fullname.toLowerCase().includes(searchKeyword.toLowerCase()) ||
-        row.email.toLowerCase().includes(searchKeyword.toLowerCase()) ||
-        row.phone.toLowerCase().includes(searchKeyword.toLowerCase()) ||
-        row.dateOfBirth.toLowerCase().includes(searchKeyword.toLowerCase()) ||
-        row.gender.toLowerCase().includes(searchKeyword.toLowerCase()) ||
-        row.role.toLowerCase().includes(searchKeyword.toLowerCase()),
+        row.email.toLowerCase().includes(searchKeyword.toLowerCase()),
+      // row.phone.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+      // row.dateOfBirth.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+      // row.gender.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+      // row.role.toLowerCase().includes(searchKeyword.toLowerCase()),
     );
   }, [rows, searchKeyword]);
 
@@ -653,6 +432,45 @@ export default function Users() {
       ),
     [order, orderBy, page, rowsPerPage, filteredRows],
   );
+
+  const convertDate = (dateString) => {
+    const date = new Date(dateString);
+
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear();
+
+    const formattedDate = `${day}/${month}/${year}`;
+    return formattedDate;
+  };
+
+  const convertISODate = (isoDateString) => {
+    const date = new Date(isoDateString);
+
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+
+    const hour = date.getHours().toString().padStart(2, '0');
+    const minute = date.getMinutes().toString().padStart(2, '0');
+    const second = date.getSeconds().toString().padStart(2, '0');
+
+    const formattedDate = `${day}/${month}/${year} ${hour}:${minute}:${second}`;
+
+    return formattedDate;
+  };
+
+  useEffect(() => {
+    dispatch(getAllUser()).then((result) => {
+      setRows(result.payload.users);
+    });
+  }, []);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setTimeForSkeleton(false);
+    }, 2000);
+  }, [setTimeForSkeleton]);
 
   return (
     <div className={cx('user')}>
@@ -685,75 +503,81 @@ export default function Users() {
                     const labelId = `enhanced-table-checkbox-${index}`;
 
                     return (
-                      <TableRow
-                        hover
-                        onClick={(event) => handleClick(event, row.id)}
-                        role="checkbox"
-                        aria-checked={isItemSelected}
-                        tabIndex={-1}
-                        key={row.id}
-                        selected={isItemSelected}
-                        sx={{ cursor: 'pointer' }}
-                      >
-                        <TableCell padding="checkbox">
-                          <Checkbox
-                            color="primary"
-                            checked={isItemSelected}
-                            inputProps={{
-                              'aria-labelledby': labelId,
-                            }}
-                          />
-                        </TableCell>
-                        <TableCell align="center">
-                          <Avatar alt={row.fullname} src={row.avatar} />
-                        </TableCell>
-                        <TableCell component="th" id={labelId} scope="row" padding="none">
-                          {row.fullname}
-                        </TableCell>
-                        <TableCell align="center">{row.email}</TableCell>
-                        <TableCell align="left">{row.password}</TableCell>
-                        <TableCell align="center">{row.phone}</TableCell>
-                        <TableCell align="left">{row.dateOfBirth}</TableCell>
-                        <TableCell align="left">
-                          <Chip
-                            label={row.gender}
-                            variant="outlined"
-                            style={{
-                              color: row.gender === 'male' ? '#5ab0f5' : '#ec407a',
-                              borderColor: row.gender === 'male' ? '#64b5f6' : '#ec407a',
-                              backgroundColor: row.gender === 'male' ? '#64b5f633' : '#ec407a14',
-                            }}
-                          />
-                        </TableCell>
-                        <TableCell align="left">
-                          {row.isVerify ? (
-                            <CheckIcon style={{ color: 'var(--primary-color)' }} />
-                          ) : (
-                            <CloseIcon style={{ color: '#f44336' }} />
-                          )}
-                        </TableCell>
-                        <TableCell align="left">
-                          {row.isLocked ? (
-                            <CheckIcon style={{ color: 'var(--primary-color)' }} />
-                          ) : (
-                            <CloseIcon style={{ color: '#f44336' }} />
-                          )}
-                        </TableCell>
-                        <TableCell align="left">{row.lastActive}</TableCell>
-                        <TableCell align="center">
-                          <Chip
-                            label={row.role}
-                            variant="outlined"
-                            style={{
-                              color: row.role === 'admin' ? '#f44336' : row.role === 'shop' ? '#ff9800' : '#4caf50',
-                              borderColor:
-                                row.role === 'admin' ? '#f44336' : row.role === 'shop' ? '#ff9800' : '#4caf50',
-                              backgroundColor:
-                                row.role === 'admin' ? '#f443361c' : row.role === 'shop' ? '#ff980029' : '#4caf5029',
-                            }}
-                          />
-                        </TableCell>
-                      </TableRow>
+                      <>
+                        {/* {timeForSkeleton ? (
+                          <Skeleton />
+                        ) : ( */}
+                        <TableRow
+                          hover
+                          onClick={(event) => handleClick(event, row.id)}
+                          role="checkbox"
+                          aria-checked={isItemSelected}
+                          tabIndex={-1}
+                          key={row.id}
+                          selected={isItemSelected}
+                          sx={{ cursor: 'pointer' }}
+                        >
+                          <TableCell padding="checkbox">
+                            <Checkbox
+                              color="primary"
+                              checked={isItemSelected}
+                              inputProps={{
+                                'aria-labelledby': labelId,
+                              }}
+                            />
+                          </TableCell>
+                          <TableCell align="center">
+                            <Avatar alt={row.fullname} src={row.avatar} />
+                          </TableCell>
+                          <TableCell component="th" id={labelId} scope="row" padding="none">
+                            {row.fullname}
+                          </TableCell>
+                          <TableCell align="center">{row.email}</TableCell>
+                          {/* <TableCell align="left">{row.password}</TableCell> */}
+                          <TableCell align="center">{row.phone}</TableCell>
+                          <TableCell align="left">{convertDate(row.dateOfBirth)}</TableCell>
+                          <TableCell align="left">
+                            <Chip
+                              label={row.gender}
+                              variant="outlined"
+                              style={{
+                                color: row.gender === 'male' ? '#5ab0f5' : '#ec407a',
+                                borderColor: row.gender === 'male' ? '#64b5f6' : '#ec407a',
+                                backgroundColor: row.gender === 'male' ? '#64b5f633' : '#ec407a14',
+                              }}
+                            />
+                          </TableCell>
+                          <TableCell align="left">
+                            {row.isVerify ? (
+                              <CheckIcon style={{ color: 'var(--primary-color)' }} />
+                            ) : (
+                              <CloseIcon style={{ color: '#f44336' }} />
+                            )}
+                          </TableCell>
+                          <TableCell align="left">
+                            {row.isLocked ? (
+                              <CheckIcon style={{ color: 'var(--primary-color)' }} />
+                            ) : (
+                              <CloseIcon style={{ color: '#f44336' }} />
+                            )}
+                          </TableCell>
+                          <TableCell align="left">{convertISODate(row.lastActive)}</TableCell>
+                          <TableCell align="center">
+                            <Chip
+                              label={row.role}
+                              variant="outlined"
+                              style={{
+                                color: row.role === 'admin' ? '#f44336' : row.role === 'shop' ? '#ff9800' : '#4caf50',
+                                borderColor:
+                                  row.role === 'admin' ? '#f44336' : row.role === 'shop' ? '#ff9800' : '#4caf50',
+                                backgroundColor:
+                                  row.role === 'admin' ? '#f443361c' : row.role === 'shop' ? '#ff980029' : '#4caf5029',
+                              }}
+                            />
+                          </TableCell>
+                        </TableRow>
+                        {/* )} */}
+                      </>
                     );
                   })}
                   {emptyRows > 0 && (

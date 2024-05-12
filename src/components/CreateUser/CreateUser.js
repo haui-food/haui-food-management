@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import classNames from 'classnames/bind';
 import { useTranslation } from 'react-i18next';
 
@@ -84,7 +84,36 @@ function CreateUser() {
   const [is2FA, setIs2FA] = useState(false);
   const [role, setRole] = useState('user');
 
-  console.log({ fullname, email, password, gender, dateOfBirth, isVerify, isLocked, is2FA, role });
+  const [userCredentials, setUserCredentials] = useState({
+    fullname: '',
+    email: '',
+    password: '',
+    phone: '',
+    gender: '',
+    dateOfBirth: '',
+    isVerify: false,
+    isLocked: false,
+    is2FA: false,
+    role: '',
+  });
+
+  useEffect(() => {
+    setUserCredentials({
+      fullname: fullname,
+      email: email,
+      password: password,
+      phone: phone,
+      gender: gender,
+      dateOfBirth: dateOfBirth,
+      isVerify: isVerify,
+      isLocked: isLocked,
+      is2FA: is2FA,
+      role: role,
+    });
+  }, [fullname, email, password, phone, gender, dateOfBirth, isVerify, isLocked, is2FA, role]);
+
+  // cón
+  // console.log({ fullname, email, password, gender, dateOfBirth, isVerify, isLocked, is2FA, role });
 
   return (
     <form action="" className={cx('form')} autoComplete="off">
