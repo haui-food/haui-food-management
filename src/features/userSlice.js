@@ -31,12 +31,12 @@ const userSlice = createSlice({
       })
       .addCase(createUser.fulfilled, (state, action) => {
         state.loading = false;
-        // state.user = action.payload.data;
-        console.log(action.payload);
-        // state.message = action.payload.message;
+        state.user = action.payload;
+        state.message = action.payload.message;
       })
       .addCase(createUser.rejected, (state, action) => {
         state.loading = false;
+        // console.log(action)
         state.message = action.payload.message;
       });
   },

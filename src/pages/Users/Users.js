@@ -27,7 +27,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import { visuallyHidden } from '@mui/utils';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
+// import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 
 import styles from './User.module.scss';
@@ -41,7 +41,8 @@ import EditUser from '~/components/EditUser';
 import CreateUser from '~/components/CreateUser';
 import TextField from '@mui/material/TextField';
 import { useDispatch } from 'react-redux';
-import { getAllUser } from '~/apiService/userService';
+import { getAllUser, createUser } from '~/apiService/userService';
+import { toast } from 'react-toastify';
 
 const cx = classNames.bind(styles);
 
@@ -208,11 +209,46 @@ EnhancedTableHead.propTypes = {
 
 const EnhancedTableToolbar = (props) => {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
   const { numSelected, isEdit } = props;
   const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
   const [editModalIsOpen, setEditModalIsOpen] = useState(false);
   const [createModalIsOpen, setCreateModalIsOpen] = useState(false);
+  // const [timeForSkeleton, setTimeForSkeleton] = useState(true);
+  const [userCredentials, setUserCredentials] = useState({
+    fullname: '',
+    email: '',
+    password: '',
+    phone: '',
+    dateOfBirth: '',
+    gender: 'male',
+    isVerify: false,
+    isLocked: false,
+    role: 'user',
+  });
 
+  const handleInputChange = (e) => {
+    const { name, type, checked, value } = e.target;
+    setUserCredentials((prevState) => ({
+      ...prevState,
+      [name]: type === 'checkbox' ? checked : value,
+    }));
+  };
+
+  const handleCreateUser = () => {
+    try {
+      dispatch(createUser(userCredentials)).then((result) => {
+        if (result.payload.code === 201) {
+          toast.success(result.payload.message);
+          setCreateModalIsOpen(false);
+          return;
+        }
+        toast.error(result.payload.message);
+      });
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
   const openConfirmModal = () => {
     setConfirmModalIsOpen(true);
   };
@@ -336,8 +372,9 @@ const EnhancedTableToolbar = (props) => {
         isOpen={createModalIsOpen}
         closeModal={closeCreateModal}
         handle={handleCreate}
+        handleCreateUser={handleCreateUser}
       >
-        <CreateUser />
+        <CreateUser handleInputChange={handleInputChange} userCredentials={userCredentials} />
       </FormModal>
     </div>
   );
@@ -358,7 +395,6 @@ export default function Users() {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [searchKeyword, setSearchKeyword] = useState('');
   const [rows, setRows] = useState([]);
-  const [timeForSkeleton, setTimeForSkeleton] = useState(true);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -465,12 +501,6 @@ export default function Users() {
       setRows(result.payload.users);
     });
   }, []);
-
-  useEffect(() => {
-    setTimeout(() => {
-      setTimeForSkeleton(false);
-    }, 2000);
-  }, [setTimeForSkeleton]);
 
   return (
     <div className={cx('user')}>
