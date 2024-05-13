@@ -11,7 +11,7 @@ const cx = classNames.bind(styles);
 
 function DefaultLayout({ children }) {
   const [isOpenNav, setIsOpenNav] = useState(null);
-  // const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 992);
+  const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 1024);
 
   const toggleNav = () => {
     if (isOpenNav === null) {
@@ -46,7 +46,7 @@ function DefaultLayout({ children }) {
             { 'content-left-show': isOpenNav === true },
           )}
         >
-          <Navbar />
+          <Navbar toggleNav={toggleNav} isDesktop={isDesktop} />
         </div>
         <div className={cx('content-right', { 'content-right-full': isOpenNav === false })}>{children}</div>
       </div>

@@ -8,7 +8,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
 
-function Navbar() {
+function Navbar({ toggleNav, isDesktop }) {
   const { t } = useTranslation();
   const nav = useNavigate();
 
@@ -51,6 +51,7 @@ function Navbar() {
             key={index}
             onClick={() => {
               setCurrentPage(item.slug);
+              if (!isDesktop) toggleNav();
               nav(item.path);
             }}
           >
