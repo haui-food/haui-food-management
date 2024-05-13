@@ -70,50 +70,8 @@ const theme = createTheme({
   },
 });
 
-function CreateUser() {
+function CreateUser({ handleInputChange, userCredentials }) {
   const { t } = useTranslation();
-
-  const [fullname, setFullname] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [phone, setPhone] = useState('');
-  const [gender, setGender] = useState('male');
-  const [dateOfBirth, setDateOfBirth] = useState('');
-  const [isVerify, setIsVerify] = useState(false);
-  const [isLocked, setIsLocked] = useState(false);
-  const [is2FA, setIs2FA] = useState(false);
-  const [role, setRole] = useState('user');
-
-  const [userCredentials, setUserCredentials] = useState({
-    fullname: '',
-    email: '',
-    password: '',
-    phone: '',
-    gender: '',
-    dateOfBirth: '',
-    isVerify: false,
-    isLocked: false,
-    is2FA: false,
-    role: '',
-  });
-
-  useEffect(() => {
-    setUserCredentials({
-      fullname: fullname,
-      email: email,
-      password: password,
-      phone: phone,
-      gender: gender,
-      dateOfBirth: dateOfBirth,
-      isVerify: isVerify,
-      isLocked: isLocked,
-      is2FA: is2FA,
-      role: role,
-    });
-  }, [fullname, email, password, phone, gender, dateOfBirth, isVerify, isLocked, is2FA, role]);
-
-  // cón
-  // console.log({ fullname, email, password, gender, dateOfBirth, isVerify, isLocked, is2FA, role });
 
   return (
     <form action="" className={cx('form')} autoComplete="off">
@@ -124,8 +82,8 @@ function CreateUser() {
           </label>
           <div className={cx('form__text-input', 'form__text-input--sm')}>
             <input
-              value={fullname}
-              onChange={(e) => setFullname(e.target.value)}
+              value={userCredentials.fullname}
+              onChange={handleInputChange}
               type="text"
               id="fullname"
               name="fullname"
@@ -141,8 +99,8 @@ function CreateUser() {
           </label>
           <div className={cx('form__text-input', 'form__text-input--sm')}>
             <input
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={userCredentials.email}
+              onChange={handleInputChange}
               id="email"
               type="email"
               name="email"
@@ -161,8 +119,8 @@ function CreateUser() {
           </label>
           <div className={cx('form__text-input', 'form__text-input--sm')}>
             <input
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={userCredentials.password}
+              onChange={handleInputChange}
               type="text"
               id="password"
               name="password"
@@ -179,8 +137,8 @@ function CreateUser() {
           </label>
           <div className={cx('form__text-input', 'form__text-input--sm')}>
             <input
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
+              value={userCredentials.phone}
+              onChange={handleInputChange}
               type="text"
               id="phone"
               name="phone"
@@ -199,8 +157,8 @@ function CreateUser() {
           </label>
           <div className={cx('form__text-input', 'form__text-input--sm')}>
             <input
-              value={dateOfBirth}
-              onChange={(e) => setDateOfBirth(e.target.value)}
+              value={userCredentials.dateOfBirth}
+              onChange={handleInputChange}
               type="date"
               id="dateOfBirth"
               name="dateOfBirth"
@@ -232,8 +190,8 @@ function CreateUser() {
 
           <ThemeProvider theme={theme}>
             <RadioGroup
-              value={gender}
-              onChange={(e) => setGender(e.target.value)}
+              value={userCredentials.gender}
+              onChange={handleInputChange}
               row
               aria-labelledby="gender"
               name="gender"
@@ -252,7 +210,7 @@ function CreateUser() {
           >
             Is verify
             <ThemeProvider theme={theme}>
-              <Switch checked={isVerify} onChange={(e) => setIsVerify(e.target.checked)} />
+              <Switch name="isVerify" type="checkbox" checked={userCredentials.isVerify} onChange={handleInputChange} />
             </ThemeProvider>
           </label>
           <label
@@ -262,17 +220,18 @@ function CreateUser() {
           >
             Is locked
             <ThemeProvider theme={theme}>
-              <Switch checked={isLocked} onChange={(e) => setIsLocked(e.target.checked)} />
+              <Switch name="isLocked" type="checkbox" checked={userCredentials.isLocked} onChange={handleInputChange} />
             </ThemeProvider>
           </label>
           <label
             htmlFor="is2FA"
             style={{ display: 'flex', justifyContent: 'space-between' }}
             className={cx('form__label', 'form__label--medium')}
+            name="is2FA"
           >
             Is 2FA
             <ThemeProvider theme={theme}>
-              <Switch checked={is2FA} onChange={(e) => setIs2FA(e.target.checked)} />
+              <Switch name="is2FA" type="checkbox" checked={userCredentials.is2FA} onChange={handleInputChange} />
             </ThemeProvider>
           </label>
         </div>
@@ -287,9 +246,13 @@ function CreateUser() {
               labelId="role"
               id="role-select"
               label="Role"
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
+              value={userCredentials.role}
+              onChange={handleInputChange}
+              name="role"
             >
+              <MenuItem sx={{ fontSize: 16 }} value={''}>
+                Select Role
+              </MenuItem>
               <MenuItem sx={{ fontSize: 16 }} value={'user'}>
                 User
               </MenuItem>
