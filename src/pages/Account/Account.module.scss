@@ -75,6 +75,7 @@
           width: 100%;
           height: 100%;
           object-fit: cover;
+          border-radius: 100rem;
         }
 
         span {
@@ -171,12 +172,14 @@
         &-address,
         &-phone,
         &-email,
-        &-birthday {
+        &-birthday,
+        &-gender {
           border: 1px solid #c5ccd6;
           height: 44px;
           border-radius: 6px;
           padding: 0 16px;
           transition: border linear 0.2s;
+          font-size: 15px;
         }
 
         &-username:hover,
@@ -199,11 +202,47 @@
           border: 1px solid #00b14f;
         }
       }
+
+      &-gender {
+        display: flex;
+        width: 100%;
+
+        .gender-selected {
+          border: 1px solid #c5ccd6;
+          height: 44px;
+          border-radius: 6px;
+          padding: 0 16px;
+          font-size: 15px;
+          width: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: #a8afb9;
+          transition: linear 0.2s;
+
+          &-left {
+            margin-right: 20px;
+          }
+
+          &--male,
+          &--female {
+            border: 1px solid #00b14f;
+            color: #00b14f;
+            // font-weight: 600;
+          }
+        }
+
+        .gender-selected:hover {
+          border: 1px solid #00b14f;
+          color: #00b14f;
+          cursor: pointer;
+        }
+      }
     }
 
     .button-group-wrapper {
       display: flex;
-
+      width: 100%;
       @include media-breakpoint-down(lg) {
         flex-direction: column;
       }
@@ -250,3 +289,9 @@
     }
   }
 }
+
+// :global {
+//   input {
+//     font-size: 15px;
+//   }
+// }
