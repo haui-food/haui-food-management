@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { getAllUser, createUser, deleteUserById } from '~/apiService/userService';
+import { getAllUser, createUser, deleteUserById, updateUserById, getUserById } from '~/apiService/userService';
 
 const userSlice = createSlice({
   name: 'user',
@@ -47,6 +47,32 @@ const userSlice = createSlice({
         state.message = action.payload.message;
       })
       .addCase(deleteUserById.rejected, (state, action) => {
+        state.loading = false;
+        state.message = action.payload.message;
+      })
+      .addCase(updateUserById.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateUserById.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload.data;
+        state.message = action.payload.message;
+      })
+      .addCase(updateUserById.rejected, (state, action) => {
+        state.loading = false;
+        state.message = action.payload.message;
+      })
+      .addCase(getUserById.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(getUserById.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload.data;
+        state.message = action.payload.message;
+      })
+      .addCase(getUserById.rejected, (state, action) => {
         state.loading = false;
         state.message = action.payload.message;
       });

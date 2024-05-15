@@ -19,14 +19,26 @@ export const getAllUser = createAsyncThunk('user/getAll', async (_, { rejectWith
   }
 });
 
-export const updateUserById = createAsyncThunk('user/updateById', async (userCredentials, { rejectWithValue }) => {
+export const getUserById = createAsyncThunk('user/getById', async (userid, { rejectWithValue }) => {
   try {
-    const res = await callApi('PUT', '/v1/users/' + userCredentials.id, null, userCredentials);
+    const res = await callApi('GET', `/v1/users/${userid}`, {}, {});
     return res;
   } catch (error) {
     return rejectWithValue({ ...error });
   }
 });
+
+export const updateUserById = createAsyncThunk(
+  'user/updateById',
+  async ({ userid, userCredentials }, { rejectWithValue }) => {
+    try {
+      const res = await callApi('PUT', `/v1/users/${userid}`, {}, userCredentials);
+      return res;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  },
+);
 
 export const deleteUserById = createAsyncThunk('user/deleteById', async (userid, { rejectWithValue }) => {
   try {

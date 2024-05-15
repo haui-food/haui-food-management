@@ -41,7 +41,7 @@ import EditUser from '~/components/EditUser';
 import CreateUser from '~/components/CreateUser';
 import TextField from '@mui/material/TextField';
 import { useDispatch } from 'react-redux';
-import { getAllUser, createUser, deleteUserById } from '~/apiService/userService';
+import { getAllUser, createUser, deleteUserById, updateUserById, getUserById } from '~/apiService/userService';
 import { toast } from 'react-toastify';
 
 const cx = classNames.bind(styles);
@@ -242,6 +242,9 @@ const EnhancedTableToolbar = (props) => {
         if (result.payload.code === 201) {
           toast.success(result.payload.message);
           setCreateModalIsOpen(false);
+          setTimeout(() => {
+            window.location.href = '/users';
+          }, 1000);
           return;
         }
         toast.error(result.payload.message);
@@ -284,7 +287,7 @@ const EnhancedTableToolbar = (props) => {
             toast.success(result.payload.message);
             setTimeout(() => {
               window.location.href = '/users';
-            }, 1500);
+            }, 1000);
             return;
           }
           toast.error(result.payload.message);
@@ -297,12 +300,53 @@ const EnhancedTableToolbar = (props) => {
   };
 
   const handleEdit = () => {
-    closeEditModal();
+    dispatch(updateUserById({ userid: selected[0], userCredentials })).then((result) => {
+      if (result.payload.code === 200) {
+        closeEditModal();
+        toast.success(result.payload.message);
+        setTimeout(() => {
+          window.location.href = '/users';
+        }, 1000);
+        return;
+      }
+      toast.error(result.payload.message);
+    });
   };
 
   const handleCreate = () => {
     closeEditModal();
   };
+
+  useEffect(() => {
+    if (selected && selected.length > 0) {
+      dispatch(getUserById(selected[0])).then((result) => {
+        setUserCredentials({
+          ...userCredentials,
+          fullname: result.payload.data.fullname,
+          email: result.payload.data.email,
+          password: result.payload.data.password,
+          phone: result.payload.data.phone,
+          dateOfBirth: result.payload.data.dateOfBirth,
+          gender: result.payload.data.gender,
+          isVerify: result.payload.data.isVerify,
+          isLocked: result.payload.data.isLocked,
+          role: result.payload.data.role,
+        });
+      });
+    } else {
+      setUserCredentials({
+        fullname: '',
+        email: '',
+        password: '',
+        phone: '',
+        dateOfBirth: '',
+        gender: 'male',
+        isVerify: false,
+        isLocked: false,
+        role: 'user',
+      });
+    }
+  }, [selected.length]);
 
   return (
     <div>
@@ -380,9 +424,9 @@ const EnhancedTableToolbar = (props) => {
         type="Sửa"
         isOpen={editModalIsOpen}
         closeModal={closeEditModal}
-        handle={handleEdit}
+        handleEdit={handleEdit}
       >
-        <EditUser />
+        <EditUser userCredentials={userCredentials} handleInputChange={handleInputChange} />
       </FormModal>
 
       <FormModal
@@ -522,7 +566,6 @@ export default function Users() {
 
   useEffect(() => {
     dispatch(getAllUser()).then((result) => {
-      // const users = result.payload.users.map((user, index) => ({ ...user, id: index + 1 }));
       setRows(result.payload.users);
     });
   }, []);
