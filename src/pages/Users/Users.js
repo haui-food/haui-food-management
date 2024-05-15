@@ -41,7 +41,7 @@ import EditUser from '~/components/EditUser';
 import CreateUser from '~/components/CreateUser';
 import TextField from '@mui/material/TextField';
 import { useDispatch } from 'react-redux';
-import { getAllUser, createUser } from '~/apiService/userService';
+import { getAllUser, createUser, deleteUserById } from '~/apiService/userService';
 import { toast } from 'react-toastify';
 
 const cx = classNames.bind(styles);
@@ -211,10 +211,11 @@ const EnhancedTableToolbar = (props) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const { numSelected, isEdit } = props;
+  const { selected, setSelected } = props;
   const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
   const [editModalIsOpen, setEditModalIsOpen] = useState(false);
   const [createModalIsOpen, setCreateModalIsOpen] = useState(false);
-  // const [timeForSkeleton, setTimeForSkeleton] = useState(true);
+
   const [userCredentials, setUserCredentials] = useState({
     fullname: '',
     email: '',
@@ -249,6 +250,7 @@ const EnhancedTableToolbar = (props) => {
       toast.error(error.message);
     }
   };
+
   const openConfirmModal = () => {
     setConfirmModalIsOpen(true);
   };
@@ -274,6 +276,16 @@ const EnhancedTableToolbar = (props) => {
   };
 
   const handleDelete = () => {
+    try {
+      console.log(selected);
+      for (let i = 0; i < selected.length; i++) {
+        dispatch(deleteUserById(selected[i])).then((result) => {
+          console.log(result);
+        });
+      }
+    } catch (error) {
+      toast.error({ ...error });
+    }
     closeConfirmModal();
   };
 
@@ -382,6 +394,7 @@ const EnhancedTableToolbar = (props) => {
 
 EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
+  selected: PropTypes.array.isRequired,
 };
 
 export default function Users() {
@@ -404,19 +417,19 @@ export default function Users() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelected = rows.map((n) => n.id);
+      const newSelected = rows.map((n) => n._id);
       setSelected(newSelected);
       return;
     }
     setSelected([]);
   };
 
-  const handleClick = (event, id) => {
-    const selectedIndex = selected.indexOf(id);
+  const handleClick = (event, _id) => {
+    const selectedIndex = selected.indexOf(_id);
     let newSelected = [];
 
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, id);
+      newSelected = newSelected.concat(selected, _id);
     } else if (selectedIndex === 0) {
       newSelected = newSelected.concat(selected.slice(1));
     } else if (selectedIndex === selected.length - 1) {
@@ -449,10 +462,6 @@ export default function Users() {
       (row) =>
         row.fullname.toLowerCase().includes(searchKeyword.toLowerCase()) ||
         row.email.toLowerCase().includes(searchKeyword.toLowerCase()),
-      // row.phone.toLowerCase().includes(searchKeyword.toLowerCase()) ||
-      // row.dateOfBirth.toLowerCase().includes(searchKeyword.toLowerCase()) ||
-      // row.gender.toLowerCase().includes(searchKeyword.toLowerCase()) ||
-      // row.role.toLowerCase().includes(searchKeyword.toLowerCase()),
     );
   }, [rows, searchKeyword]);
 
@@ -496,8 +505,17 @@ export default function Users() {
     return formattedDate;
   };
 
+  // const handleDeleteUserById = () => {
+  //   try {
+  //     dispatch(deleteUserById(selected));
+  //   } catch (error) {
+  //     toast.error({ ...error });
+  //   }
+  // };
+
   useEffect(() => {
     dispatch(getAllUser()).then((result) => {
+      // const users = result.payload.users.map((user, index) => ({ ...user, id: index + 1 }));
       setRows(result.payload.users);
     });
   }, []);
@@ -514,8 +532,8 @@ export default function Users() {
               isEdit={selected.length > 1}
               handleChangeSearch={(e) => {
                 handleChangeSearch(e);
-                // console.log(e.target.value);
               }}
+              selected={selected}
             />
             <TableContainer>
               <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle" size={dense ? 'small' : 'medium'}>
@@ -529,7 +547,7 @@ export default function Users() {
                 />
                 <TableBody>
                   {visibleRows.map((row, index) => {
-                    const isItemSelected = isSelected(row.id);
+                    const isItemSelected = isSelected(row._id);
                     const labelId = `enhanced-table-checkbox-${index}`;
 
                     return (
@@ -539,7 +557,7 @@ export default function Users() {
                         ) : ( */}
                         <TableRow
                           hover
-                          onClick={(event) => handleClick(event, row.id)}
+                          onClick={(event) => handleClick(event, row._id)}
                           role="checkbox"
                           aria-checked={isItemSelected}
                           tabIndex={-1}

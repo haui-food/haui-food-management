@@ -2,7 +2,7 @@ import classNames from 'classnames/bind';
 import { useTranslation } from 'react-i18next';
 
 import styles from './Navbar.module.scss';
-import { DashBoardIcon, UserGroupIcon, ProductIcon } from '~/components/Icons';
+import { DashBoardIcon, UserGroupIcon, ProductIcon, ShopIcon } from '~/components/Icons';
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -11,6 +11,7 @@ const cx = classNames.bind(styles);
 function Navbar({ toggleNav, isDesktop }) {
   const { t } = useTranslation();
   const nav = useNavigate();
+  const [user, setUser] = useState(null);
 
   const [navigation, setNavigation] = useState([
     {
@@ -24,6 +25,12 @@ function Navbar({ toggleNav, isDesktop }) {
       icon: <UserGroupIcon className={cx('icon')} />,
       title: t('dashboards.title03'),
       slug: 'users',
+    },
+    {
+      path: '/shop',
+      icon: <ShopIcon className={cx('icon')} />,
+      title: 'Shop',
+      slug: 'shop',
     },
     {
       path: '/products',
