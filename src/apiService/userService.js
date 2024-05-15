@@ -30,9 +30,9 @@ export const updateUserById = createAsyncThunk('user/updateById', async (userCre
 
 export const deleteUserById = createAsyncThunk('user/deleteById', async (userid, { rejectWithValue }) => {
   try {
-    const res = await callApi('DELETE', `/v1/users/${userid}`, null, null);
-    return res; // hoặc res tùy theo cấu trúc phản hồi của API
+    const res = await callApi('DELETE', `/v1/users/${userid}`, {}, {});
+    return res;
   } catch (error) {
-    return rejectWithValue(error);
+    return rejectWithValue(error.message);
   }
 });

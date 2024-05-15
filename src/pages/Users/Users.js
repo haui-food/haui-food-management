@@ -280,7 +280,14 @@ const EnhancedTableToolbar = (props) => {
       console.log(selected);
       for (let i = 0; i < selected.length; i++) {
         dispatch(deleteUserById(selected[i])).then((result) => {
-          console.log(result);
+          if (result.payload.code === 200) {
+            toast.success(result.payload.message);
+            setTimeout(() => {
+              window.location.href = '/users';
+            }, 1500);
+            return;
+          }
+          toast.error(result.payload.message);
         });
       }
     } catch (error) {
