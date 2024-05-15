@@ -46,13 +46,13 @@ const userSlice = createSlice({
       .addCase(deleteUserById.fulfilled, (state, action) => {
         state.loading = false;
         // state.user = action.payload;
-        // state.message = action.payload.message;
-        console.log(action);
+        state.message = action.payload.message;
+        // console.log(action);
       })
       .addCase(deleteUserById.rejected, (state, action) => {
         state.loading = false;
         state.message = action.payload.message;
-        console.log(action);
+        // console.log(action);
       });
   },
 });

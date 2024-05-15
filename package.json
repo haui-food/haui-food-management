@@ -2,7 +2,6 @@
   "name": "haui-food-client",
   "version": "0.1.0",
   "private": true,
-  "proxy": "https://api.hauifood.com",
   "dependencies": {
     "@agney/react-loading": "^0.1.2",
     "@emotion/react": "^11.11.4",
