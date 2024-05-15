@@ -13,6 +13,16 @@ const Account = () => {
   const [user, setUser] = useState();
   const [gender, setGender] = useState(null);
   const [dateOfBirth, setDateOfBirth] = useState(null);
+  const [prevImage, setPrevImage] = useState(null);
+
+  const [userCredentials, setUserCredentials] = useState({
+    fullname: '',
+    gender: '',
+    email: '',
+    phone: '',
+    dateOfBirth: '',
+    avatar: '',
+  });
 
   useEffect(() => {
     const _user = localStorage.getItem('user');
@@ -25,12 +35,15 @@ const Account = () => {
 
   const handleGenderChange = (gend) => {
     setGender(gend);
-    console.log(gend);
   };
 
-  useEffect(() => {
-    console.log(user);
-  }, [user]);
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const imageUrl = URL.createObjectURL(file);
+      setPrevImage(imageUrl);
+    }
+  };
 
   useEffect(() => {
     if (user) {
@@ -45,8 +58,9 @@ const Account = () => {
         const formattedDate = `${year}-${month}-${day}`;
         return formattedDate;
       };
-
+      setGender(user.gender);
       setDateOfBirth(formatDate);
+      setPrevImage(user.avatar);
     }
   }, [user]);
 
@@ -60,13 +74,19 @@ const Account = () => {
             </div>
             <div className={cx('account-picture-content')}>
               <div className={cx('account-picture-img')}>
-                <img src={user.avatar} alt="logo" className={cx('account-image')} />
+                <img src={prevImage} alt="logo" className={cx('account-image')} />
               </div>
               <span className={cx('picture-text')}>{t('account.desc01')}</span>
               <button className={cx('btn-upload')}>
                 <label className={cx('label-upload')}>
                   {t('account.btn01')}
-                  <input type="file" className={cx('input-upload')} />
+                  <input
+                    type="file"
+                    className={cx('input-upload')}
+                    onChange={(e) => {
+                      handleFileChange(e);
+                    }}
+                  />
                 </label>
               </button>
             </div>
@@ -96,7 +116,7 @@ const Account = () => {
                 <div
                   name="male"
                   className={cx('gender-selected', 'gender-selected-left', {
-                    'gender-selected--male': user.gender === 'male',
+                    'gender-selected--male': gender === 'male',
                   })}
                   onClick={(e) => {
                     handleGenderChange('male');
@@ -107,7 +127,7 @@ const Account = () => {
                 <div
                   name="female"
                   className={cx('gender-selected', 'gender-selected-right', {
-                    'gender-selected--female': user.gender === 'female',
+                    'gender-selected--female': gender === 'female',
                   })}
                   onClick={(e) => {
                     handleGenderChange('female');
@@ -122,11 +142,11 @@ const Account = () => {
               <label>{t('account.lb05')}</label>
               <input type="text" className={cx('input-detail-address')} defaultValue={user.address} />
             </div> */}
-            {/* 
+
             <div class={cx('button-group')}>
-              <label>{t('account.lb05')}</label>
-              <input type="text" className={cx('input-detail-email')} />
-            </div> */}
+              <label>{t('account.lb07')}</label>
+              <input type="text" className={cx('input-detail-phone')} value={user?.phone} />
+            </div>
 
             <div class={cx('button-group-wrapper')}>
               <div class={cx('button-group')}>
