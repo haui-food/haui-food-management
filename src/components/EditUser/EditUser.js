@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import classNames from 'classnames/bind';
 import { useTranslation } from 'react-i18next';
 
@@ -70,7 +70,7 @@ const theme = createTheme({
   },
 });
 
-function EditUser() {
+function EditUser({ userCredentials, handleInputChange }) {
   const { t } = useTranslation();
 
   const [fullname, setFullname] = useState('');
@@ -83,7 +83,16 @@ function EditUser() {
   const [is2FA, setIs2FA] = useState(false);
   const [role, setRole] = useState('user');
 
-  console.log({ fullname, email, password, gender, isVerify, isLocked, is2FA, role });
+  const convertDate = (dateString) => {
+    const date = new Date(dateString);
+
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear();
+
+    const formattedDate = `${year}-${month}-${day}`;
+    return formattedDate;
+  };
 
   return (
     <form action="" className={cx('form')} autoComplete="off">
@@ -94,8 +103,8 @@ function EditUser() {
           </label>
           <div className={cx('form__text-input', 'form__text-input--sm')}>
             <input
-              value={fullname}
-              onChange={(e) => setFullname(e.target.value)}
+              value={userCredentials.fullname}
+              onChange={handleInputChange}
               type="text"
               id="fullname"
               name="fullname"
@@ -111,8 +120,8 @@ function EditUser() {
           </label>
           <div className={cx('form__text-input', 'form__text-input--sm')}>
             <input
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={userCredentials.email}
+              onChange={handleInputChange}
               id="email"
               type="email"
               name="email"
@@ -125,7 +134,7 @@ function EditUser() {
       </div>
 
       <div className={cx('form__row', 'form__row--three')}>
-        <div className={cx('form__group')}>
+        {/* <div className={cx('form__group')}>
           <label htmlFor="password" className={cx('form__label', 'form__label--medium')}>
             {t('form.tp02')}
           </label>
@@ -141,7 +150,7 @@ function EditUser() {
             />
             <PasswordIcon />
           </div>
-        </div>
+        </div> */}
 
         <div className={cx('form__group')}>
           <label htmlFor="phone" className={cx('form__label', 'form__label--medium')}>
@@ -149,8 +158,8 @@ function EditUser() {
           </label>
           <div className={cx('form__text-input', 'form__text-input--sm')}>
             <input
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
+              value={userCredentials.phone}
+              onChange={handleInputChange}
               type="text"
               id="phone"
               name="phone"
@@ -158,6 +167,23 @@ function EditUser() {
               className={cx('form__input')}
             />
             <PhoneIcon />
+          </div>
+        </div>
+
+        <div className={cx('form__group')}>
+          <label htmlFor="dateOfBirth" className={cx('form__label', 'form__label--medium')}>
+            Ngày sinh
+          </label>
+          <div className={cx('form__text-input', 'form__text-input--sm')}>
+            <input
+              value={convertDate(userCredentials.dateOfBirth)}
+              onChange={handleInputChange}
+              type="date"
+              id="dateOfBirth"
+              name="dateOfBirth"
+              placeholder="Điện thoại"
+              className={cx('form__input')}
+            />
           </div>
         </div>
       </div>
@@ -170,8 +196,8 @@ function EditUser() {
 
           <ThemeProvider theme={theme}>
             <RadioGroup
-              value={gender}
-              onChange={(e) => setGender(e.target.value)}
+              value={userCredentials.gender}
+              onChange={handleInputChange}
               row
               aria-labelledby="gender"
               name="gender"
@@ -186,19 +212,19 @@ function EditUser() {
           <label htmlFor="isVerify" className={cx('form__label', 'form__label--medium')}>
             Is verify
             <ThemeProvider theme={theme}>
-              <Switch checked={isVerify} onChange={(e) => setIsVerify(e.target.checked)} />
+              <Switch type="checkbox" checked={userCredentials.isVerify} name="isVerify" onChange={handleInputChange} />
             </ThemeProvider>
           </label>
           <label htmlFor="isLocked" className={cx('form__label', 'form__label--medium')}>
             Is locked
             <ThemeProvider theme={theme}>
-              <Switch checked={isLocked} onChange={(e) => setIsLocked(e.target.checked)} />
+              <Switch type="checkbox" checked={userCredentials.isLocked} name="isLocked" onChange={handleInputChange} />
             </ThemeProvider>
           </label>
           <label htmlFor="is2FA" className={cx('form__label', 'form__label--medium')}>
             Is 2FA
             <ThemeProvider theme={theme}>
-              <Switch checked={is2FA} onChange={(e) => setIs2FA(e.target.checked)} />
+              <Switch type="checkbox" checked={userCredentials.is2FA} name="is2FA" onChange={handleInputChange} />
             </ThemeProvider>
           </label>
         </div>
@@ -213,8 +239,9 @@ function EditUser() {
               labelId="role"
               id="role-select"
               label="Role"
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
+              name="role"
+              value={userCredentials.role}
+              onChange={handleInputChange}
             >
               <MenuItem sx={{ fontSize: 16 }} value={'user'}>
                 User

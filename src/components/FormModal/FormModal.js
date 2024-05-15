@@ -86,7 +86,7 @@ const style = {
   p: 4,
 };
 
-export default function FormModal({ title, children, type, isOpen, closeModal, handle, handleCreateUser }) {
+export default function FormModal({ title, children, type, isOpen, closeModal, handle, handleCreateUser, handleEdit }) {
   return (
     <Modal
       aria-labelledby="spring-modal-title"
@@ -117,7 +117,7 @@ export default function FormModal({ title, children, type, isOpen, closeModal, h
                 onClick={handle}
                 sx={{ mt: 4, p: 1 }}
                 className={cx('modal__btn')}
-                {...(type !== 'Xóa' ? { onClick: handleCreateUser } : {})}
+                {...(type === 'Tạo' ? { onClick: handleCreateUser } : type === 'Sửa' ? { onClick: handleEdit } : {})}
               >
                 {type}
               </Button>
