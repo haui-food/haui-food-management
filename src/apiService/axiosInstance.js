@@ -2,7 +2,7 @@ import axios from 'axios';
 import { getLocalStorageItem } from '~/utils/localStorage';
 
 const axiosInstance = axios.create({
-  baseURL: 'https://api.hauifood.com/api',
+  baseURL: 'https://api.hauifood.com/api/',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
