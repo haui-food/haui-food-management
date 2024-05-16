@@ -134,24 +134,6 @@ function EditUser({ userCredentials, handleInputChange }) {
       </div>
 
       <div className={cx('form__row', 'form__row--three')}>
-        {/* <div className={cx('form__group')}>
-          <label htmlFor="password" className={cx('form__label', 'form__label--medium')}>
-            {t('form.tp02')}
-          </label>
-          <div className={cx('form__text-input', 'form__text-input--sm')}>
-            <input
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              type="text"
-              id="password"
-              name="password"
-              placeholder={t('form.tp02')}
-              className={cx('form__input')}
-            />
-            <PasswordIcon />
-          </div>
-        </div> */}
-
         <div className={cx('form__group')}>
           <label htmlFor="phone" className={cx('form__label', 'form__label--medium')}>
             Điện thoại

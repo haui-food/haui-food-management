@@ -27,7 +27,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import { visuallyHidden } from '@mui/utils';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-// import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
+import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 
 import styles from './User.module.scss';
@@ -41,6 +41,7 @@ import EditUser from '~/components/EditUser';
 import CreateUser from '~/components/CreateUser';
 import TextField from '@mui/material/TextField';
 import { useDispatch } from 'react-redux';
+import { ArrowLeftIcon, ArrowRightIcon } from '@mui/x-date-pickers';
 import { getAllUser, createUser, deleteUserById, updateUserById, getUserById } from '~/apiService/userService';
 import { toast } from 'react-toastify';
 
@@ -459,7 +460,9 @@ export default function Users() {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [searchKeyword, setSearchKeyword] = useState('');
   const [rows, setRows] = useState([]);
-
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPage, setTotalPage] = useState(null);
+  const [loading, setLoading] = useState(true);
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
@@ -493,6 +496,7 @@ export default function Users() {
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
+    console.log('clicked');
   };
 
   const handleChangeRowsPerPage = (event) => {
@@ -506,6 +510,22 @@ export default function Users() {
 
   const handleChangeSearch = (e) => {
     setSearchKeyword(e.target.value);
+  };
+
+  const handleNextPage = () => {
+    if (currentPage === totalPage) {
+      return setCurrentPage(currentPage);
+    }
+    setLoading(true);
+    setCurrentPage(currentPage + 1);
+  };
+
+  const hanldePrevPage = () => {
+    if (currentPage === 1) {
+      return setCurrentPage(1);
+    }
+    setLoading(true);
+    setCurrentPage(currentPage - 1);
   };
 
   const filteredRows = useMemo(() => {
@@ -556,19 +576,13 @@ export default function Users() {
     return formattedDate;
   };
 
-  // const handleDeleteUserById = () => {
-  //   try {
-  //     dispatch(deleteUserById(selected));
-  //   } catch (error) {
-  //     toast.error({ ...error });
-  //   }
-  // };
-
   useEffect(() => {
-    dispatch(getAllUser()).then((result) => {
+    dispatch(getAllUser({ page: currentPage })).then((result) => {
       setRows(result.payload.users);
+      setLoading(false);
+      setTotalPage(result.payload.totalPage);
     });
-  }, []);
+  }, [currentPage]);
 
   return (
     <div className={cx('user')}>
@@ -595,6 +609,9 @@ export default function Users() {
                   onRequestSort={handleRequestSort}
                   rowCount={rows.length}
                 />
+
+                {/* Body */}
+
                 <TableBody>
                   {visibleRows.map((row, index) => {
                     const isItemSelected = isSelected(row._id);
@@ -602,79 +619,125 @@ export default function Users() {
 
                     return (
                       <>
-                        {/* {timeForSkeleton ? (
-                          <Skeleton />
-                        ) : ( */}
-                        <TableRow
-                          hover
-                          onClick={(event) => handleClick(event, row._id)}
-                          role="checkbox"
-                          aria-checked={isItemSelected}
-                          tabIndex={-1}
-                          key={row.id}
-                          selected={isItemSelected}
-                          sx={{ cursor: 'pointer' }}
-                        >
-                          <TableCell padding="checkbox">
-                            <Checkbox
-                              color="primary"
-                              checked={isItemSelected}
-                              inputProps={{
-                                'aria-labelledby': labelId,
-                              }}
-                            />
-                          </TableCell>
-                          <TableCell align="center">
-                            <Avatar alt={row.fullname} src={row.avatar} />
-                          </TableCell>
-                          <TableCell component="th" id={labelId} scope="row" padding="none">
-                            {row.fullname}
-                          </TableCell>
-                          <TableCell align="center">{row.email}</TableCell>
-                          {/* <TableCell align="left">{row.password}</TableCell> */}
-                          <TableCell align="center">{row.phone}</TableCell>
-                          <TableCell align="left">{convertDate(row.dateOfBirth)}</TableCell>
-                          <TableCell align="left">
-                            <Chip
-                              label={row.gender}
-                              variant="outlined"
-                              style={{
-                                color: row.gender === 'male' ? '#5ab0f5' : '#ec407a',
-                                borderColor: row.gender === 'male' ? '#64b5f6' : '#ec407a',
-                                backgroundColor: row.gender === 'male' ? '#64b5f633' : '#ec407a14',
-                              }}
-                            />
-                          </TableCell>
-                          <TableCell align="left">
-                            {row.isVerify ? (
-                              <CheckIcon style={{ color: 'var(--primary-color)' }} />
-                            ) : (
-                              <CloseIcon style={{ color: '#f44336' }} />
-                            )}
-                          </TableCell>
-                          <TableCell align="left">
-                            {row.isLocked ? (
-                              <CheckIcon style={{ color: 'var(--primary-color)' }} />
-                            ) : (
-                              <CloseIcon style={{ color: '#f44336' }} />
-                            )}
-                          </TableCell>
-                          <TableCell align="left">{convertISODate(row.lastActive)}</TableCell>
-                          <TableCell align="center">
-                            <Chip
-                              label={row.role}
-                              variant="outlined"
-                              style={{
-                                color: row.role === 'admin' ? '#f44336' : row.role === 'shop' ? '#ff9800' : '#4caf50',
-                                borderColor:
-                                  row.role === 'admin' ? '#f44336' : row.role === 'shop' ? '#ff9800' : '#4caf50',
-                                backgroundColor:
-                                  row.role === 'admin' ? '#f443361c' : row.role === 'shop' ? '#ff980029' : '#4caf5029',
-                              }}
-                            />
-                          </TableCell>
-                        </TableRow>
-                        {/* )} */}
+                        {loading ? (
+                          <TableRow>
+                            <TableCell role="checkbox" className={cx('skeleton-checkBox')}>
+                              <Checkbox
+                                color="primary"
+                                checked={isItemSelected}
+                                inputProps={{
+                                  'aria-labelledby': labelId,
+                                }}
+                                disabled
+                                style={{ marginLeft: '-12px' }}
+                              />
+                            </TableCell>
+                            <TableCell style={{ width: '80px' }}>
+                              <div className={cx('skeleton-avatar')}></div>
+                            </TableCell>
+                            <TableCell>
+                              <div className={cx('skeleton-name')}></div>
+                            </TableCell>
+                            <TableCell>
+                              <div className={cx('skeleton-email')}></div>
+                            </TableCell>
+                            <TableCell>
+                              <div className={cx('skeleton-phone')}></div>
+                            </TableCell>
+                            <TableCell>
+                              <div className={cx('skeleton-dateOfBirth')}></div>
+                            </TableCell>
+                            <TableCell>
+                              <div className={cx('skeleton-gender')}></div>
+                            </TableCell>
+
+                            <TableCell>
+                              <div className={cx('skeleton-isVerify')}></div>
+                            </TableCell>
+                            <TableCell>
+                              <div className={cx('skeleton-isLocked')}></div>
+                            </TableCell>
+                            <TableCell>
+                              <div className={cx('skeleton-lastActive')}></div>
+                            </TableCell>
+                            <TableCell>
+                              <div className={cx('skeleton-role')}></div>
+                            </TableCell>
+                          </TableRow>
+                        ) : (
+                          <TableRow
+                            hover
+                            onClick={(event) => handleClick(event, row._id)}
+                            role="checkbox"
+                            aria-checked={isItemSelected}
+                            tabIndex={-1}
+                            key={row.id}
+                            selected={isItemSelected}
+                            sx={{ cursor: 'pointer' }}
+                          >
+                            <TableCell padding="checkbox">
+                              <Checkbox
+                                color="primary"
+                                checked={isItemSelected}
+                                inputProps={{
+                                  'aria-labelledby': labelId,
+                                }}
+                              />
+                            </TableCell>
+                            <TableCell align="center">
+                              <Avatar alt={row.fullname} src={row.avatar} />
+                            </TableCell>
+                            <TableCell component="th" id={labelId} scope="row" padding="none">
+                              {row.fullname}
+                            </TableCell>
+                            <TableCell align="center">{row.email}</TableCell>
+                            <TableCell align="center">{row.phone}</TableCell>
+                            <TableCell align="left">{convertDate(row.dateOfBirth)}</TableCell>
+                            <TableCell align="left">
+                              <Chip
+                                label={row.gender}
+                                variant="outlined"
+                                style={{
+                                  color: row.gender === 'male' ? '#5ab0f5' : '#ec407a',
+                                  borderColor: row.gender === 'male' ? '#64b5f6' : '#ec407a',
+                                  backgroundColor: row.gender === 'male' ? '#64b5f633' : '#ec407a14',
+                                }}
+                              />
+                            </TableCell>
+                            <TableCell align="left">
+                              {row.isVerify ? (
+                                <CheckIcon style={{ color: 'var(--primary-color)' }} />
+                              ) : (
+                                <CloseIcon style={{ color: '#f44336' }} />
+                              )}
+                            </TableCell>
+                            <TableCell align="left">
+                              {row.isLocked ? (
+                                <CheckIcon style={{ color: 'var(--primary-color)' }} />
+                              ) : (
+                                <CloseIcon style={{ color: '#f44336' }} />
+                              )}
+                            </TableCell>
+                            <TableCell align="left">{convertISODate(row.lastActive)}</TableCell>
+                            <TableCell align="center">
+                              <Chip
+                                label={row.role}
+                                variant="outlined"
+                                style={{
+                                  color: row.role === 'admin' ? '#f44336' : row.role === 'shop' ? '#ff9800' : '#4caf50',
+                                  borderColor:
+                                    row.role === 'admin' ? '#f44336' : row.role === 'shop' ? '#ff9800' : '#4caf50',
+                                  backgroundColor:
+                                    row.role === 'admin'
+                                      ? '#f443361c'
+                                      : row.role === 'shop'
+                                      ? '#ff980029'
+                                      : '#4caf5029',
+                                }}
+                              />
+                            </TableCell>
+                          </TableRow>
+                        )}
                       </>
                     );
                   })}
@@ -688,8 +751,28 @@ export default function Users() {
                     </TableRow>
                   )}
                 </TableBody>
+
+                {/* Body */}
               </Table>
             </TableContainer>
+            <div className={cx('button-group')}>
+              <button
+                onClick={() => {
+                  hanldePrevPage();
+                }}
+                style={{ backgroundColor: '#fff' }}
+              >
+                <ArrowLeftIcon className={cx('icon')} />
+              </button>
+              <button
+                onClick={() => {
+                  handleNextPage();
+                }}
+                style={{ backgroundColor: '#fff' }}
+              >
+                <ArrowRightIcon className={cx('icon')} />
+              </button>
+            </div>
             <TablePagination
               rowsPerPageOptions={[10, 15, 25]}
               component="div"
@@ -700,6 +783,7 @@ export default function Users() {
               onRowsPerPageChange={handleChangeRowsPerPage}
             />
           </Paper>
+
           <FormControlLabel control={<Switch checked={dense} onChange={handleChangeDense} />} label="Dense padding" />
         </Box>
       </ThemeProvider>
