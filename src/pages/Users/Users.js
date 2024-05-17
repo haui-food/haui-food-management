@@ -629,7 +629,7 @@ export default function Users() {
                                   'aria-labelledby': labelId,
                                 }}
                                 disabled
-                                style={{ marginLeft: '-12px' }}
+                                style={{ marginLeft: '-10px' }}
                               />
                             </TableCell>
                             <TableCell style={{ width: '80px' }}>
