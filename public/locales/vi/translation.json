@@ -57,6 +57,25 @@
     "lb07": "Số điện thoại",
     "lb08": "Ngày sinh"
   },
+  "users": {
+    "title01": "Danh sách người dùng",
+    "title02": "Người dùng",
+    "title03": "Ảnh đại diện",
+    "title04": "Họ tên",
+    "title05": "Email",
+    "title06": "Số điện thoại",
+    "title07": "Ngày sinh",
+    "title08": "Giới tính",
+    "title09": "Xác minh",
+    "title10": "Khóa",
+    "title11": "Hoạt động lần cuối",
+    "title12": "Vai trò",
+    "inp01": "Tìm kiếm",
+    "inp02": "Nhập văn bản",
+    "btn01": "Thêm người dùng",
+    "desc01": "Số hàng mỗi trang",
+    "desc02": "Mật độ"
+  },
   "toast": {
     "unauthorized": "Bạn không có quyền truy cập"
   }

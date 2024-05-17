@@ -136,20 +136,21 @@ const stableSort = (array, comparator) => {
   return stabilizedThis.map((el) => el[0]);
 };
 
-const headCells = [
-  { id: 'avatar', numeric: false, disablePadding: false, label: 'Avatar' },
-  { id: 'fullname', numeric: false, disablePadding: true, label: 'FullName' },
-  { id: 'email', numeric: true, disablePadding: false, label: 'Email' },
-  { id: 'phone', numeric: true, disablePadding: false, label: 'Phone' },
-  { id: 'dateOfBirth', numeric: true, disablePadding: false, label: 'Date Of Birth' },
-  { id: 'gender', numeric: true, disablePadding: false, label: 'Gender' },
-  { id: 'isVerify', numeric: false, disablePadding: true, label: 'Is verify' },
-  { id: 'isLocked', numeric: false, disablePadding: true, label: 'Is locked' },
-  { id: 'lastActive', numeric: true, disablePadding: false, label: 'Last active' },
-  { id: 'role', numeric: true, disablePadding: false, label: 'Role' },
-];
-
 const EnhancedTableHead = (props) => {
+  const { t } = useTranslation();
+
+  const headCells = [
+    { id: 'avatar', numeric: false, disablePadding: false, label: t('users.title03') },
+    { id: 'fullname', numeric: false, disablePadding: true, label: t('users.title04') },
+    { id: 'email', numeric: true, disablePadding: false, label: t('users.title05') },
+    { id: 'phone', numeric: true, disablePadding: false, label: t('users.title06') },
+    { id: 'dateOfBirth', numeric: true, disablePadding: false, label: t('users.title07') },
+    { id: 'gender', numeric: true, disablePadding: false, label: t('users.title08') },
+    { id: 'isVerify', numeric: false, disablePadding: true, label: t('users.title09') },
+    { id: 'isLocked', numeric: false, disablePadding: true, label: t('users.title10') },
+    { id: 'lastActive', numeric: true, disablePadding: false, label: t('users.title11') },
+    { id: 'role', numeric: true, disablePadding: false, label: t('users.title12') },
+  ];
   const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
@@ -369,12 +370,12 @@ const EnhancedTableToolbar = (props) => {
         ) : (
           <>
             <Typography sx={{ flex: '1 1 100%' }} variant="h6" component="div">
-              Users
+              {t('users.title02')}
             </Typography>
             <TextField
-              label="Tìm kiếm"
+              label={t('users.inp01')}
               variant="standard"
-              placeholder="Nhập"
+              placeholder={t('users.inp02')}
               fullWidth
               margin="normal"
               size="small"
@@ -402,7 +403,7 @@ const EnhancedTableToolbar = (props) => {
           </>
         ) : (
           <Button onClick={openCreateModal} leftIcon={<PlusIcon />} addUser primary>
-            Thêm người dùng
+            {t('users.btn01')}
           </Button>
         )}
       </Toolbar>
@@ -451,12 +452,12 @@ EnhancedTableToolbar.propTypes = {
 
 export default function Users() {
   const dispatch = useDispatch();
-
+  const { t } = useTranslation();
   const [order, setOrder] = useState('asc');
   const [orderBy, setOrderBy] = useState('calories');
   const [selected, setSelected] = useState([]);
   const [page, setPage] = useState(0);
-  const [dense, setDense] = useState(false);
+  const [dense, setDense] = useState(true);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [searchKeyword, setSearchKeyword] = useState('');
   const [rows, setRows] = useState([]);
@@ -577,16 +578,16 @@ export default function Users() {
   };
 
   useEffect(() => {
-    dispatch(getAllUser({ page: currentPage })).then((result) => {
+    dispatch(getAllUser({ limit: rowsPerPage, page: currentPage })).then((result) => {
       setRows(result.payload.users);
       setLoading(false);
       setTotalPage(result.payload.totalPage);
     });
-  }, [currentPage]);
+  }, [currentPage, rowsPerPage]);
 
   return (
     <div className={cx('user')}>
-      <h1 className={cx('user__heading')}>Danh sách người dùng</h1>
+      <h1 className={cx('user__heading')}>{t('users.title01')}</h1>
       <RealTime />
       <ThemeProvider theme={theme}>
         <Box className={cx('user__list')}>
@@ -784,7 +785,10 @@ export default function Users() {
             />
           </Paper>
 
-          <FormControlLabel control={<Switch checked={dense} onChange={handleChangeDense} />} label="Dense padding" />
+          <FormControlLabel
+            control={<Switch checked={dense} onChange={handleChangeDense} />}
+            label={t('users.desc02')}
+          />
         </Box>
       </ThemeProvider>
     </div>

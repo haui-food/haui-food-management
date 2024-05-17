@@ -57,6 +57,26 @@
     "lb07": "Phone number",
     "lb08": "Birthday"
   },
+  "users": {
+    "title01": "Users List",
+    "title02": "Users",
+    "title03": "Avatar",
+    "title04": "Fullname",
+    "title05": "Email",
+    "title06": "Phone",
+    "title07": "Date of birth",
+    "title08": "Gender",
+    "title09": "Verify",
+    "title10": "Lock",
+    "title11": "Last Active",
+    "title12": "Role",
+    "inp01": "Search",
+    "inp02": "Enter text",
+    "btn01": "Add new user",
+    "desc01": "Rows per page",
+    "desc02": "Dense pending"
+  },
+
   "toast": {
     "Unauthorized": "You do not have access."
   }
