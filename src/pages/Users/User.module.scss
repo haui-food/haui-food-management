@@ -48,8 +48,8 @@
     // overflow-x: hidden;
   }
 
-  button {
-    background-color: red;
+  button:hover {
+    cursor: pointer;
   }
 }
 

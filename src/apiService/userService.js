@@ -10,9 +10,9 @@ export const createUser = createAsyncThunk('user/create', async (userCredentials
   }
 });
 
-export const getAllUser = createAsyncThunk('user/getAll', async ({ page }, { rejectWithValue }) => {
+export const getAllUser = createAsyncThunk('user/getAll', async ({ limit, page }, { rejectWithValue }) => {
   try {
-    const res = await callApi('GET', `/v1/users?page=${page}`, {}, {});
+    const res = await callApi('GET', `/v1/users?limit=${limit}&page=${page}`, {}, {});
     console.log(res);
     return res.data;
   } catch (error) {

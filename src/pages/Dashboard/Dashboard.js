@@ -14,6 +14,10 @@ import TwinBarChart from '~/components/Charts/TwinBarChart/TwinBarChart';
 import { useTranslation } from 'react-i18next';
 import RealTime from '~/components/RealTime';
 import { ArrowDownIcon } from '~/components/Icons';
+import RevenueChart from '~/components/Charts/RevenueChart';
+import GaugeChart from '~/components/Charts/GaugeChart';
+import RecentOrder from '~/components/RecentOrder';
+import { ArrowLeftIcon, ArrowRightIcon } from '@mui/x-date-pickers';
 
 const cx = classNames.bind(styles);
 
@@ -33,6 +37,7 @@ const DashBoard = () => {
     { name: 'Quý', type: 'quarter' },
     { name: 'Năm', type: 'year' },
   ]);
+
   const [currentSortType, setCurrentSortType] = useState(sortTypeData[0]);
   const [isOpenSortTypeMenu, setIsOpenSortTypeMenu] = useState(false);
 
@@ -107,14 +112,22 @@ const DashBoard = () => {
           );
         })}
 
-        <div className={cx('dashboard--pape--chart-column')}>
+        {/* <div className={cx('dashboard--pape--chart-column')}>
           <div className={cx('revenue-header')}>
             <h5>{t('dashboards.desc06')}</h5>
           </div>
           <div className={cx('bar-chart')}>
             <BiaxialLineChart sortType={currentSortType} />
           </div>
+        </div> */}
+
+        <div className={cx('dashboard-revenue-chart')}>
+          <div className={cx('dashboard-revenue-chart-header')}>
+            <h5>Revenue</h5>
+          </div>
+          <RevenueChart sortType={currentSortType} />
         </div>
+
         <div className={cx('dashboard--pape--chart-circle')}>
           <div>
             <h5>{t('dashboards.desc07')}</h5>
@@ -125,10 +138,69 @@ const DashBoard = () => {
         </div>
 
         <div className={cx('dashboard-hybrid-chart')}>
+          <div className={cx('dashboard-hybrid-chart-header')}>
+            <h5>Hàng đặt</h5>
+          </div>
           <TwinBarChart sortType={currentSortType} />
         </div>
 
-        <div> </div>
+        {/* <div className={cx('dashboard-revenue-chart')}>
+          <div className={cx('dashboard-revenue-chart-header')}>
+            <h5>Revenue</h5>
+          </div>
+          <RevenueChart sortType={currentSortType} />
+        </div> */}
+
+        <div className={cx('dashboard-group')}>
+          <div className={cx('dashboard-recent-order')}>
+            <h5>Recent Order</h5>
+            <div className={cx('dashboard-wrapper')}>
+              <span>900000</span>
+              {/* <canvas id="myChart_recent_orders" style={{ display: 'block', height: '60px', width: '165px',color: }}></canvas> */}
+
+              <GaugeChart value={40} color={'red'} />
+            </div>
+          </div>
+
+          <div className={cx('dashboard-recent-order')}>
+            <h5>Active User</h5>
+            <div className={cx('dashboard-wrapper')}>
+              <span>900000</span>
+              {/* <canvas id="myChart_recent_orders" style={{ display: 'block', height: '60px', width: '165px',color: }}></canvas> */}
+
+              <GaugeChart value={40} color={'red'} />
+            </div>
+          </div>
+
+          <div className={cx('dashboard-active-user')}>
+            <h5>Rating rate</h5>
+            <div className={cx('dashboard-wrapper')}>
+              <span>900000</span>
+              <GaugeChart value={20} color={'green'} />
+            </div>
+          </div>
+        </div>
+
+        {/* <div className={cx('recent-orders')}>
+          <h5>Recent Orders</h5>
+          <RecentOrder />
+        </div>
+
+        <div className={cx('top-products')}>
+          <div className={cx('top-products-header')}>
+            <h5>Top Products</h5>
+
+            <div className={cx('button-group')}>
+              <button className={cx('btn-left')}>
+                <ArrowLeftIcon className={cx('icon')} />
+              </button>
+
+              <button className={cx('btn-right')}>
+                <ArrowRightIcon className={cx('icon')} />
+              </button>
+            </div>
+          </div>
+        </div> */}
       </div>
     </div>
   );
