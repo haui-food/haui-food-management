@@ -228,6 +228,10 @@
       }
     }
 
+    .cal-group {
+      height: auto;
+    }
+
     .dashboard-hybrid-chart {
       grid-column: span 9;
       width: 100% !important;
@@ -238,6 +242,7 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+      align-items: stretch;
 
       &-header {
         h5 {
@@ -261,6 +266,9 @@
 
     .dashboard-group {
       grid-column: span 3;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
 
       @include media-breakpoint-down(lg) {
         display: flex;
