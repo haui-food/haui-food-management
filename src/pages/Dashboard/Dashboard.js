@@ -32,10 +32,10 @@ const DashBoard = () => {
     { imgUrl: item4, data: '2.3k', name: t('dashboards.desc05'), border: '#fc8c66' },
   ]);
   const [sortTypeData, setSortTypeData] = useState([
-    { name: 'Tuần', type: 'week' },
-    { name: 'Tháng', type: 'month' },
-    { name: 'Quý', type: 'quarter' },
-    { name: 'Năm', type: 'year' },
+    { name: t('dashboards.cb01'), type: 'week' },
+    { name: t('dashboards.cb02'), type: 'month' },
+    { name: t('dashboards.cb03'), type: 'quarter' },
+    { name: t('dashboards.cb04'), type: 'year' },
   ]);
 
   const [currentSortType, setCurrentSortType] = useState(sortTypeData[0]);

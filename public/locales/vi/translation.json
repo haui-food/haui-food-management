@@ -40,7 +40,11 @@
     "desc05": "Tin nhắn",
     "desc06": "Lượt truy cập",
     "desc07": "Lượt truy cập hiện tại",
-    "lb01": "so với năm trước"
+    "lb01": "so với năm trước",
+    "cb01": "Tuần",
+    "cb02": "Tháng",
+    "cb03": "Quý",
+    "cb04": "Năm"
   },
   "account": {
     "title01": "Hình đại diện",

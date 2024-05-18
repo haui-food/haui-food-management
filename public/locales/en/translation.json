@@ -40,7 +40,11 @@
     "desc05": "Messages",
     "desc06": "Website visits",
     "desc07": "Current Visits",
-    "lb01": "than last year"
+    "lb01": "than last year",
+    "cb01": "Week",
+    "cb02": "Month",
+    "cb03": "Quarter",
+    "cb04": "Year"
   },
   "account": {
     "title01": "Profile picture",
