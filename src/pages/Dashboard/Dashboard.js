@@ -137,37 +137,38 @@ const DashBoard = () => {
           </div>
         </div>
 
-        {/* <div className={cx('dashboard-container')}> */}
-        <div className={cx('dashboard-hybrid-chart', 'cal-group')}>
-          <div className={cx('dashboard-hybrid-chart-header')}>
+        <div className={cx('dashboard-container')}>
+          <div className={cx('hybrid-chart')}>
             <h5>{t('users.desc03')}</h5>
+            <TwinBarChart sortType={currentSortType} />
           </div>
-          <TwinBarChart sortType={currentSortType} />
+
+          <div className={cx('group-chart-wrapper')}>
+            <div className={cx('group-chart')}>
+              <h5>{t('users.title13')}</h5>
+              <div className={cx('group-chart-content')}>
+                <span>9,000,000</span>
+                <GaugeChart value={'40'} />
+              </div>
+            </div>
+
+            <div className={cx('group-chart')}>
+              <h5>{t('users.title14')}</h5>
+              <div className={cx('group-chart-content')}>
+                <span>9,000,000</span>
+                <GaugeChart value={'40'} />
+              </div>
+            </div>
+
+            <div className={cx('group-chart')}>
+              <h5>{t('users.title15')}</h5>
+              <div className={cx('group-chart-content')}>
+                <span>9,000,000</span>
+                <GaugeChart value={'40'} />
+              </div>
+            </div>
+          </div>
         </div>
-        <div className={cx('dashboard-group', 'cal-group')}>
-          <div className={cx('dashboard-recent-order')}>
-            <h5>{t('users.title13')}</h5>
-            <div className={cx('dashboard-wrapper')}>
-              <span>900000</span>
-              <GaugeChart value={40} color={'red'} />
-            </div>
-          </div>
-          <div className={cx('dashboard-recent-order')}>
-            <h5>{t('users.title14')}</h5>
-            <div className={cx('dashboard-wrapper')}>
-              <span>900000</span>
-              <GaugeChart value={40} color={'red'} />
-            </div>
-          </div>
-          <div className={cx('dashboard-active-user')}>
-            <h5>{t('users.title15')}</h5>
-            <div className={cx('dashboard-wrapper')}>
-              <span>900000</span>
-              <GaugeChart value={20} color={'green'} />
-            </div>
-          </div>
-        </div>
-        {/* </div> */}
 
         {/* <div className={cx('recent-orders')}>
           <h5>Recent Orders</h5>
