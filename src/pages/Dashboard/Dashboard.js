@@ -167,6 +167,14 @@ const DashBoard = () => {
                 <GaugeChart value={'40'} />
               </div>
             </div>
+
+            {/* <div className={cx('group-chart')}>
+              <h5>{t('users.title15')}</h5>
+              <div className={cx('group-chart-content')}>
+                <span>9,000,000</span>
+                <GaugeChart value={'40'} />
+              </div>
+            </div> */}
           </div>
         </div>
 
