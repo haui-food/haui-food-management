@@ -17,6 +17,7 @@ const images = {
   vi: require('~/assets/images/languages/vi.png'),
   en: require('~/assets/images/languages/en.png'),
   zh: require('~/assets/images/languages/zh.png'),
+  noImage: require('~/assets/images/no-image.png'),
 };
 
 export default images;
