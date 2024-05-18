@@ -18,6 +18,7 @@ import RevenueChart from '~/components/Charts/RevenueChart';
 import GaugeChart from '~/components/Charts/GaugeChart';
 import RecentOrder from '~/components/RecentOrder';
 import { ArrowLeftIcon, ArrowRightIcon } from '@mui/x-date-pickers';
+import Canvas from '~/components/Canvas';
 
 const cx = classNames.bind(styles);
 
@@ -147,7 +148,10 @@ const DashBoard = () => {
             <div className={cx('group-chart')}>
               <h5>{t('users.title13')}</h5>
               <div className={cx('group-chart-content')}>
-                <span>9,000,000</span>
+                <div className={cx('group-chart-content-left')}>
+                  <span>9,000,000</span>
+                  <Canvas color={'#ffccaa'} />
+                </div>
                 <GaugeChart value={'40'} />
               </div>
             </div>
@@ -155,7 +159,10 @@ const DashBoard = () => {
             <div className={cx('group-chart')}>
               <h5>{t('users.title14')}</h5>
               <div className={cx('group-chart-content')}>
-                <span>9,000,000</span>
+                <div className={cx('group-chart-content-left')}>
+                  <span>9,000,000</span>
+                  <Canvas color={'#fba2dd'} />
+                </div>
                 <GaugeChart value={'40'} />
               </div>
             </div>
@@ -163,7 +170,10 @@ const DashBoard = () => {
             <div className={cx('group-chart')}>
               <h5>{t('users.title15')}</h5>
               <div className={cx('group-chart-content')}>
-                <span>9,000,000</span>
+                <div className={cx('group-chart-content-left')}>
+                  <span>9,000,000</span>
+                  <Canvas color={'#c688ed'} />
+                </div>
                 <GaugeChart value={'40'} />
               </div>
             </div>
