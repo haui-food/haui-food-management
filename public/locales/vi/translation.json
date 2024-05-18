@@ -74,11 +74,20 @@
     "title10": "Khóa",
     "title11": "Hoạt động lần cuối",
     "title12": "Vai trò",
+    "title13": "Đơn hàng gần đây",
+    "title14": "Người dùng hoạt động",
+    "title15": "Tỷ lệ đánh giá",
+    "title16": "Doanh thu",
+
     "inp01": "Tìm kiếm",
     "inp02": "Nhập văn bản",
-    "btn01": "Thêm người dùng",
-    "desc01": "Số hàng mỗi trang",
-    "desc02": "Mật độ"
+    "btn01": "Thêm người dùng mới",
+    "desc01": "Hàng mỗi trang",
+    "desc02": "Dữ liệu chờ xử lý",
+    "desc03": "Tổng quan hiệu suất",
+    "desc04": "lượt truy cập",
+    "desc05": "Đơn đặt hàng",
+    "desc06": "Tỷ lệ mua hàng"
   },
   "toast": {
     "unauthorized": "Bạn không có quyền truy cập"

@@ -11,6 +11,7 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
+import { useTranslation } from 'react-i18next';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend);
 
@@ -59,6 +60,7 @@ const options = {
 };
 
 const TwinBarChart = ({ sortType }) => {
+  const { t } = useTranslation();
   const [filteredData, setFilteredData] = useState(null);
 
   useEffect(() => {
@@ -83,19 +85,19 @@ const TwinBarChart = ({ sortType }) => {
             datasets: [
               {
                 type: 'bar',
-                label: 'Số lượt truy cập',
+                label: t('users.desc04'),
                 backgroundColor: 'rgba(14, 165, 233, 0.5)',
                 data: filteredData.values1,
               },
               {
                 type: 'bar',
-                label: 'Số đơn đặt hàng',
+                label: t('users.desc05'),
                 backgroundColor: 'rgba(255, 99, 132, 0.5)',
                 data: filteredData.values2,
               },
               {
                 type: 'line',
-                label: 'Tỉ lệ đặt hàng',
+                label: t('users.desc06'),
                 backgroundColor: 'rgba(145, 99, 132, 1)',
                 data: filteredData.values,
                 tension: 0.4,
@@ -118,6 +120,7 @@ const TwinBarChart = ({ sortType }) => {
               },
             },
           }}
+          // height={'100%'}
         />
       )}
     </div>
