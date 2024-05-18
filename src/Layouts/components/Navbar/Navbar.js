@@ -1,10 +1,13 @@
+import { useEffect, useState } from 'react';
 import classNames from 'classnames/bind';
 import { useTranslation } from 'react-i18next';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import styles from './Navbar.module.scss';
+
+import routes from '~/config/routes';
+import CategoryOutlinedIcon from '@mui/icons-material/CategoryOutlined';
 import { DashBoardIcon, UserGroupIcon, ProductIcon, ShopIcon } from '~/components/Icons';
-import { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
 
@@ -37,6 +40,12 @@ function Navbar({ toggleNav, isDesktop }) {
       icon: <ProductIcon className={cx('icon')} />,
       title: t('dashboards.title04'),
       slug: 'products',
+    },
+    {
+      path: routes.categories,
+      icon: <CategoryOutlinedIcon fontSize="large" className={cx('icon')} />,
+      title: 'Thể loại',
+      slug: 'categories',
     },
   ]);
   const [currentPage, setCurrentPage] = useState('');

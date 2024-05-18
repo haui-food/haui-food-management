@@ -217,5 +217,15 @@
       font-size: 1.4rem;
       line-height: 142.857%;
     }
+
+    &-choose-file {
+      display: inline-block;
+      margin: 0 auto 15px; 
+      padding: 8px 10px;
+      color: var(--white);
+      border-radius: 4px;
+      background-color: var(--primary-bg);
+      cursor: pointer;
+    }
   }
 }

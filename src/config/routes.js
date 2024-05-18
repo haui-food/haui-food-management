@@ -7,6 +7,7 @@ const routes = {
   dashboard: '/dashboards',
   users: '/users',
   account: 'account',
+  categories: '/categories',
 };
 
 export default routes;

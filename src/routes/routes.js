@@ -10,6 +10,7 @@ import ServerError from '~/pages/ServerError';
 import Dashboard from '~/pages/Dashboard/Dashboard';
 import Users from '~/pages/Users';
 import Account from '~/pages/Account';
+import Category from '~/pages/Category';
 
 const publicRoutes = [
   { path: config.routes.login, component: SignIn, layout: AuthLayout },
@@ -27,6 +28,7 @@ const privateRoutes = [
   { path: config.routes.dashboard, component: Dashboard, layout: DefaultLayout },
   { path: config.routes.users, component: Users, layout: DefaultLayout },
   { path: config.routes.account, component: Account, layout: DefaultLayout },
+  { path: config.routes.categories, component: Category, layout: DefaultLayout },
 ];
 
 export { publicRoutes, privateRoutes };

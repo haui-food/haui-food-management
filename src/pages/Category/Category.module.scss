@@ -1,0 +1,155 @@
+@import 'bootstrap/scss/functions';
+@import 'bootstrap/scss/variables';
+@import 'bootstrap/scss/mixins';
+
+.category {
+  padding: 20px 40px;
+  width: 100%;
+  @include media-breakpoint-down(lg) {
+    padding: 20px;
+  }
+
+  &__heading {
+    margin-bottom: 8px;
+    font-size: 2.4rem;
+    font-weight: 600;
+    line-height: 1.5;
+  }
+
+  &__list {
+    width: auto;
+    min-height: 400px;
+    overflow: auto;
+  }
+}
+
+.button-group {
+  position: absolute;
+  right: 50px;
+  width: 56px;
+  margin-top: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #fff;
+  z-index: 999;
+
+  @include media-breakpoint-down(lg) {
+    right: 36px;
+  }
+
+  @include media-breakpoint-down(md) {
+    right: 10px;
+  }
+
+  @include media-breakpoint-down(sm) {
+    width: 20px;
+    right: 40px;
+    // overflow-x: hidden;
+  }
+
+  button:hover {
+    cursor: pointer;
+  }
+}
+
+.skeleton {
+  &-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 100rem;
+    background-color: rgba(229, 229, 229, 0.605);
+    position: relative;
+    display: flex;
+    // justify-content: start;
+  }
+  &-name,
+  &-phone,
+  &-dateOfBirth,
+  &-lastActive {
+    width: 120px;
+    height: 40px;
+    border-radius: 4px;
+    background-color: rgba(229, 229, 229, 0.605);
+    position: relative;
+  }
+
+  &-email {
+    width: 280px;
+    height: 40px;
+    border-radius: 4px;
+    background-color: rgba(229, 229, 229, 0.605);
+    position: relative;
+  }
+
+  &-gender,
+  &-role {
+    width: 80px;
+    height: 40px;
+    border-radius: 100rem;
+    background-color: rgba(229, 229, 229, 0.605);
+    position: relative;
+  }
+
+  &-isVerify,
+  &-isLocked {
+    width: 30px;
+    height: 30px;
+    border-radius: 4px;
+    background-color: rgba(229, 229, 229, 0.605);
+    position: relative;
+  }
+
+  &-avatar:before,
+  &-name:before,
+  &-email:before,
+  &-phone:before,
+  &-dateOfBirth:before,
+  &-gender:before,
+  &-isVerify:before,
+  &-isLocked:before,
+  &-role:before,
+  &-lastActive:before {
+    content: '';
+    height: 100%;
+    width: 100%;
+    // border-radius: 100rem;
+    animation: slide 0.4s infinite;
+    position: absolute;
+    top: 0;
+    left: -100%;
+    background: linear-gradient(45deg, rgba(229, 229, 229, 0), rgba(255, 255, 255, 0.6), rgba(229, 229, 229, 0));
+    animation: shimmer 1s linear infinite;
+  }
+
+  @keyframes shimmer {
+    100% {
+      left: 100%;
+    }
+  }
+}
+
+:global {
+  .toolbar {
+    position: relative;
+    // align-items: ;
+
+    @include media-breakpoint-down(md) {
+      height: 120px;
+      align-items: start !important;
+    }
+
+    @include media-breakpoint-down(sm) {
+      align-items: start !important;
+      height: 120px;
+    }
+
+    .text-field {
+      @include media-breakpoint-down(md) {
+        position: absolute;
+        margin-top: 50px;
+        width: 90%;
+      }
+    }
+  }
+}
