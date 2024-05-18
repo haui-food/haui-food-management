@@ -110,7 +110,7 @@
   &--pape {
     display: grid;
     grid-template-columns: repeat(12, 1fr);
-    gap: 24px;
+    gap: 20px;
 
     @include media-breakpoint-down(lg) {
       grid-template-columns: repeat(2, 1fr);
@@ -266,7 +266,7 @@
         h5 {
           font-size: 1.8rem;
           font-weight: 600;
-          margin-bottom: 15px;
+          margin-bottom: 32px;
         }
 
         @include media-breakpoint-down(lg) {
@@ -306,12 +306,29 @@
           background-color: #fff;
           padding: 16px;
           border-radius: 12px;
-          margin: 4px 0;
+          margin: 10px 0;
           flex-grow: 1;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+
           &-content {
             display: flex;
             justify-content: space-between;
             align-items: center;
+
+            &-left {
+              display: flex;
+              flex-direction: column;
+              align-items: start;
+              justify-content: center;
+              // background-color: red;
+              span {
+                font-size: 1.4rem;
+                color: #637381;
+                margin: 8px 0;
+              }
+            }
           }
 
           @include media-breakpoint-down(lg) {

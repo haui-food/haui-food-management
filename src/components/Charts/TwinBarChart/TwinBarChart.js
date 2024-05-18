@@ -120,7 +120,7 @@ const TwinBarChart = ({ sortType }) => {
               },
             },
           }}
-          // height={'auto  '}
+          height={200}
         />
       )}
     </div>
