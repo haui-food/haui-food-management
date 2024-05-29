@@ -1,9 +1,9 @@
-"use strict";
+'use strict';
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
+Object.defineProperty(exports, '__esModule', {
+  value: true,
 });
-exports["default"] = void 0;
-var hostname = 'https://api.hauifood.com/api';
+exports['default'] = void 0;
+var hostname = 'https://api.hauifood.com';
 var _default = hostname;
-exports["default"] = _default;
+exports['default'] = _default;
