@@ -51,10 +51,10 @@ function Navbar({ toggleNav, isDesktop }) {
 
   const [shopNavigation, setShopNavigation] = useState([
     {
-      path: '/shop/dashboard',
+      path: '/shop/dashboards',
       icon: <DashBoardIcon className={cx('icon')} />,
       title: t('dashboards.title02'),
-      slug: 'dashboard',
+      slug: 'dashboards',
     },
     {
       path: '/shop/products',
