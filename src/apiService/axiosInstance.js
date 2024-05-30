@@ -1,5 +1,6 @@
 import axios from 'axios';
-import { getLocalStorageItem } from '~/utils/localStorage';
+import { getLocalStorageItem, updateFieldInLocalStorage } from '~/utils/localStorage';
+import { jwtDecode } from 'jwt-decode';
 
 const axiosInstance = axios.create({
   baseURL: process.env.REACT_APP_API_BASE_URL || 'https://api.hauifood.com/',
@@ -13,6 +14,19 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(async (config) => {
   const token = getLocalStorageItem('accessToken');
   if (token) {
+    // const refreshToken = getLocalStorageItem('refreshToken');
+    // const tokenDecoded = jwtDecode(token);
+    // const currentTimeInSeconds = Math.floor(Date.now() / 1000);
+    // if (tokenDecoded.exp < currentTimeInSeconds) {
+    //   // Token đã hết hạn, thực hiện làm mới token
+    //   const res = await axiosInstance.post('/v1/auth/refresh-tokens', { refreshToken });
+    //   const newAccessToken = res.data.data.accessToken;
+    //   localStorage.setItem('accessToken', newAccessToken);
+    //   config.headers['Authorization'] = `Bearer ${newAccessToken}`;
+    // } else {
+    //   config.headers['Authorization'] = `Bearer ${token}`;
+    // }
+
     config.headers['Authorization'] = `Bearer ${token}`;
   }
 
@@ -21,7 +35,7 @@ axiosInstance.interceptors.request.use(async (config) => {
 
 axiosInstance.interceptors.response.use(
   function (response) {
-    // console.log(response);
+    console.log(response);
     if (response.status === 202) {
     }
     return response.data;

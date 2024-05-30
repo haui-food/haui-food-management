@@ -7,7 +7,7 @@ import styles from './Navbar.module.scss';
 
 import routes from '~/config/routes';
 import CategoryOutlinedIcon from '@mui/icons-material/CategoryOutlined';
-import { DashBoardIcon, UserGroupIcon, ProductIcon, ShopIcon } from '~/components/Icons';
+import { DashBoardIcon, UserGroupIcon, ProductIcon, ShopIcon, CartIcon } from '~/components/Icons';
 
 const cx = classNames.bind(styles);
 
@@ -16,7 +16,7 @@ function Navbar({ toggleNav, isDesktop }) {
   const nav = useNavigate();
   const [user, setUser] = useState(null);
 
-  const [navigation, setNavigation] = useState([
+  const [adminNavigation, setAdminNavigation] = useState([
     {
       path: '/dashboards',
       icon: <DashBoardIcon className={cx('icon')} />,
@@ -48,7 +48,30 @@ function Navbar({ toggleNav, isDesktop }) {
       slug: 'categories',
     },
   ]);
+
+  const [shopNavigation, setShopNavigation] = useState([
+    {
+      path: '/shop/dashboard',
+      icon: <DashBoardIcon className={cx('icon')} />,
+      title: t('dashboards.title02'),
+      slug: 'dashboard',
+    },
+    {
+      path: '/shop/products',
+      icon: <ProductIcon className={cx('icon')} />,
+      title: t('dashboards.title04'),
+      slug: 'products',
+    },
+    {
+      path: '/shop/orders',
+      icon: <CartIcon className={cx('icon')} />,
+      title: 'Đơn hàng',
+      slug: 'orders',
+    },
+  ]);
+
   const [currentPage, setCurrentPage] = useState('');
+  const [navigation, setNavigation] = useState(null);
 
   useEffect(() => {
     const currentURL = window.location.href;
@@ -57,13 +80,18 @@ function Navbar({ toggleNav, isDesktop }) {
     setCurrentPage(lastElement);
   }, [window.location.pathname]);
 
+  useEffect(() => {
+    const currentRole = JSON.parse(localStorage.getItem('user'));
+    setNavigation(currentRole?.role === 'admin' ? adminNavigation : shopNavigation);
+  }, []);
+
   return (
     <div className={cx('nav-wrapper')}>
       <div className={cx('core')}>
         <h1>{t('dashboards.title01')}</h1>
-        {navigation.map((item, index) => (
+        {navigation?.map((item, index) => (
           <div
-            className={cx('nav-item', { 'current-page': item.slug === currentPage })}
+            className={cx('nav-item', { 'current-page': window.location.href.includes(item.slug) })}
             key={index}
             onClick={() => {
               setCurrentPage(item.slug);

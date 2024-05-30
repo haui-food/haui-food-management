@@ -19,6 +19,7 @@ import GaugeChart from '~/components/Charts/GaugeChart';
 import RecentOrder from '~/components/RecentOrder';
 import { ArrowLeftIcon, ArrowRightIcon } from '@mui/x-date-pickers';
 import Canvas from '~/components/Canvas';
+import axios from 'axios';
 
 const cx = classNames.bind(styles);
 
@@ -67,6 +68,22 @@ const DashBoard = () => {
       document.removeEventListener('click', handleClickOutSide);
     };
   }, [isOpenSortTypeMenu]);
+
+  useEffect(() => {
+    const refreshToken = JSON.parse(localStorage.getItem('refreshToken'));
+
+    const refreshAccessToken = async () => {
+      try {
+        const res = await axios.post('https://api.hauifood.com/v1/auth/refresh-tokens', { refreshToken: refreshToken });
+        console.log(res);
+      } catch (error) {
+        console.error('Error refreshing token:', error);
+        // Xử lý lỗi khi không thể làm mới token, ví dụ: đăng xuất người dùng
+      }
+    };
+
+    refreshAccessToken();
+  }, []);
 
   return (
     <div className={cx('dashboard')}>
