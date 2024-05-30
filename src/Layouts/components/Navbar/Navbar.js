@@ -7,7 +7,7 @@ import styles from './Navbar.module.scss';
 
 import routes from '~/config/routes';
 import CategoryOutlinedIcon from '@mui/icons-material/CategoryOutlined';
-import { DashBoardIcon, UserGroupIcon, ProductIcon, ShopIcon, CartIcon } from '~/components/Icons';
+import { DashBoardIcon, UserGroupIcon, ProductIcon, ShopIcon, CartIcon, ChatIcon } from '~/components/Icons';
 
 const cx = classNames.bind(styles);
 
@@ -67,6 +67,12 @@ function Navbar({ toggleNav, isDesktop }) {
       icon: <CartIcon className={cx('icon')} />,
       title: 'Đơn hàng',
       slug: 'orders',
+    },
+    {
+      path: '/shop/chats',
+      icon: <ChatIcon className={cx('icon')} />,
+      title: 'Tin nhắn',
+      slug: 'chats',
     },
   ]);
 
