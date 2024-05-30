@@ -1,6 +1,6 @@
 const routes = {
   login: '/',
-  home: '/home',
+  // home: '/home',
   forbidden: '/forbidden',
   internalServer: '/server-error',
   notFound: '*',
@@ -11,6 +11,7 @@ const routes = {
   shopDashboard: '/shop/home',
   shopOders: '/shop/orders',
   shopProducts: '/shop/products',
+  shopChats: '/shop/chats',
 };
 
 export default routes;
