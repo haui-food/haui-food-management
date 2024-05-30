@@ -14,6 +14,7 @@ import Category from '~/pages/Category';
 import ShopDashboard from '~/pages/ShopDashboard';
 import Orders from '~/pages/Orders';
 import ShopProducts from '~/pages/ShopProducts';
+import Products from '~/pages/Products';
 
 const publicRoutes = [
   { path: config.routes.login, component: SignIn, layout: AuthLayout },
@@ -33,6 +34,7 @@ const privateRoutes = [
   { path: config.routes.account, component: Account, layout: DefaultLayout },
   { path: config.routes.categories, component: Category, layout: DefaultLayout },
   { path: config.routes.shopDashboard, component: ShopDashboard, layout: DefaultLayout },
+  { path: config.routes.products, component: Products, layout: DefaultLayout },
   {
     path: config.routes.shopOders,
     component: Orders,

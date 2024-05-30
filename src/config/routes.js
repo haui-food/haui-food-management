@@ -11,6 +11,7 @@ const routes = {
   shopDashboard: '/shop/dashboard',
   shopOders: '/shop/orders',
   shopProducts: '/shop/products',
+  products: '/products',
 };
 
 export default routes;
