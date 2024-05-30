@@ -1,0 +1,156 @@
+@import 'bootstrap/scss/functions';
+@import 'bootstrap/scss/variables';
+@import 'bootstrap/scss/mixins';
+
+.wrapper {
+  padding: 32px;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  background-color: #f6f6f6;
+  gap: 20px;
+
+  @include media-breakpoint-down(lg) {
+    grid-template-columns: repeat(4, 1fr);
+    padding: 12px;
+  }
+
+  @include media-breakpoint-down(md) {
+    grid-template-columns: repeat(2, 1fr);
+    padding: 0;
+  }
+
+  @include media-breakpoint-down(sm) {
+    grid-template-columns: repeat(2, 1fr);
+    padding: 0;
+  }
+
+  .left-content {
+    grid-column: span 3;
+    background-color: #f6f6f6;
+    height: auto;
+    border-radius: 16px;
+    overflow: hidden;
+
+    @include media-breakpoint-down(lg) {
+      grid-column: span 4;
+    }
+
+    @include media-breakpoint-down(md) {
+      grid-column: span 2;
+      width: 100%;
+    }
+
+    @include media-breakpoint-down(sm) {
+      grid-column: span 2;
+      width: 100%;
+    }
+
+    .delivery-gif {
+      width: 100%;
+      height: 280px;
+
+      @include media-breakpoint-down(lg) {
+        width: 100%;
+        height: 360px;
+      }
+
+      @include media-breakpoint-down(md) {
+        width: 100%;
+      }
+
+      @include media-breakpoint-down(sm) {
+        width: 100%;
+      }
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+  }
+
+  .orders {
+    grid-column: span 9;
+    background-color: #fff;
+    height: auto;
+    border-radius: 16px;
+    overflow: hidden;
+    padding: 16px;
+
+    @include media-breakpoint-down(lg) {
+      grid-column: span 4;
+    }
+
+    @include media-breakpoint-down(md) {
+      grid-column: span 2;
+    }
+
+    @include media-breakpoint-down(sm) {
+      grid-column: span 2;
+    }
+
+    h1 {
+      font-weight: 600;
+      font-size: 20px;
+      margin-bottom: 30px;
+    }
+
+    hr {
+      background-color: rgb(168, 168, 168, 0.4);
+      height: 1px;
+      border: none;
+    }
+
+    .category {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+
+      @include media-breakpoint-down(lg) {
+        grid-template-columns: repeat(4, 1fr);
+      }
+
+      @include media-breakpoint-down(md) {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      @include media-breakpoint-down(sm) {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .category-item {
+        grid-column: span 1;
+        display: flex;
+        justify-content: center;
+        position: relative;
+        padding: 12px;
+        cursor: pointer;
+        transition: color 0.3s ease;
+
+        &::after {
+          content: '';
+          position: absolute;
+          bottom: -2px; // Đặt dưới dòng văn bản một chút
+          left: 0;
+          width: 0;
+          height: 2px;
+          background-color: #00ba51; // Màu của border-bottom
+          transition: width 0.3s ease, left 0.3s ease;
+        }
+
+        &.active {
+          color: #00ba51;
+
+          &::after {
+            width: 100%;
+            left: 0;
+          }
+        }
+
+        &:hover::after {
+          width: 100%;
+        }
+      }
+    }
+  }
+}
