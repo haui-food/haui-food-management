@@ -43,6 +43,9 @@ import { useDispatch } from 'react-redux';
 import { ArrowLeftIcon, ArrowRightIcon } from '@mui/x-date-pickers';
 import { getAllUser, createUser, deleteUserById, updateUserById, getUserById } from '~/apiService/userService';
 import { toast } from 'react-toastify';
+import CreateProduct from '~/components/CreateProduct/CreateProduct';
+import { getAllProduct } from '~/apiService/productService';
+import EditProduct from '~/components/EditProduct/EditProduct';
 
 const cx = classNames.bind(styles);
 
@@ -209,26 +212,17 @@ const EnhancedTableToolbar = (props) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const { numSelected, isEdit } = props;
-  const { selected, setSelected } = props;
+  const { selected } = props;
+  const { currentProductArray } = props;
   const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
   const [editModalIsOpen, setEditModalIsOpen] = useState(false);
   const [createModalIsOpen, setCreateModalIsOpen] = useState(false);
 
-  const [userCredentials, setUserCredentials] = useState({
-    fullname: '',
-    email: '',
-    password: '',
-    phone: '',
-    dateOfBirth: '',
-    gender: 'male',
-    isVerify: false,
-    isLocked: false,
-    role: 'user',
-  });
+  const [ProductCredentials, setProductCredentials] = useState({});
 
   const handleInputChange = (e) => {
     const { name, type, checked, value } = e.target;
-    setUserCredentials((prevState) => ({
+    setProductCredentials((prevState) => ({
       ...prevState,
       [name]: type === 'checkbox' ? checked : value,
     }));
@@ -236,7 +230,7 @@ const EnhancedTableToolbar = (props) => {
 
   const handleCreateUser = () => {
     try {
-      dispatch(createUser(userCredentials)).then((result) => {
+      dispatch(createUser(ProductCredentials)).then((result) => {
         if (result.payload.code === 201) {
           toast.success(result.payload.message);
           setCreateModalIsOpen(false);
@@ -278,7 +272,7 @@ const EnhancedTableToolbar = (props) => {
 
   const handleDelete = () => {
     try {
-      console.log(selected);
+      // console.log(selected);
       for (let i = 0; i < selected?.length; i++) {
         dispatch(deleteUserById(selected[i])).then((result) => {
           if (result.payload.code === 200) {
@@ -298,7 +292,7 @@ const EnhancedTableToolbar = (props) => {
   };
 
   const handleEdit = () => {
-    dispatch(updateUserById({ userid: selected[0], userCredentials })).then((result) => {
+    dispatch(updateUserById({ userid: selected[0], ProductCredentials })).then((result) => {
       if (result.payload.code === 200) {
         closeEditModal();
         toast.success(result.payload.message);
@@ -315,35 +309,16 @@ const EnhancedTableToolbar = (props) => {
     closeEditModal();
   };
 
+  console.log(ProductCredentials);
   useEffect(() => {
-    if (selected && selected?.length > 0) {
-      dispatch(getUserById(selected[0])).then((result) => {
-        setUserCredentials({
-          ...userCredentials,
-          fullname: result.payload.data.fullname,
-          email: result.payload.data.email,
-          password: result.payload.data.password,
-          phone: result.payload.data.phone,
-          dateOfBirth: result.payload.data.dateOfBirth,
-          gender: result.payload.data.gender,
-          isVerify: result.payload.data.isVerify,
-          isLocked: result.payload.data.isLocked,
-          role: result.payload.data.role,
-        });
-      });
-    } else {
-      setUserCredentials({
-        fullname: '',
-        email: '',
-        password: '',
-        phone: '',
-        dateOfBirth: '',
-        gender: 'male',
-        isVerify: false,
-        isLocked: false,
-        role: 'user',
-      });
+    if (selected?.length === 1) {
+      console.log(selected);
+      console.log(currentProductArray);
+      const selectedProduct = currentProductArray.filter((product) => product._id === selected[0]);
+      setProductCredentials(selectedProduct[0]);
+      console.log(selectedProduct);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selected?.length]);
 
   return (
@@ -424,7 +399,9 @@ const EnhancedTableToolbar = (props) => {
         closeModal={closeEditModal}
         handleEdit={handleEdit}
       >
-        <EditUser userCredentials={userCredentials} handleInputChange={handleInputChange} />
+        {/* <EditUser ProductCredentials={ProductCredentials} handleInputChange={handleInputChange} /> */}
+
+        <EditProduct productCredentials={ProductCredentials} handleInputChange={handleInputChange} />
       </FormModal>
 
       <FormModal
@@ -435,7 +412,8 @@ const EnhancedTableToolbar = (props) => {
         handle={handleCreate}
         handleCreateUser={handleCreateUser}
       >
-        <CreateUser handleInputChange={handleInputChange} userCredentials={userCredentials} />
+        {/* <CreateUser handleInputChange={handleInputChange} userCredentials={userCredentials} /> */}
+        <CreateProduct handleInputChange={handleInputChange} />
       </FormModal>
     </div>
   );
@@ -450,7 +428,7 @@ export default function Products() {
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const [order, setOrder] = useState('asc');
-  const [orderBy, setOrderBy] = useState('calories');
+  const [orderBy, setOrderBy] = useState('name');
   const [selected, setSelected] = useState([]);
   const [page, setPage] = useState(0);
   const [dense, setDense] = useState(true);
@@ -460,6 +438,7 @@ export default function Products() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPage, setTotalPage] = useState(null);
   const [loading, setLoading] = useState(true);
+
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
@@ -528,8 +507,8 @@ export default function Products() {
   const filteredRows = useMemo(() => {
     return rows?.filter(
       (row) =>
-        row.fullname.toLowerCase().includes(searchKeyword.toLowerCase()) ||
-        row.email.toLowerCase().includes(searchKeyword.toLowerCase()),
+        row?.name?.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+        row?.description?.toLowerCase().includes(searchKeyword.toLowerCase()),
     );
   }, [rows, searchKeyword]);
 
@@ -546,36 +525,10 @@ export default function Products() {
     [order, orderBy, page, rowsPerPage, filteredRows],
   );
 
-  const convertDate = (dateString) => {
-    const date = new Date(dateString);
-
-    const day = date.getDate().toString().padStart(2, '0');
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const year = date.getFullYear();
-
-    const formattedDate = `${day}/${month}/${year}`;
-    return formattedDate;
-  };
-
-  const convertISODate = (isoDateString) => {
-    const date = new Date(isoDateString);
-
-    const year = date.getFullYear();
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const day = date.getDate().toString().padStart(2, '0');
-
-    const hour = date.getHours().toString().padStart(2, '0');
-    const minute = date.getMinutes().toString().padStart(2, '0');
-    const second = date.getSeconds().toString().padStart(2, '0');
-
-    const formattedDate = `${day}/${month}/${year} ${hour}:${minute}:${second}`;
-
-    return formattedDate;
-  };
-
   useEffect(() => {
-    dispatch(getAllUser({ limit: rowsPerPage, page: currentPage })).then((result) => {
-      setRows(result.payload.users);
+    dispatch(getAllProduct({ limit: rowsPerPage, page: currentPage })).then((result) => {
+      // console.log(result);
+      setRows(result.payload.products);
       setLoading(false);
       setTotalPage(result.payload.totalPage);
     });
@@ -595,6 +548,7 @@ export default function Products() {
                 handleChangeSearch(e);
               }}
               selected={selected}
+              currentProductArray={rows}
             />
             <TableContainer>
               <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle" size={dense ? 'small' : 'medium'}>
@@ -659,7 +613,7 @@ export default function Products() {
                             role="checkbox"
                             aria-checked={isItemSelected}
                             tabIndex={-1}
-                            key={row.id}
+                            key={row._id}
                             selected={isItemSelected}
                             sx={{ cursor: 'pointer' }}
                           >
@@ -673,24 +627,17 @@ export default function Products() {
                               />
                             </TableCell>
                             <TableCell align="center">
-                              <Avatar alt={row.fullname} src={row.avatar} />
+                              <Avatar alt={row.name} src={row?.image} />
                             </TableCell>
                             <TableCell component="th" id={labelId} scope="row" padding="none">
-                              {row.fullname}
+                              {row?.name}
                             </TableCell>
-                            <TableCell align="center">{row.email}</TableCell>
-                            <TableCell align="center">{row.phone}</TableCell>
-                            <TableCell align="left">{convertDate(row.dateOfBirth)}</TableCell>
-                            <TableCell align="left">
-                              <Chip
-                                label={row.gender}
-                                variant="outlined"
-                                style={{
-                                  color: row.gender === 'male' ? '#5ab0f5' : '#ec407a',
-                                  borderColor: row.gender === 'male' ? '#64b5f6' : '#ec407a',
-                                  backgroundColor: row.gender === 'male' ? '#64b5f633' : '#ec407a14',
-                                }}
-                              />
+                            <TableCell align="center">{row?.description}</TableCell>
+                            <TableCell align="center">{row?.price}</TableCell>
+                            <TableCell align="center">{row?.shop?.fullname}</TableCell>
+                            <TableCell align="center">{row?.category?.name}</TableCell>
+                            <TableCell align="left" padding="none">
+                              {row?.slug.trim()}
                             </TableCell>
                           </TableRow>
                         )}
