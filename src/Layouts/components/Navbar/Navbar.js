@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import styles from './Navbar.module.scss';
+import config from '~/config';
 
 import routes from '~/config/routes';
 import CategoryOutlinedIcon from '@mui/icons-material/CategoryOutlined';
@@ -18,31 +19,31 @@ function Navbar({ toggleNav, isDesktop }) {
 
   const [adminNavigation, setAdminNavigation] = useState([
     {
-      path: '/dashboards',
+      path: config.routes.dashboard,
       icon: <DashBoardIcon className={cx('icon')} />,
       title: t('dashboards.title02'),
-      slug: 'dashboards',
+      slug: 'home',
     },
     {
-      path: '/users',
+      path: config.routes.users,
       icon: <UserGroupIcon className={cx('icon')} />,
       title: t('dashboards.title03'),
       slug: 'users',
     },
     {
-      path: '/shop',
+      path: config.routes.shop,
       icon: <ShopIcon className={cx('icon')} />,
       title: 'Shop',
       slug: 'shop',
     },
     {
-      path: '/products',
+      path: config.routes.products,
       icon: <ProductIcon className={cx('icon')} />,
       title: t('dashboards.title04'),
       slug: 'products',
     },
     {
-      path: routes.categories,
+      path: config.routes.categories,
       icon: <CategoryOutlinedIcon fontSize="large" className={cx('icon')} />,
       title: 'Thể loại',
       slug: 'categories',
@@ -51,25 +52,25 @@ function Navbar({ toggleNav, isDesktop }) {
 
   const [shopNavigation, setShopNavigation] = useState([
     {
-      path: '/shop/dashboards',
+      path: config.routes.shopDashboard,
       icon: <DashBoardIcon className={cx('icon')} />,
       title: t('dashboards.title02'),
-      slug: 'dashboards',
+      slug: 'home',
     },
     {
-      path: '/shop/products',
+      path: config.routes.shopProducts,
       icon: <ProductIcon className={cx('icon')} />,
       title: t('dashboards.title04'),
       slug: 'products',
     },
     {
-      path: '/shop/orders',
+      path: config.routes.shopOders,
       icon: <CartIcon className={cx('icon')} />,
       title: 'Đơn hàng',
       slug: 'orders',
     },
     {
-      path: '/shop/chats',
+      path: config.routes.shopChats,
       icon: <ChatIcon className={cx('icon')} />,
       title: 'Tin nhắn',
       slug: 'chats',
