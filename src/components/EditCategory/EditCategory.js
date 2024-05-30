@@ -8,7 +8,7 @@ import images from '~/assets/images';
 
 const cx = classNames.bind(styles);
 
-function EditCategory({ handleInputChange, handleSelectImage, categoryCredentials, currentImage }) {
+function EditCategory({ handleInputChange, handleSelectImage, categoryCredentials, currentImage, currentName }) {
   const { t } = useTranslation();
 
   return (
@@ -20,7 +20,7 @@ function EditCategory({ handleInputChange, handleSelectImage, categoryCredential
           </label>
           <div className={cx('form__text-input', 'form__text-input--sm')}>
             <input
-              value={categoryCredentials.categoryName}
+              value={currentName || categoryCredentials.categoryName}
               onChange={(e) => handleInputChange(e)}
               type="text"
               id="category-name"
@@ -39,7 +39,11 @@ function EditCategory({ handleInputChange, handleSelectImage, categoryCredential
             Chọn hình ảnh
           </label>
 
-          <img className={cx('currentImage')} src={currentImage || categoryCredentials.categoryImage || images.noImage} alt="" />
+          <img
+            className={cx('currentImage')}
+            src={currentImage || categoryCredentials.categoryImage || images.noImage}
+            alt=""
+          />
 
           <div style={{ display: 'none' }} className={cx('form__text-input', 'form__text-input--sm')}>
             <input onInput={(e) => handleSelectImage(e)} type="file" accept="image/*" id="image" name="image" />
