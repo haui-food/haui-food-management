@@ -8,7 +8,7 @@ import images from '~/assets/images';
 
 const cx = classNames.bind(styles);
 
-function CreateCategory({ handleInputChange, handleSelectImage, categoryCredentials, currentImage }) {
+function CreateCategory({ handleInputChange, handleSelectImage, categoryCredentials, currentImage, currentName }) {
   const { t } = useTranslation();
 
   return (
@@ -20,7 +20,7 @@ function CreateCategory({ handleInputChange, handleSelectImage, categoryCredenti
           </label>
           <div className={cx('form__text-input', 'form__text-input--sm')}>
             <input
-              value={categoryCredentials.categoryName}
+              value={currentName || categoryCredentials.categoryName}
               onChange={(e) => handleInputChange(e)}
               type="text"
               id="category-name"

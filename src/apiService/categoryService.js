@@ -32,7 +32,7 @@ export const updateCategoryById = createAsyncThunk(
   'category/updateById',
   async ({ categoryId, categoryCredentials }, { rejectWithValue }) => {
     try {
-      const res = await callApi('PUT', `/v1/categories/${categoryId}`, {}, categoryCredentials);
+      const res = await callApi('PUT', `/v1/categories/${categoryId}`, null, categoryCredentials);
       return res;
     } catch (error) {
       return rejectWithValue(error.message);
