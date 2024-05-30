@@ -3,14 +3,12 @@ import classNames from 'classnames/bind';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-toastify';
 import { Oval } from '@agney/react-loading';
-
 import styles from './SignIn.module.scss';
 import { EmailIcon, PasswordIcon } from '~/components/Icons';
 import Button from '~/components/Button';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { loginUser } from '~/apiService/authService';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 import config from '~/config';
 
 const cx = classNames.bind(styles);
@@ -19,58 +17,40 @@ function SignIn() {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const reduxData = useSelector((prop) => prop.auth);
+  const reduxData = useSelector((state) => state.auth);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [submit, setSubmit] = useState(true);
   const [showPassword, setShowPassword] = useState('password');
-  const [loginForm, setLoginForm] = useState({
-    email: '',
-    password: '',
-  });
+  const [loginForm, setLoginForm] = useState({ email: '', password: '' });
+  const [errors, setErrors] = useState({ email: '', password: '' });
 
   const emailRegex = useMemo(() => /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/, []);
   const passwordRegex = useMemo(() => /^(?=.*[@-_]).{8,}$/, []);
-  const [errors, setErrors] = useState({ email: '', password: '' });
 
   const checkSubmit = useCallback(() => {
     setSubmit(!emailRegex.test(email) || !passwordRegex.test(password) || email === '' || password === '');
-  }, [emailRegex, passwordRegex, email, password]);
+  }, [email, password, emailRegex, passwordRegex]);
 
   const handleChangeEmail = useCallback(() => {
-    if (!emailRegex.test(email)) {
-      setErrors({ ...errors, email: t('errors.err02') });
-    }
-    if (email === '') {
-      setErrors({ ...errors, email: t('errors.err01') });
-    }
-    if (emailRegex.test(email)) {
-      setErrors({ ...errors, email: '' });
-    }
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      email: email === '' ? t('errors.err01') : !emailRegex.test(email) ? t('errors.err02') : '',
+    }));
     checkSubmit();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [email, checkSubmit, emailRegex, errors]);
+  }, [email, checkSubmit, emailRegex, t]);
 
   const handleChangePassword = useCallback(() => {
-    if (!passwordRegex.test(password)) {
-      setErrors({
-        ...errors,
-        password: t('errors.err04'),
-      });
-    }
-    if (passwordRegex.test(password)) {
-      setErrors({ ...errors, password: '' });
-    }
-    if (password === '') {
-      setErrors({ ...errors, password: t('errors.err03') });
-    }
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      password: password === '' ? t('errors.err03') : !passwordRegex.test(password) ? t('errors.err04') : '',
+    }));
     checkSubmit();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [passwordRegex, password, errors, checkSubmit]);
+  }, [password, checkSubmit, passwordRegex, t]);
 
   const handleShowPassword = () => {
-    setShowPassword(showPassword === 'password' ? 'text' : 'password');
+    setShowPassword((prevShowPassword) => (prevShowPassword === 'password' ? 'text' : 'password'));
   };
 
   const handleInputChange = (event) => {
@@ -79,19 +59,20 @@ function SignIn() {
       ...prevLoginForm,
       [name]: value,
     }));
-    checkSubmit();
+    if (name === 'email') setEmail(value);
+    if (name === 'password') setPassword(value);
   };
-  // useEffect(() => {
-  //   console.log(reduxData);
-  // }, [reduxData]);
 
   const handleSubmit = (e) => {
     dispatch(loginUser(loginForm)).then((result) => {
-      // console.log(result);
+      console.log(result);
       if (result.payload.code === 200) {
-        if (['admin', 'shop'].includes(result.payload.data.user.role)) {
+        if (['admin'].includes(result.payload.data.user.role)) {
           toast.success(result.payload.message);
           navigate(config.routes.dashboard, { replace: true });
+        } else if (['shop'].includes(result.payload.data.user.role)) {
+          toast.success(result.payload.message);
+          navigate(config.routes.shopDashboard, { replace: true });
         } else {
           toast.warning(t('toast.unauthorized'));
         }
@@ -102,15 +83,10 @@ function SignIn() {
   };
 
   useEffect(() => {
-    if (passwordRegex.test(password) && emailRegex.test(email)) {
-      setSubmit(false);
-    } else {
-      setSubmit(true);
+    if (password !== '' && email !== '') {
+      checkSubmit();
     }
-    if (passwordRegex.test(password)) {
-      setErrors({ ...errors, password: '' });
-    }
-  }, [password, passwordRegex, email, emailRegex, errors]);
+  }, [password, email, checkSubmit]);
 
   useEffect(() => {
     const showToast = localStorage.getItem('showToast');
@@ -138,10 +114,7 @@ function SignIn() {
               type="email"
               name="email"
               value={email}
-              onChange={(e) => {
-                setEmail(e.target.value);
-                handleInputChange(e);
-              }}
+              onChange={(e) => handleInputChange(e)}
               onBlur={handleChangeEmail}
               placeholder={t('form.tp01')}
               className={cx('form__input')}
@@ -155,10 +128,7 @@ function SignIn() {
           <div className={cx('form__text-input')} style={errors.password !== '' ? { border: '1px solid #f44336' } : {}}>
             <input
               value={password}
-              onChange={(e) => {
-                setPassword(e.target.value);
-                handleInputChange(e);
-              }}
+              onChange={(e) => handleInputChange(e)}
               onBlur={handleChangePassword}
               type={showPassword}
               name="password"
@@ -186,13 +156,7 @@ function SignIn() {
         </div>
 
         <div style={reduxData.loading ? { cursor: 'no-drop' } : {}} className={cx('form__group', 'login__btn-group')}>
-          <Button
-            primary
-            auth
-            disabled={submit || reduxData.loading}
-            onClick={handleSubmit}
-            // leftIcon={loading && <Oval width="20" color="#fff" />}
-          >
+          <Button primary auth disabled={submit || reduxData.loading} onClick={handleSubmit}>
             {reduxData.loading ? t('button.btnLoginLoading') : t('button.btnLogin')}
           </Button>
         </div>

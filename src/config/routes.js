@@ -8,6 +8,9 @@ const routes = {
   users: '/users',
   account: 'account',
   categories: '/categories',
+  shopDashboard: '/shop/dashboard',
+  shopOders: '/shop/orders',
+  shopProducts: '/shop/products',
 };
 
 export default routes;
