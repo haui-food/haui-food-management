@@ -219,13 +219,11 @@ const EnhancedTableToolbar = (props) => {
     categoryName: '',
     categoryImage: null,
   });
+  const [currentName, setCurrentName] = useState('');
   const [currentImage, setCurrentImage] = useState();
 
   const handleInputChange = (e) => {
-    setCategoryCredentials((prevState) => ({
-      ...prevState,
-      categoryName: e.target.value,
-    }));
+    setCurrentName(e.target.value);
   };
 
   console.log(categoryCredentials.categoryImage);
@@ -252,9 +250,7 @@ const EnhancedTableToolbar = (props) => {
 
   const handleCreateUser = () => {
     try {
-      dispatch(
-        createCategory({ name: categoryCredentials.categoryName, image: categoryCredentials.categoryImage }),
-      ).then((result) => {
+      dispatch(createCategory({ name: currentName, image: currentImage })).then((result) => {
         if (result.payload.code === 201) {
           toast.success(result.payload.message);
           setCreateModalIsOpen(false);
@@ -284,6 +280,8 @@ const EnhancedTableToolbar = (props) => {
 
   const closeEditModal = () => {
     setEditModalIsOpen(false);
+    setCurrentImage(null);
+    setCurrentName('');
   };
 
   const openCreateModal = () => {
@@ -293,6 +291,7 @@ const EnhancedTableToolbar = (props) => {
   const closeCreateModal = () => {
     setCreateModalIsOpen(false);
     setCurrentImage(null);
+    setCurrentName('');
   };
 
   const handleDelete = () => {
@@ -316,7 +315,14 @@ const EnhancedTableToolbar = (props) => {
   };
 
   const handleEdit = () => {
-    dispatch(updateCategoryById({ categoryId: selected[0], categoryCredentials })).then((result) => {
+    const data = {};
+    if (currentName) {
+      data.name = currentName;
+    }
+    if (currentImage) {
+      data.image = currentImage;
+    }
+    dispatch(updateCategoryById({ categoryId: selected[0], categoryCredentials: data })).then((result) => {
       if (result.payload.code === 200) {
         closeEditModal();
         toast.success(result.payload.message);
@@ -334,7 +340,7 @@ const EnhancedTableToolbar = (props) => {
   };
 
   useEffect(() => {
-    if (selected && selected.length > 0) {
+    if (selected && selected.length > 0 && editModalIsOpen) {
       dispatch(getCategoryById(selected[0])).then((result) => {
         setCategoryCredentials({
           ...categoryCredentials,
@@ -345,10 +351,10 @@ const EnhancedTableToolbar = (props) => {
     } else {
       setCategoryCredentials({
         categoryName: '',
-        categoryImage: '',
+        categoryImage: null,
       });
     }
-  }, [selected.length]);
+  }, [selected.length, editModalIsOpen]);
 
   return (
     <div>
@@ -428,7 +434,13 @@ const EnhancedTableToolbar = (props) => {
         closeModal={closeEditModal}
         handleEdit={handleEdit}
       >
-        <EditCategory categoryCredentials={categoryCredentials} handleInputChange={handleInputChange} />
+        <EditCategory
+          categoryCredentials={categoryCredentials}
+          handleInputChange={handleInputChange}
+          handleSelectImage={handleSelectImage}
+          currentImage={currentImage}
+          currentName={currentName}
+        />
       </FormModal>
 
       <FormModal
@@ -444,6 +456,7 @@ const EnhancedTableToolbar = (props) => {
           handleSelectImage={handleSelectImage}
           categoryCredentials={categoryCredentials}
           currentImage={currentImage}
+          currentName={currentName}
         />
       </FormModal>
     </div>
@@ -535,7 +548,7 @@ export default function Category() {
   };
 
   const filteredRows = useMemo(() => {
-    return rows.filter((row) => row.name && row.name.toLowerCase().includes(searchKeyword.toLowerCase()));
+    return rows?.filter((row) => row.name && row.name.toLowerCase().includes(searchKeyword.toLowerCase()));
   }, [rows, searchKeyword]);
 
   const isSelected = (id) => selected.indexOf(id) !== -1;
@@ -615,7 +628,7 @@ export default function Category() {
                 {/* Body */}
 
                 <TableBody>
-                  {visibleRows.map((row, index) => {
+                  {visibleRows && visibleRows.map((row, index) => {
                     const isItemSelected = isSelected(row._id);
                     const labelId = `enhanced-table-checkbox-${index}`;
 
