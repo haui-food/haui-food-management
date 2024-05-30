@@ -18,10 +18,10 @@ function Navbar({ toggleNav, isDesktop }) {
 
   const [adminNavigation, setAdminNavigation] = useState([
     {
-      path: '/dashboards',
+      path: '/home',
       icon: <DashBoardIcon className={cx('icon')} />,
       title: t('dashboards.title02'),
-      slug: 'dashboards',
+      slug: 'home',
     },
     {
       path: '/users',
@@ -51,10 +51,10 @@ function Navbar({ toggleNav, isDesktop }) {
 
   const [shopNavigation, setShopNavigation] = useState([
     {
-      path: '/shop/dashboards',
+      path: '/shop/home',
       icon: <DashBoardIcon className={cx('icon')} />,
       title: t('dashboards.title02'),
-      slug: 'dashboards',
+      slug: 'home',
     },
     {
       path: '/shop/products',
