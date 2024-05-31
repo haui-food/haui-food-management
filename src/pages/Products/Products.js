@@ -42,7 +42,7 @@ import EditProduct from '~/components/EditProduct/EditProduct';
 
 import { createUser, deleteUserById } from '~/apiService/userService';
 import CreateProduct from '~/components/CreateProduct/CreateProduct';
-import { getAllProduct, updateProduct } from '~/apiService/productService';
+import { createProduct, getAllProduct, updateProduct } from '~/apiService/productService';
 
 const cx = classNames.bind(styles);
 
@@ -216,8 +216,10 @@ const EnhancedTableToolbar = (props) => {
   const [ProductCredentials, setProductCredentials] = useState({});
   const [oldProductCredentials, setOldProductCredentials] = useState({});
   const [imageSelected, setImageSelected] = useState(null);
+  const [error, setError] = useState({});
 
   const handleInputChange = (e, category) => {
+    // Nếu có sự kiện e được truyền vào (ví dụ: thay đổi giá trị của input)
     if (e) {
       const { name, value } = e.target;
       setProductCredentials((prevState) => ({
@@ -226,30 +228,77 @@ const EnhancedTableToolbar = (props) => {
       }));
     }
 
+    // Nếu có category được truyền vào (ví dụ: thay đổi giá trị của combobox)
     if (category) {
       setProductCredentials((prevState) => ({
         ...prevState,
         category: category,
       }));
+
+      // Đặt message lỗi của category về rỗng
+      setError((prevState) => ({
+        ...prevState,
+        category: '',
+      }));
     }
   };
 
+  const validate = (e) => {
+    const inputs = e ? [e.target] : document.querySelectorAll('input');
+    const validators = {
+      name: (value) => !value && 'Tên sản phẩm không được để trống',
+      price: (value) => !value && 'Giá sản phẩm không được để trống',
+
+      // Thêm các trường hợp khác nếu cần
+    };
+
+    let newErrors = {};
+    inputs.forEach((input) => {
+      const { name, value } = input;
+      const errorMessage = validators[name] ? validators[name](value) : '';
+      newErrors[name] = errorMessage || '';
+    });
+
+    setError((prevErrors) => ({
+      ...prevErrors,
+      ...newErrors,
+    }));
+
+    const hasError = Object.values(newErrors).every((error) => error === '');
+    return hasError;
+  };
+
   const handleCreateUser = () => {
-    try {
-      dispatch(createUser(ProductCredentials)).then((result) => {
-        if (result.payload.code === 201) {
-          toast.success(result.payload.message);
-          setCreateModalIsOpen(false);
-          setTimeout(() => {
-            window.location.href = '/users';
-          }, 1000);
-          return;
-        }
-        toast.error(result.payload.message);
-      });
-    } catch (error) {
-      toast.error(error.message);
+    let isSubmit = true;
+    const productData = {
+      name: ProductCredentials?.name,
+      description: ProductCredentials?.description,
+      price: ProductCredentials?.price,
+      category: ProductCredentials?.category?._id,
+    };
+
+    console.log(validate());
+
+    if (!productData.category) {
+      setError((prevState) => ({
+        ...prevState,
+        category: 'Thể loại sản phẩm không được để trống',
+      }));
+      isSubmit = false;
     }
+
+    if (!isSubmit) {
+      return;
+    }
+
+    dispatch(
+      createProduct({
+        productData: productData,
+        avatar: imageSelected,
+      }),
+    ).then((result) => {
+      console.log(result);
+    });
   };
 
   const openConfirmModal = () => {
@@ -274,6 +323,7 @@ const EnhancedTableToolbar = (props) => {
 
   const closeCreateModal = () => {
     setCreateModalIsOpen(false);
+    setError({});
   };
 
   const handleDelete = () => {
@@ -348,12 +398,20 @@ const EnhancedTableToolbar = (props) => {
         price: selectedProduct[0].price,
         category: selectedProduct[0]?.category?._id ?? '',
       });
+    } else {
+      setProductCredentials({
+        name: '',
+        description: '',
+        price: '',
+        category: {},
+        image: null,
+      });
     }
     //gán lại giá trị cho image selected mỗi khi đóng mở modal
     setImageSelected(null);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selected?.length, editModalIsOpen]);
+  }, [selected?.length, editModalIsOpen, createModalIsOpen]);
 
   return (
     <div>
@@ -442,14 +500,20 @@ const EnhancedTableToolbar = (props) => {
       </FormModal>
 
       <FormModal
-        title="Tạo mới người dùng"
+        title="Tạo sản phẩm mới"
         type="Tạo"
         isOpen={createModalIsOpen}
         closeModal={closeCreateModal}
         handle={handleCreate}
         handleCreateUser={handleCreateUser}
       >
-        <CreateProduct handleInputChange={handleInputChange} />
+        <CreateProduct
+          productCredentials={ProductCredentials}
+          handleInputChange={handleInputChange}
+          onImageChange={setImageSelected}
+          onError={error}
+          handleValidate={validate}
+        />
       </FormModal>
     </div>
   );

@@ -40,3 +40,33 @@ export const updateProduct = createAsyncThunk(
     }
   },
 );
+
+export const createProduct = createAsyncThunk(
+  'product/create',
+  async ({ productData, avatar }, { rejectWithValue }) => {
+    try {
+      const customHeaders = {
+        'Content-Type': 'multipart/form-data',
+        // Các header khác nếu cần
+      };
+      //  Tạo một đối tượng FormData
+      const formData = new FormData();
+
+      // Thêm dữ liệu người dùng vào formData
+      Object.keys(productData).forEach((key) => {
+        formData.append(key, productData[key]);
+      });
+
+      // Thêm ảnh vào formData
+      if (avatar) {
+        formData.append('avatar', avatar);
+      }
+
+      const response = await callApi('post', `v1/products`, null, formData, customHeaders);
+
+      return response;
+    } catch (error) {
+      return rejectWithValue({ ...error });
+    }
+  },
+);
