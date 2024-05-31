@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { getOrders } from '~/apiService/shopService';
+import { getOrdersByStatus } from '~/apiService/shopService';
 
 const shopSlice = createSlice({
   name: 'shop',
@@ -12,14 +12,14 @@ const shopSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(getOrders.pending, (state) => {
+      .addCase(getOrdersByStatus.pending, (state) => {
         state.loading = true;
       })
-      .addCase(getOrders.fulfilled, (state, action) => {
+      .addCase(getOrdersByStatus.fulfilled, (state, action) => {
         state.loading = false;
         state.orders = action.payload;
       })
-      .addCase(getOrders.rejected, (state, action) => {
+      .addCase(getOrdersByStatus.rejected, (state, action) => {
         state.loading = false;
       });
   },
