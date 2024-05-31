@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
 import classNames from 'classnames/bind';
-
 import { useTranslation } from 'react-i18next';
-
 import PropTypes from 'prop-types';
+import { useDispatch } from 'react-redux';
+import { toast } from 'react-toastify';
+
 import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
@@ -25,20 +26,20 @@ import Switch from '@mui/material/Switch';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import { visuallyHidden } from '@mui/utils';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import 'react-loading-skeleton/dist/skeleton.css';
+import { Avatar } from '@mui/material';
+import TextField from '@mui/material/TextField';
+import { ArrowLeftIcon, ArrowRightIcon } from '@mui/x-date-pickers';
 
 import styles from './Category.module.scss';
+import 'react-loading-skeleton/dist/skeleton.css';
+
 import RealTime from '~/components/RealTime';
 import Button from '~/components/Button';
 import { EditIcon, PlusIcon } from '~/components/Icons';
-import { Avatar } from '@mui/material';
 import ConfirmModal from '~/components/ConfirmModal';
 import FormModal from '~/components/FormModal';
-import EditUser from '~/components/EditUser';
 import CreateCategory from '~/components/CreateCategory';
-import TextField from '@mui/material/TextField';
-import { useDispatch } from 'react-redux';
-import { ArrowLeftIcon, ArrowRightIcon } from '@mui/x-date-pickers';
+import EditCategory from '~/components/EditCategory';
 import {
   getAllCategory,
   createCategory,
@@ -46,8 +47,6 @@ import {
   updateCategoryById,
   deleteCategoryById,
 } from '~/apiService/categoryService';
-import { toast } from 'react-toastify';
-import EditCategory from '~/components/EditCategory';
 
 const cx = classNames.bind(styles);
 
@@ -144,8 +143,8 @@ const EnhancedTableHead = (props) => {
   const { t } = useTranslation();
 
   const headCells = [
-    { id: 'image', numeric: false, disablePadding: false, label: 'Hình ảnh' },
-    { id: 'name', numeric: false, disablePadding: true, label: 'Tên thể loại' },
+    { id: 'image', numeric: false, disablePadding: false, label: t('category.title01') },
+    { id: 'name', numeric: false, disablePadding: true, label: t('category.title02') },
     { id: 'slug', numeric: true, disablePadding: false, label: 'Slug' },
   ];
   const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
@@ -340,7 +339,7 @@ const EnhancedTableToolbar = (props) => {
   };
 
   useEffect(() => {
-    if (selected && selected.length > 0 && editModalIsOpen) {
+    if (selected && selected.length > 0) {
       dispatch(getCategoryById(selected[0])).then((result) => {
         setCategoryCredentials({
           ...categoryCredentials,
@@ -354,7 +353,7 @@ const EnhancedTableToolbar = (props) => {
         categoryImage: null,
       });
     }
-  }, [selected.length, editModalIsOpen]);
+  }, [selected.length]);
 
   return (
     <div>
@@ -371,12 +370,12 @@ const EnhancedTableToolbar = (props) => {
       >
         {numSelected > 0 ? (
           <Typography sx={{ flex: '1 1 100%' }} color="inherit" variant="subtitle1" component="div">
-            {numSelected} selected
+            {numSelected} {t('form.lb02')}
           </Typography>
         ) : (
           <>
             <Typography sx={{ flex: '1 1 100%' }} variant="h6" component="div">
-              Thể loại
+              {t('category.heading02')}
             </Typography>
             <TextField
               label={t('users.inp01')}
@@ -396,12 +395,12 @@ const EnhancedTableToolbar = (props) => {
 
         {numSelected > 0 ? (
           <>
-            <Tooltip title="Delete">
+            <Tooltip title={t('button.btn01')}>
               <IconButton onClick={openConfirmModal}>
                 <DeleteIcon />
               </IconButton>
             </Tooltip>
-            <Tooltip title="Edit">
+            <Tooltip title={t('button.btn03')}>
               <IconButton disabled={isEdit} onClick={openEditModal}>
                 <EditIcon />
               </IconButton>
@@ -409,27 +408,23 @@ const EnhancedTableToolbar = (props) => {
           </>
         ) : (
           <Button onClick={openCreateModal} leftIcon={<PlusIcon />} addUser primary>
-            Thêm thể loại
+            {t('button.btn06')}
           </Button>
         )}
       </Toolbar>
 
       <ConfirmModal
-        title="Xác nhận xóa thể loại"
-        desc={
-          isEdit
-            ? 'Bạn có chắc chắn muốn xóa tất cả những thể loại này không?'
-            : 'Bạn có chắc chắn muốn xóa thể loại này không?'
-        }
-        type="Xóa"
+        title={t('category.title03')}
+        desc={isEdit ? t('category.desc01') : t('category.desc02')}
+        type={t('button.btn01')}
         isOpen={confirmModalIsOpen}
         closeModal={closeConfirmModal}
         handle={handleDelete}
       />
 
       <FormModal
-        title="Sửa thông tin thể loại"
-        type="Sửa"
+        title={t('category.title04')}
+        type={t('button.btn03')}
         isOpen={editModalIsOpen}
         closeModal={closeEditModal}
         handleEdit={handleEdit}
@@ -444,8 +439,8 @@ const EnhancedTableToolbar = (props) => {
       </FormModal>
 
       <FormModal
-        title="Tạo mới thể loại"
-        type="Tạo"
+        title={t('category.title05')}
+        type={t('button.btn02')}
         isOpen={createModalIsOpen}
         closeModal={closeCreateModal}
         handle={handleCreate}
@@ -564,33 +559,6 @@ export default function Category() {
     [order, orderBy, page, rowsPerPage, filteredRows],
   );
 
-  const convertDate = (dateString) => {
-    const date = new Date(dateString);
-
-    const day = date.getDate().toString().padStart(2, '0');
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const year = date.getFullYear();
-
-    const formattedDate = `${day}/${month}/${year}`;
-    return formattedDate;
-  };
-
-  const convertISODate = (isoDateString) => {
-    const date = new Date(isoDateString);
-
-    const year = date.getFullYear();
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const day = date.getDate().toString().padStart(2, '0');
-
-    const hour = date.getHours().toString().padStart(2, '0');
-    const minute = date.getMinutes().toString().padStart(2, '0');
-    const second = date.getSeconds().toString().padStart(2, '0');
-
-    const formattedDate = `${day}/${month}/${year} ${hour}:${minute}:${second}`;
-
-    return formattedDate;
-  };
-
   useEffect(() => {
     dispatch(getAllCategory({ limit: rowsPerPage, page: currentPage })).then((result) => {
       setRows(result.payload.categories);
@@ -601,7 +569,7 @@ export default function Category() {
 
   return (
     <div className={cx('category')}>
-      <h1 className={cx('category__heading')}>Danh sách thể loại</h1>
+      <h1 className={cx('category__heading')}>{t('category.heading01')}</h1>
       <RealTime />
       <ThemeProvider theme={theme}>
         <Box className={cx('category__list')}>
@@ -628,67 +596,68 @@ export default function Category() {
                 {/* Body */}
 
                 <TableBody>
-                  {visibleRows && visibleRows.map((row, index) => {
-                    const isItemSelected = isSelected(row._id);
-                    const labelId = `enhanced-table-checkbox-${index}`;
+                  {visibleRows &&
+                    visibleRows.map((row, index) => {
+                      const isItemSelected = isSelected(row._id);
+                      const labelId = `enhanced-table-checkbox-${index}`;
 
-                    return (
-                      <>
-                        {loading ? (
-                          <TableRow>
-                            <TableCell role="checkbox" className={cx('skeleton-checkBox')}>
-                              <Checkbox
-                                color="primary"
-                                checked={isItemSelected}
-                                inputProps={{
-                                  'aria-labelledby': labelId,
-                                }}
-                                disabled
-                                style={{ marginLeft: '-10px' }}
-                              />
-                            </TableCell>
-                            <TableCell style={{ width: '80px' }}>
-                              <div className={cx('skeleton-avatar')}></div>
-                            </TableCell>
-                            <TableCell>
-                              <div className={cx('skeleton-name')}></div>
-                            </TableCell>
-                            <TableCell>
-                              <div className={cx('skeleton-email')}></div>
-                            </TableCell>
-                          </TableRow>
-                        ) : (
-                          <TableRow
-                            hover
-                            onClick={(event) => handleClick(event, row._id)}
-                            role="checkbox"
-                            aria-checked={isItemSelected}
-                            tabIndex={-1}
-                            key={row.id}
-                            selected={isItemSelected}
-                            sx={{ cursor: 'pointer' }}
-                          >
-                            <TableCell padding="checkbox">
-                              <Checkbox
-                                color="primary"
-                                checked={isItemSelected}
-                                inputProps={{
-                                  'aria-labelledby': labelId,
-                                }}
-                              />
-                            </TableCell>
-                            <TableCell align="center">
-                              <Avatar alt={row.name} src={row.image} />
-                            </TableCell>
-                            <TableCell component="th" id={labelId} scope="row" padding="none">
-                              {row.name}
-                            </TableCell>
-                            <TableCell align="center">{row.slug}</TableCell>
-                          </TableRow>
-                        )}
-                      </>
-                    );
-                  })}
+                      return (
+                        <>
+                          {loading ? (
+                            <TableRow>
+                              <TableCell role="checkbox" className={cx('skeleton-checkBox')}>
+                                <Checkbox
+                                  color="primary"
+                                  checked={isItemSelected}
+                                  inputProps={{
+                                    'aria-labelledby': labelId,
+                                  }}
+                                  disabled
+                                  style={{ marginLeft: '-10px' }}
+                                />
+                              </TableCell>
+                              <TableCell style={{ width: '80px' }}>
+                                <div className={cx('skeleton-avatar')}></div>
+                              </TableCell>
+                              <TableCell>
+                                <div className={cx('skeleton-name')}></div>
+                              </TableCell>
+                              <TableCell>
+                                <div className={cx('skeleton-email')}></div>
+                              </TableCell>
+                            </TableRow>
+                          ) : (
+                            <TableRow
+                              hover
+                              onClick={(event) => handleClick(event, row._id)}
+                              role="checkbox"
+                              aria-checked={isItemSelected}
+                              tabIndex={-1}
+                              key={row.id}
+                              selected={isItemSelected}
+                              sx={{ cursor: 'pointer' }}
+                            >
+                              <TableCell padding="checkbox">
+                                <Checkbox
+                                  color="primary"
+                                  checked={isItemSelected}
+                                  inputProps={{
+                                    'aria-labelledby': labelId,
+                                  }}
+                                />
+                              </TableCell>
+                              <TableCell align="center">
+                                <Avatar alt={row.name} src={row.image} />
+                              </TableCell>
+                              <TableCell component="th" id={labelId} scope="row" padding="none">
+                                {row.name}
+                              </TableCell>
+                              <TableCell align="center">{row.slug}</TableCell>
+                            </TableRow>
+                          )}
+                        </>
+                      );
+                    })}
                   {emptyRows > 0 && (
                     <TableRow
                       style={{

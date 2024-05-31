@@ -7,7 +7,15 @@
 
   &__content {
     max-height: 450px;
+    min-width: 600px;
     overflow: auto;
+
+    @include media-breakpoint-down(md) {
+      min-width: 500px;
+    }
+    @include media-breakpoint-down(sm) {
+      min-width: initial;
+    }
   }
 
   &__btn {

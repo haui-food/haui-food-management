@@ -5,14 +5,23 @@
     "na02": "Đăng nhập/Đăng kí"
   },
   "button": {
+    "btn01": "Xóa",
+    "btn02": "Tạo",
+    "btn03": "Sửa",
+    "btn04": "Hủy",
+    "btn05": "Quay lại trang chủ",
+    "btn06": "Thêm thể loại",
+    "btn07": "Xem",
     "btnLogin": "Đăng nhập",
-    "btn02": "Quay lại trang chủ",
     "btnLoginLoading": "...Đang đăng nhập"
   },
   "form": {
     "tp01": "Email",
     "tp02": "Mật khẩu",
-    "lb01": "Hiển thị mật khẩu"
+    "lb01": "Hiển thị mật khẩu",
+    "lb02": "đã chọn",
+    "lb03": "Số hàng trên mỗi trang",
+    "lb04": "Không có"
   },
   "errors": {
     "err01": "Vui lòng nhập email.",
@@ -78,7 +87,6 @@
     "title14": "Người dùng hoạt động",
     "title15": "Tỷ lệ đánh giá",
     "title16": "Doanh thu",
-
     "inp01": "Tìm kiếm",
     "inp02": "Nhập văn bản",
     "btn01": "Thêm người dùng ",
@@ -88,6 +96,28 @@
     "desc04": "lượt truy cập",
     "desc05": "Đơn đặt hàng",
     "desc06": "Tỷ lệ mua hàng"
+  },
+  "category": {
+    "heading01": "Danh sách thể loại",
+    "heading02": "Thể loại",
+    "title01": "Hình ảnh",
+    "title02": "Tên thể loại",
+    "title03": "Xác nhận xóa thể loại",
+    "title04": "Sửa thông tin thể loại",
+    "title05": "Tạo mới thể loại",
+    "title06": "Tên thể loại",
+    "title07": "Chọn hình ảnh",
+    "desc01": "Bạn có chắc chắn muốn xóa tất cả những thể loại này không?",
+    "desc02": "Bạn có chắc chắn muốn xóa thể loại này không?"
+  },
+  "contact": {
+    "heading01": "Danh sách liên hệ",
+    "heading02": "Liên hệ",
+    "title01": "Nội dung",
+    "title02": "Xác nhận xóa liên hệ",
+    "title03": "Xem thông tin liên hệ",
+    "desc01": "Bạn có chắc chắn muốn xóa tất cả những liên hệ này không?",
+    "desc02": "Bạn có chắc chắn muốn xóa liên hệ này không?"
   },
   "toast": {
     "unauthorized": "Bạn không có quyền truy cập"

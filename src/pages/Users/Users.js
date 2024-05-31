@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
 import classNames from 'classnames/bind';
-
 import { useTranslation } from 'react-i18next';
-
 import PropTypes from 'prop-types';
+import { useDispatch } from 'react-redux';
+import { toast } from 'react-toastify';
+import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
+
 import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
@@ -27,24 +29,21 @@ import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import { visuallyHidden } from '@mui/utils';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
-import 'react-loading-skeleton/dist/skeleton.css';
+import { Avatar, Chip } from '@mui/material';
+import TextField from '@mui/material/TextField';
+import { ArrowLeftIcon, ArrowRightIcon } from '@mui/x-date-pickers';
 
 import styles from './User.module.scss';
+import 'react-loading-skeleton/dist/skeleton.css';
+
 import RealTime from '~/components/RealTime';
 import Button from '~/components/Button';
 import { EditIcon, PlusIcon } from '~/components/Icons';
-import { Avatar, Chip } from '@mui/material';
 import ConfirmModal from '~/components/ConfirmModal';
 import FormModal from '~/components/FormModal';
 import EditUser from '~/components/EditUser';
 import CreateUser from '~/components/CreateUser';
-import TextField from '@mui/material/TextField';
-import { useDispatch } from 'react-redux';
-import { ArrowLeftIcon, ArrowRightIcon } from '@mui/x-date-pickers';
 import { getAllUser, createUser, deleteUserById, updateUserById, getUserById } from '~/apiService/userService';
-import { toast } from 'react-toastify';
-import axios from 'axios';
 
 const cx = classNames.bind(styles);
 
@@ -366,7 +365,7 @@ const EnhancedTableToolbar = (props) => {
       >
         {numSelected > 0 ? (
           <Typography sx={{ flex: '1 1 100%' }} color="inherit" variant="subtitle1" component="div">
-            {numSelected} selected
+            {numSelected} {t('form.lb02')}
           </Typography>
         ) : (
           <>
@@ -391,12 +390,12 @@ const EnhancedTableToolbar = (props) => {
 
         {numSelected > 0 ? (
           <>
-            <Tooltip title="Delete">
+            <Tooltip title={t('button.btn01')}>
               <IconButton onClick={openConfirmModal}>
                 <DeleteIcon />
               </IconButton>
             </Tooltip>
-            <Tooltip title="Edit">
+            <Tooltip title={t('button.btn03')}>
               <IconButton disabled={isEdit} onClick={openEditModal}>
                 <EditIcon />
               </IconButton>

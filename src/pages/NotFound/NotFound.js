@@ -18,7 +18,7 @@ function NotFound() {
         <div className={cx('central-body')}>
           <img loading="lazy" className={cx('image-404')} src={images.notFound} alt="404" />
           <Link to={routes.home} className={cx('btn-go-home')}>
-            {t('button.btn02')}
+            {t('button.btn05')}
           </Link>
         </div>
         <div className={cx('objects')}>

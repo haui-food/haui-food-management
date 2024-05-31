@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
 import classNames from 'classnames/bind';
+import { useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 import { toast } from 'react-toastify';
-import { useDispatch } from 'react-redux';
 
 import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -28,21 +28,16 @@ import { visuallyHidden } from '@mui/utils';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { ArrowLeftIcon, ArrowRightIcon } from '@mui/x-date-pickers';
 import TextField from '@mui/material/TextField';
+import RateReviewOutlinedIcon from '@mui/icons-material/RateReviewOutlined';
 
-import styles from './Product.module.scss';
+import styles from './Contact.module.scss';
 import 'react-loading-skeleton/dist/skeleton.css';
 
 import RealTime from '~/components/RealTime';
-import Button from '~/components/Button';
-import { EditIcon, PlusIcon } from '~/components/Icons';
-import { Avatar } from '@mui/material';
 import ConfirmModal from '~/components/ConfirmModal';
 import FormModal from '~/components/FormModal';
-import EditProduct from '~/components/EditProduct/EditProduct';
-
-import { createUser, deleteUserById } from '~/apiService/userService';
-import CreateProduct from '~/components/CreateProduct/CreateProduct';
-import { getAllProduct, updateProduct } from '~/apiService/productService';
+import ViewContact from '~/components/ViewContact';
+import { getAllContacts, getContactById, deleteContactById } from '~/apiService/contactService';
 
 const cx = classNames.bind(styles);
 
@@ -92,7 +87,7 @@ const theme = createTheme({
     MuiTableCell: {
       styleOverrides: {
         root: {
-          maxWidth: '280px',
+          maxWidth: '250px',
           minWidth: '80px',
           overflow: 'hidden',
           textOverflow: 'ellipsis',
@@ -125,27 +120,24 @@ const getComparator = (order, orderBy) => {
 };
 
 const stableSort = (array, comparator) => {
-  const stabilizedThis = array?.map((el, index) => [el, index]);
-  stabilizedThis?.sort((a, b) => {
+  const stabilizedThis = array.map((el, index) => [el, index]);
+  stabilizedThis.sort((a, b) => {
     const order = comparator(a[0], b[0]);
     if (order !== 0) return order;
 
     return a[1] - b[1];
   });
-  return stabilizedThis?.map((el) => el[0]);
+  return stabilizedThis.map((el) => el[0]);
 };
 
 const EnhancedTableHead = (props) => {
   const { t } = useTranslation();
 
   const headCells = [
-    { id: 'image', numeric: false, disablePadding: false, label: 'Ảnh sản phẩm' },
-    { id: 'name', numeric: false, disablePadding: true, label: 'Tên sản phẩm' },
-    { id: 'description', numeric: true, disablePadding: false, label: 'Mô tả sản phẩm' },
-    { id: 'price', numeric: true, disablePadding: false, label: 'Giá' },
-    { id: 'shop', numeric: true, disablePadding: false, label: 'Cửa hàng' },
-    { id: 'category', numeric: true, disablePadding: false, label: 'Thể loại' },
-    { id: 'slug', numeric: false, disablePadding: true, label: 'Slug' },
+    { id: 'fullname', numeric: false, disablePadding: false, label: t('users.title04') },
+    { id: 'email', numeric: false, disablePadding: false, label: t('users.title05') },
+    { id: 'phone', numeric: false, disablePadding: false, label: t('users.title06') },
+    { id: 'message', numeric: true, disablePadding: false, label: t('contact.title01') },
   ];
   const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
   const createSortHandler = (property) => (event) => {
@@ -166,14 +158,14 @@ const EnhancedTableHead = (props) => {
             }}
           />
         </TableCell>
-        {headCells?.map((headCell) => (
+        {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
             align={headCell.numeric ? 'center' : 'left'}
             padding={headCell.disablePadding ? 'none' : 'normal'}
             sortDirection={orderBy === headCell.id ? order : false}
           >
-            {headCell.id === 'avatar' ? (
+            {headCell.id === 'message' ? (
               headCell.label
             ) : (
               <TableSortLabel
@@ -208,49 +200,17 @@ EnhancedTableHead.propTypes = {
 const EnhancedTableToolbar = (props) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const { numSelected, isEdit, selected, currentProductArray } = props;
+  const { numSelected, isEdit } = props;
+  const { selected, setSelected } = props;
   const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
-  const [editModalIsOpen, setEditModalIsOpen] = useState(false);
-  const [createModalIsOpen, setCreateModalIsOpen] = useState(false);
+  const [viewModalIsOpen, setViewModalIsOpen] = useState(false);
 
-  const [ProductCredentials, setProductCredentials] = useState({});
-  const [oldProductCredentials, setOldProductCredentials] = useState({});
-  const [imageSelected, setImageSelected] = useState(null);
-
-  const handleInputChange = (e, category) => {
-    if (e) {
-      const { name, value } = e.target;
-      setProductCredentials((prevState) => ({
-        ...prevState,
-        [name]: value,
-      }));
-    }
-
-    if (category) {
-      setProductCredentials((prevState) => ({
-        ...prevState,
-        category: category,
-      }));
-    }
-  };
-
-  const handleCreateUser = () => {
-    try {
-      dispatch(createUser(ProductCredentials)).then((result) => {
-        if (result.payload.code === 201) {
-          toast.success(result.payload.message);
-          setCreateModalIsOpen(false);
-          setTimeout(() => {
-            window.location.href = '/users';
-          }, 1000);
-          return;
-        }
-        toast.error(result.payload.message);
-      });
-    } catch (error) {
-      toast.error(error.message);
-    }
-  };
+  const [contactCredentials, setContactCredentials] = useState({
+    fullname: '',
+    email: null,
+    phone: null,
+    message: null,
+  });
 
   const openConfirmModal = () => {
     setConfirmModalIsOpen(true);
@@ -261,34 +221,25 @@ const EnhancedTableToolbar = (props) => {
   };
 
   const openEditModal = () => {
-    setEditModalIsOpen(true);
+    setViewModalIsOpen(true);
   };
 
   const closeEditModal = () => {
-    setEditModalIsOpen(false);
-  };
-
-  const openCreateModal = () => {
-    setCreateModalIsOpen(true);
-  };
-
-  const closeCreateModal = () => {
-    setCreateModalIsOpen(false);
+    setViewModalIsOpen(false);
   };
 
   const handleDelete = () => {
     try {
-      // console.log(selected);
-      for (let i = 0; i < selected?.length; i++) {
-        dispatch(deleteUserById(selected[i])).then((result) => {
+      for (let i = 0; i < selected.length; i++) {
+        dispatch(deleteContactById(selected[i])).then((result) => {
           if (result.payload.code === 200) {
             toast.success(result.payload.message);
             setTimeout(() => {
-              window.location.href = '/users';
+              window.location.href = '/contacts';
             }, 1000);
-            return;
+          } else {
+            toast.error(result.payload.message);
           }
-          toast.error(result.payload.message);
         });
       }
     } catch (error) {
@@ -297,63 +248,26 @@ const EnhancedTableToolbar = (props) => {
     closeConfirmModal();
   };
 
-  const handleEdit = () => {
-    // console.log(ProductCredentials);
-
-    const productData = {
-      name: ProductCredentials?.name,
-      description: ProductCredentials?.description,
-      price: ProductCredentials?.price,
-      category: ProductCredentials?.category?._id,
-    };
-
-    // kiểm tra xem có thay dữ liệu không
-    if (JSON.stringify(productData) === JSON.stringify(oldProductCredentials) && !imageSelected) {
-      toast.info('Không có thay đổi nào');
-      return;
-    }
-
-    dispatch(
-      updateProduct({
-        productData: productData,
-        avatar: imageSelected,
-        productId: selected[0],
-      }),
-    ).then((result) => {
-      if (result.payload.code === 200) {
-      } else {
-        toast.error(result.payload.message);
-      }
-    });
-  };
-
-  const handleCreate = () => {
-    closeEditModal();
-  };
-
-  // lấy sản thông tin sản phẩm đã được chọn, category là 1 object để lấy cả tên và id
   useEffect(() => {
-    if (selected?.length === 1) {
-      const selectedProduct = currentProductArray.filter((product) => product._id === selected[0]);
-      setProductCredentials({
-        name: selectedProduct[0].name,
-        description: selectedProduct[0].description ?? '',
-        price: selectedProduct[0].price,
-        category: { name: selectedProduct[0]?.category?.name ?? '', _id: selectedProduct[0]?.category?._id ?? '' },
-        image: selectedProduct[0].image,
+    if (selected && selected.length > 0) {
+      dispatch(getContactById(selected[0])).then((result) => {
+        setContactCredentials({
+          ...contactCredentials,
+          fullname: result.payload.data.fullname,
+          email: result.payload.data.email,
+          phone: result.payload.data.phone,
+          message: result.payload.data.message,
+        });
       });
-      setOldProductCredentials({
-        name: selectedProduct[0].name,
-        description: selectedProduct[0]?.description ?? '',
-        price: selectedProduct[0].price,
-        category: selectedProduct[0]?.category?._id ?? '',
+    } else {
+      setContactCredentials({
+        fullname: '',
+        email: null,
+        phone: null,
+        message: null,
       });
     }
-    //gán lại giá trị cho image selected mỗi khi đóng mở modal
-    setImageSelected(null);
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selected?.length, editModalIsOpen]);
+  }, [selected.length]);
 
   return (
     <div>
@@ -370,12 +284,12 @@ const EnhancedTableToolbar = (props) => {
       >
         {numSelected > 0 ? (
           <Typography sx={{ flex: '1 1 100%' }} color="inherit" variant="subtitle1" component="div">
-            {numSelected} selected
+            {numSelected} {t('form.lb02')}
           </Typography>
         ) : (
           <>
             <Typography sx={{ flex: '1 1 100%' }} variant="h6" component="div">
-              Sản phẩm
+              {t('contact.heading02')}
             </Typography>
             <TextField
               label={t('users.inp01')}
@@ -393,63 +307,33 @@ const EnhancedTableToolbar = (props) => {
           </>
         )}
 
-        {numSelected > 0 ? (
+        {numSelected > 0 && (
           <>
-            <Tooltip title="Delete">
+            <Tooltip title={t('button.btn07')}>
+              <IconButton disabled={isEdit} onClick={openEditModal}>
+                <RateReviewOutlinedIcon fontSize="large" />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title={t('button.btn01')}>
               <IconButton onClick={openConfirmModal}>
                 <DeleteIcon />
               </IconButton>
             </Tooltip>
-            <Tooltip title="Edit">
-              <IconButton disabled={isEdit} onClick={openEditModal}>
-                <EditIcon />
-              </IconButton>
-            </Tooltip>
           </>
-        ) : (
-          <Button onClick={openCreateModal} leftIcon={<PlusIcon />} addUser primary>
-            Thêm sản phẩm
-          </Button>
         )}
       </Toolbar>
 
       <ConfirmModal
-        title="Xác nhận xóa người dùng"
-        desc={
-          isEdit
-            ? 'Bạn có chắc chắn muốn xóa tất cả những người dùng này không?'
-            : 'Bạn có chắc chắn muốn xóa người dùng này không?'
-        }
-        type="Xóa"
+        title={t('contact.title02')}
+        desc={isEdit ? t('contact.desc01') : t('contact.desc02')}
+        type={t('button.btn01')}
         isOpen={confirmModalIsOpen}
         closeModal={closeConfirmModal}
         handle={handleDelete}
       />
 
-      <FormModal
-        title="Sửa thông tin người dùng"
-        type="Sửa"
-        isOpen={editModalIsOpen}
-        closeModal={closeEditModal}
-        handleEdit={handleEdit}
-      >
-        {/* truyền thông tin sản phẩm và các hàm set lai thông tin sản phẩm khi thay đổi */}
-        <EditProduct
-          productCredentials={ProductCredentials}
-          handleInputChange={handleInputChange}
-          onImageChange={setImageSelected}
-        />
-      </FormModal>
-
-      <FormModal
-        title="Tạo mới người dùng"
-        type="Tạo"
-        isOpen={createModalIsOpen}
-        closeModal={closeCreateModal}
-        handle={handleCreate}
-        handleCreateUser={handleCreateUser}
-      >
-        <CreateProduct handleInputChange={handleInputChange} />
+      <FormModal readOnly title={t('contact.title03')} isOpen={viewModalIsOpen} closeModal={closeEditModal}>
+        <ViewContact contactCredentials={contactCredentials} />
       </FormModal>
     </div>
   );
@@ -460,11 +344,11 @@ EnhancedTableToolbar.propTypes = {
   selected: PropTypes.array.isRequired,
 };
 
-export default function Products() {
+export default function Contact() {
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const [order, setOrder] = useState('asc');
-  const [orderBy, setOrderBy] = useState('name');
+  const [orderBy, setOrderBy] = useState('calories');
   const [selected, setSelected] = useState([]);
   const [page, setPage] = useState(0);
   const [dense, setDense] = useState(true);
@@ -474,7 +358,6 @@ export default function Products() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPage, setTotalPage] = useState(null);
   const [loading, setLoading] = useState(true);
-
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
@@ -483,7 +366,7 @@ export default function Products() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelected = rows?.map((n) => n._id);
+      const newSelected = rows.map((n) => n._id);
       setSelected(newSelected);
       return;
     }
@@ -497,18 +380,17 @@ export default function Products() {
     if (selectedIndex === -1) {
       newSelected = newSelected.concat(selected, _id);
     } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected?.slice(1));
-    } else if (selectedIndex === selected?.length - 1) {
-      newSelected = newSelected.concat(selected?.slice(0, -1));
+      newSelected = newSelected.concat(selected.slice(1));
+    } else if (selectedIndex === selected.length - 1) {
+      newSelected = newSelected.concat(selected.slice(0, -1));
     } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(selected?.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
+      newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
     }
     setSelected(newSelected);
   };
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
-    // console.log('clicked');
   };
 
   const handleChangeRowsPerPage = (event) => {
@@ -543,144 +425,130 @@ export default function Products() {
   const filteredRows = useMemo(() => {
     return rows?.filter(
       (row) =>
-        row?.name?.toLowerCase().includes(searchKeyword.toLowerCase()) ||
-        row?.description?.toLowerCase().includes(searchKeyword.toLowerCase()),
+        (row.fullname && row.fullname.toLowerCase().includes(searchKeyword.toLowerCase())) ||
+        (row.email && row.email.toLowerCase().includes(searchKeyword.toLowerCase())) ||
+        (row.phone && row.phone.toLowerCase().includes(searchKeyword.toLowerCase())),
     );
   }, [rows, searchKeyword]);
 
   const isSelected = (id) => selected.indexOf(id) !== -1;
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows?.length) : 0;
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
   const visibleRows = useMemo(
     () =>
-      stableSort(filteredRows, getComparator(order, orderBy))?.slice(
+      stableSort(filteredRows, getComparator(order, orderBy)).slice(
         page * rowsPerPage,
         page * rowsPerPage + rowsPerPage,
       ),
     [order, orderBy, page, rowsPerPage, filteredRows],
   );
 
-  //lấy thông tin tất cả các sản phẩm
   useEffect(() => {
-    dispatch(getAllProduct({ limit: rowsPerPage, page: currentPage })).then((result) => {
-      setRows(result.payload.products);
+    dispatch(getAllContacts({ limit: rowsPerPage, page: currentPage })).then((result) => {
+      setRows(result.payload.contacts);
       setLoading(false);
       setTotalPage(result.payload.totalPage);
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage, rowsPerPage]);
 
   return (
-    <div className={cx('user')}>
-      <h1 className={cx('user__heading')}>Danh sách sản phẩm</h1>
+    <div className={cx('category')}>
+      <h1 className={cx('category__heading')}>{t('contact.heading01')}</h1>
       <RealTime />
       <ThemeProvider theme={theme}>
-        <Box className={cx('user__list')}>
+        <Box className={cx('category__list')}>
           <Paper sx={{ width: '100%', mb: 2 }}>
             <EnhancedTableToolbar
-              numSelected={selected?.length}
-              isEdit={selected?.length > 1}
+              numSelected={selected.length}
+              isEdit={selected.length > 1}
               handleChangeSearch={(e) => {
                 handleChangeSearch(e);
               }}
               selected={selected}
-              currentProductArray={rows}
             />
             <TableContainer>
-              <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle" size={dense ? 'small' : 'medium'}>
+              <Table sx={{ minWidth: 650 }} aria-labelledby="tableTitle" size={dense ? 'small' : 'medium'}>
                 <EnhancedTableHead
-                  numSelected={selected?.length}
+                  numSelected={selected.length}
                   order={order}
                   orderBy={orderBy}
                   onSelectAllClick={handleSelectAllClick}
                   onRequestSort={handleRequestSort}
-                  rowCount={rows?.length}
+                  rowCount={rows.length}
                 />
 
                 {/* Body */}
 
                 <TableBody>
-                  {visibleRows?.map((row, index) => {
-                    const isItemSelected = isSelected(row._id);
-                    const labelId = `enhanced-table-checkbox-${index}`;
+                  {visibleRows &&
+                    visibleRows.map((row, index) => {
+                      const isItemSelected = isSelected(row._id);
+                      const labelId = `enhanced-table-checkbox-${index}`;
 
-                    return (
-                      <>
-                        {loading ? (
-                          <TableRow>
-                            <TableCell role="checkbox" className={cx('skeleton-checkBox')}>
-                              <Checkbox
-                                color="primary"
-                                checked={isItemSelected}
-                                inputProps={{
-                                  'aria-labelledby': labelId,
-                                }}
-                                disabled
-                                style={{ marginLeft: '-10px' }}
-                              />
-                            </TableCell>
-                            <TableCell style={{ width: '80px' }}>
-                              <div className={cx('skeleton-avatar')}></div>
-                            </TableCell>
-                            <TableCell>
-                              <div className={cx('skeleton-name')}></div>
-                            </TableCell>
-                            <TableCell>
-                              <div className={cx('skeleton-email')}></div>
-                            </TableCell>
-                            <TableCell>
-                              <div className={cx('skeleton-phone')}></div>
-                            </TableCell>
-                            <TableCell>
-                              <div className={cx('skeleton-dateOfBirth')}></div>
-                            </TableCell>
-                            <TableCell>
-                              <div className={cx('skeleton-gender')}></div>
-                            </TableCell>
-
-                            <TableCell>
-                              <div className={cx('skeleton-isVerify')}></div>
-                            </TableCell>
-                          </TableRow>
-                        ) : (
-                          <TableRow
-                            hover
-                            onClick={(event) => handleClick(event, row._id)}
-                            role="checkbox"
-                            aria-checked={isItemSelected}
-                            tabIndex={-1}
-                            key={row._id}
-                            selected={isItemSelected}
-                            sx={{ cursor: 'pointer' }}
-                          >
-                            <TableCell padding="checkbox">
-                              <Checkbox
-                                color="primary"
-                                checked={isItemSelected}
-                                inputProps={{
-                                  'aria-labelledby': labelId,
-                                }}
-                              />
-                            </TableCell>
-                            <TableCell align="center">
-                              <Avatar alt={row.name} src={row?.image} />
-                            </TableCell>
-                            <TableCell component="th" id={labelId} scope="row" padding="none">
-                              {row?.name}
-                            </TableCell>
-                            <TableCell align="center">{row?.description ?? ''}</TableCell>
-                            <TableCell align="center">{row?.price}</TableCell>
-                            <TableCell align="center">{row?.shop?.fullname}</TableCell>
-                            <TableCell align="center">{row?.category?.name}</TableCell>
-                            <TableCell align="left" padding="none">
-                              {row?.slug.trim()}
-                            </TableCell>
-                          </TableRow>
-                        )}
-                      </>
-                    );
-                  })}
+                      return (
+                        <>
+                          {loading ? (
+                            <TableRow>
+                              <TableCell role="checkbox" className={cx('skeleton-checkBox')}>
+                                <Checkbox
+                                  color="primary"
+                                  checked={isItemSelected}
+                                  inputProps={{
+                                    'aria-labelledby': labelId,
+                                  }}
+                                  disabled
+                                  style={{ marginLeft: '-10px' }}
+                                />
+                              </TableCell>
+                              <TableCell component="th" id={labelId} scope="row">
+                                <div className={cx('skeleton-name')}></div>
+                              </TableCell>
+                              <TableCell component="th" scope="row">
+                                <div className={cx('skeleton-email')}></div>
+                              </TableCell>
+                              <TableCell align="center">
+                                <div className={cx('skeleton-phone')}></div>
+                              </TableCell>
+                              <TableCell align="center">
+                                <div className={cx('skeleton-content')}></div>
+                              </TableCell>
+                            </TableRow>
+                          ) : (
+                            <TableRow
+                              hover
+                              onClick={(event) => handleClick(event, row._id)}
+                              role="checkbox"
+                              aria-checked={isItemSelected}
+                              tabIndex={-1}
+                              key={row._id}
+                              selected={isItemSelected}
+                              sx={{ cursor: 'pointer' }}
+                            >
+                              <TableCell padding="checkbox">
+                                <Checkbox
+                                  color="primary"
+                                  checked={isItemSelected}
+                                  inputProps={{
+                                    'aria-labelledby': labelId,
+                                  }}
+                                />
+                              </TableCell>
+                              <TableCell component="th" id={labelId} scope="row">
+                                {row.fullname ? row.fullname : t('form.lb04')}
+                              </TableCell>
+                              <TableCell component="th" scope="row">
+                                {row.email}
+                              </TableCell>
+                              <TableCell component="th" scope="row">
+                                {row.phone ? row.phone : t('form.lb04')}
+                              </TableCell>
+                              <TableCell align="center">{row.message}</TableCell>
+                            </TableRow>
+                          )}
+                        </>
+                      );
+                    })}
                   {emptyRows > 0 && (
                     <TableRow
                       style={{
@@ -716,7 +584,7 @@ export default function Products() {
             <TablePagination
               rowsPerPageOptions={[10, 15, 25]}
               component="div"
-              count={rows?.length}
+              count={rows.length}
               rowsPerPage={rowsPerPage}
               page={page}
               onPageChange={handleChangePage}

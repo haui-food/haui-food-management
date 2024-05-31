@@ -1,12 +1,14 @@
 import { cloneElement, forwardRef } from 'react';
 import classNames from 'classnames/bind';
 import PropTypes from 'prop-types';
+import { useSpring, animated } from '@react-spring/web';
+import { useTranslation } from 'react-i18next';
+
 import Backdrop from '@mui/material/Backdrop';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import { useSpring, animated } from '@react-spring/web';
 import { createTheme } from '@mui/material/styles';
 import { ThemeProvider } from '@mui/material/styles';
 
@@ -86,7 +88,19 @@ const style = {
   p: 4,
 };
 
-export default function FormModal({ title, children, type, isOpen, closeModal, handle, handleCreateUser, handleEdit }) {
+export default function FormModal({
+  title,
+  children,
+  type,
+  isOpen,
+  closeModal,
+  handle,
+  handleCreateUser,
+  handleEdit,
+  readOnly,
+}) {
+  const { t } = useTranslation();
+
   return (
     <Modal
       aria-labelledby="spring-modal-title"
@@ -111,16 +125,22 @@ export default function FormModal({ title, children, type, isOpen, closeModal, h
           </Typography>
           <ThemeProvider theme={theme}>
             <div style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
-              <Button
-                variant="contained"
-                color={type === 'Xóa' ? 'delete' : 'success'}
-                onClick={handle}
-                sx={{ mt: 4, p: 1 }}
-                className={cx('modal__btn')}
-                {...(type === 'Tạo' ? { onClick: handleCreateUser } : type === 'Sửa' ? { onClick: handleEdit } : {})}
-              >
-                {type}
-              </Button>
+              {!readOnly && (
+                <Button
+                  variant="contained"
+                  color={type === t('button.btn01') ? 'delete' : 'success'}
+                  onClick={handle}
+                  sx={{ mt: 4, p: 1 }}
+                  className={cx('modal__btn')}
+                  {...(type === t('button.btn02')
+                    ? { onClick: handleCreateUser }
+                    : type === t('button.btn03')
+                    ? { onClick: handleEdit }
+                    : {})}
+                >
+                  {type}
+                </Button>
+              )}
               <Button
                 variant="outlined"
                 color="exit"
@@ -128,7 +148,7 @@ export default function FormModal({ title, children, type, isOpen, closeModal, h
                 sx={{ mt: 4, ml: 2 }}
                 className={cx('modal__btn')}
               >
-                Hủy
+                {t('button.btn04')}
               </Button>
             </div>
           </ThemeProvider>
