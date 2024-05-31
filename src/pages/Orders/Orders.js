@@ -7,16 +7,11 @@ import styles from './Order.module.scss';
 
 import deliveryGif from '../../assets/images/shop/deliver.gif';
 import empty from '../../assets/images/shop/empty.png';
-<<<<<<< HEAD
 import { getOrdersByStatus } from '~/apiService/shopService';
-import { useDispatch } from 'react-redux';
-import { toast } from 'react-toastify';
 import { ArrowDownIcon } from '~/components/Icons';
 import { convertIso8601ToDatetime } from '~/utils/convertDate';
-=======
 import RecentOrder from '~/components/RecentOrder';
 import { getOrders } from '~/apiService/shopService';
->>>>>>> 3e9d5bf70366c6508bebc96d27ee504cc16ffc7b
 
 const cx = classNames.bind(styles);
 
