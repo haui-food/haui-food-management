@@ -35,7 +35,6 @@ axiosInstance.interceptors.request.use(async (config) => {
 
 axiosInstance.interceptors.response.use(
   function (response) {
-    console.log(response);
     if (response.status === 202) {
     }
     return response.data;
