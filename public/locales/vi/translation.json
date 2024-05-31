@@ -11,6 +11,7 @@
     "btn04": "Hủy",
     "btn05": "Quay lại trang chủ",
     "btn06": "Thêm thể loại",
+    "btn07": "Xem",
     "btnLogin": "Đăng nhập",
     "btnLoginLoading": "...Đang đăng nhập"
   },
@@ -19,7 +20,8 @@
     "tp02": "Mật khẩu",
     "lb01": "Hiển thị mật khẩu",
     "lb02": "đã chọn",
-    "lb03": "Số hàng trên mỗi trang"
+    "lb03": "Số hàng trên mỗi trang",
+    "lb04": "Không có"
   },
   "errors": {
     "err01": "Vui lòng nhập email.",

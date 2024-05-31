@@ -395,12 +395,12 @@ const EnhancedTableToolbar = (props) => {
 
         {numSelected > 0 ? (
           <>
-            <Tooltip title="Delete">
+            <Tooltip title={t('button.btn01')}>
               <IconButton onClick={openConfirmModal}>
                 <DeleteIcon />
               </IconButton>
             </Tooltip>
-            <Tooltip title="Edit">
+            <Tooltip title={t('button.btn03')}>
               <IconButton disabled={isEdit} onClick={openEditModal}>
                 <EditIcon />
               </IconButton>
