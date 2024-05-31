@@ -18,7 +18,7 @@ function Forbidden() {
         <div className={cx('central-body')}>
           <img loading="lazy" className={cx('image-403')} src={images.forbidden} alt="403" />
           <Link to={routes.home} className={cx('btn-go-home')}>
-            {t('button.btn02')}
+            {t('button.btn05')}
           </Link>
         </div>
         <div className={cx('objects')}>

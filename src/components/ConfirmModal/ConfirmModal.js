@@ -1,12 +1,14 @@
 import { cloneElement, forwardRef } from 'react';
 import classNames from 'classnames/bind';
 import PropTypes from 'prop-types';
+import { useSpring, animated } from '@react-spring/web';
+import { useTranslation } from 'react-i18next';
+
 import Backdrop from '@mui/material/Backdrop';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import { useSpring, animated } from '@react-spring/web';
 import { createTheme } from '@mui/material/styles';
 import { ThemeProvider } from '@mui/material/styles';
 
@@ -87,6 +89,8 @@ const style = {
 };
 
 export default function ConfirmModal({ title, desc, type, isOpen, closeModal, handle }) {
+  const { t } = useTranslation();
+
   return (
     <Modal
       aria-labelledby="spring-modal-title"
@@ -113,14 +117,14 @@ export default function ConfirmModal({ title, desc, type, isOpen, closeModal, ha
             <div style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
               <Button
                 variant="contained"
-                color={type === 'Xóa' ? 'delete' : 'success'}
+                color={type === t('button.btn01') ? 'delete' : 'success'}
                 onClick={handle}
                 sx={{ mt: 2, p: 1 }}
               >
                 {type}
               </Button>
               <Button variant="outlined" color="exit" onClick={closeModal} sx={{ mt: 2, ml: 2 }}>
-                Hủy
+                {t('button.btn04')}
               </Button>
             </div>
           </ThemeProvider>

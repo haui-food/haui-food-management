@@ -7,6 +7,7 @@ import styles from './Navbar.module.scss';
 
 import routes from '~/config/routes';
 import CategoryOutlinedIcon from '@mui/icons-material/CategoryOutlined';
+import ContactMailOutlinedIcon from '@mui/icons-material/ContactMailOutlined';
 import { DashBoardIcon, UserGroupIcon, ProductIcon, ShopIcon, CartIcon, ChatIcon } from '~/components/Icons';
 
 const cx = classNames.bind(styles);
@@ -44,8 +45,14 @@ function Navbar({ toggleNav, isDesktop }) {
     {
       path: routes.categories,
       icon: <CategoryOutlinedIcon fontSize="large" className={cx('icon')} />,
-      title: 'Thể loại',
+      title: t('category.heading02'),
       slug: 'categories',
+    },
+    {
+      path: routes.contacts,
+      icon: <ContactMailOutlinedIcon fontSize="large" className={cx('icon')} />,
+      title: t('contact.heading02'),
+      slug: 'contacts',
     },
   ]);
 

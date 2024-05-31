@@ -16,7 +16,7 @@ function CreateCategory({ handleInputChange, handleSelectImage, categoryCredenti
       <div className={cx('form__row', 'form__row--three')}>
         <div className={cx('form__group')}>
           <label htmlFor="category-name" className={cx('form__label', 'form__label--medium')}>
-            Tên thể loại
+            {t('category.title06')}
           </label>
           <div className={cx('form__text-input', 'form__text-input--sm')}>
             <input
@@ -25,7 +25,7 @@ function CreateCategory({ handleInputChange, handleSelectImage, categoryCredenti
               type="text"
               id="category-name"
               name="category-name"
-              placeholder="Tên thể loại"
+              placeholder={t('category.title06')}
               className={cx('form__input')}
             />
             <CategoryOutlinedIcon fontSize="large" className={cx('icon')} />
@@ -36,7 +36,7 @@ function CreateCategory({ handleInputChange, handleSelectImage, categoryCredenti
       <div className={cx('form__row', 'form__row--three')}>
         <div className={cx('form__group')}>
           <label htmlFor="image" className={cx('form__label', 'form__label--medium', 'form__label-choose-file')}>
-            Chọn hình ảnh
+          {t('category.title07')}
           </label>
 
           <img className={cx('currentImage')} src={currentImage || images.noImage} alt="" />
