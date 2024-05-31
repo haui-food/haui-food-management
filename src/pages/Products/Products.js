@@ -42,7 +42,7 @@ import EditProduct from '~/components/EditProduct/EditProduct';
 
 import { createUser, deleteUserById } from '~/apiService/userService';
 import CreateProduct from '~/components/CreateProduct/CreateProduct';
-import { createProduct, getAllProduct, updateProduct } from '~/apiService/productService';
+import { createProduct, deleteProductById, getAllProduct, updateProduct } from '~/apiService/productService';
 
 const cx = classNames.bind(styles);
 
@@ -327,23 +327,22 @@ const EnhancedTableToolbar = (props) => {
   };
 
   const handleDelete = () => {
-    try {
-      // console.log(selected);
-      for (let i = 0; i < selected?.length; i++) {
-        dispatch(deleteUserById(selected[i])).then((result) => {
-          if (result.payload.code === 200) {
-            toast.success(result.payload.message);
-            setTimeout(() => {
-              window.location.href = '/users';
-            }, 1000);
-            return;
-          }
+    // console.log(selected);
+    for (let i = 0; i < selected?.length; i++) {
+      dispatch(deleteProductById(selected[i])).then((result) => {
+        console.log(result);
+        if (result.payload.code === 200) {
+          toast.success(result.payload.message);
+          // setTimeout(() => {
+          //   window.location.href = '/users';
+          // }, 1000);
+          return;
+        } else {
           toast.error(result.payload.message);
-        });
-      }
-    } catch (error) {
-      toast.error({ ...error });
+        }
+      });
     }
+
     closeConfirmModal();
   };
 

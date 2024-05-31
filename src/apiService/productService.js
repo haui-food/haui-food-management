@@ -70,3 +70,12 @@ export const createProduct = createAsyncThunk(
     }
   },
 );
+
+export const deleteProductById = createAsyncThunk('product/deleteById', async (productId, { rejectWithValue }) => {
+  try {
+    const res = await callApi('DELETE', `/v1/categories/${productId}`, {}, {});
+    return res;
+  } catch (error) {
+    return rejectWithValue(error);
+  }
+});
