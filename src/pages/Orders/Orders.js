@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import styles from './Order.module.scss';
 import classNames from 'classnames/bind';
+import { useDispatch } from 'react-redux';
+import { toast } from 'react-toastify';
+
+import styles from './Order.module.scss';
+
 import deliveryGif from '../../assets/images/shop/deliver.gif';
 import empty from '../../assets/images/shop/empty.png';
 import RecentOrder from '~/components/RecentOrder';
 import { getOrders } from '~/apiService/shopService';
-import { useDispatch } from 'react-redux';
-import { toast } from 'react-toastify';
 
 const cx = classNames.bind(styles);
 

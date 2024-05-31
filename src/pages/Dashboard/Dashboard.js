@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
-
 import classNames from 'classnames/bind';
+import axios from 'axios';
+import { useTranslation } from 'react-i18next';
 
 import styles from './Dashboard.module.scss';
 
@@ -11,7 +12,6 @@ import item4 from '~/assets/images/dashboard/ic_glass_message.png';
 import BiaxialLineChart from '~/components/Charts/BiaxialLineChart/BiaxialLineChart';
 import PieChart from '~/components/Charts/PieChart';
 import TwinBarChart from '~/components/Charts/TwinBarChart/TwinBarChart';
-import { useTranslation } from 'react-i18next';
 import RealTime from '~/components/RealTime';
 import { ArrowDownIcon } from '~/components/Icons';
 import RevenueChart from '~/components/Charts/RevenueChart';
@@ -19,7 +19,6 @@ import GaugeChart from '~/components/Charts/GaugeChart';
 import RecentOrder from '~/components/RecentOrder';
 import { ArrowLeftIcon, ArrowRightIcon } from '@mui/x-date-pickers';
 import Canvas from '~/components/Canvas';
-import axios from 'axios';
 
 const cx = classNames.bind(styles);
 

@@ -1,9 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
 import classNames from 'classnames/bind';
-
 import { useTranslation } from 'react-i18next';
-
 import PropTypes from 'prop-types';
+import { toast } from 'react-toastify';
+import { useDispatch } from 'react-redux';
+
 import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
@@ -23,29 +24,24 @@ import Tooltip from '@mui/material/Tooltip';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
-import CheckIcon from '@mui/icons-material/Check';
-import CloseIcon from '@mui/icons-material/Close';
 import { visuallyHidden } from '@mui/utils';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import 'react-loading-skeleton/dist/skeleton.css';
+import { Avatar } from '@mui/material';
+import { ArrowLeftIcon, ArrowRightIcon } from '@mui/x-date-pickers';
+import TextField from '@mui/material/TextField';
 
 import styles from './Product.module.scss';
+import 'react-loading-skeleton/dist/skeleton.css';
+
 import RealTime from '~/components/RealTime';
 import Button from '~/components/Button';
 import { EditIcon, PlusIcon } from '~/components/Icons';
-import { Avatar, Chip } from '@mui/material';
 import ConfirmModal from '~/components/ConfirmModal';
 import FormModal from '~/components/FormModal';
-import EditUser from '~/components/EditUser';
-import CreateUser from '~/components/CreateUser';
-import TextField from '@mui/material/TextField';
-import { useDispatch } from 'react-redux';
-import { ArrowLeftIcon, ArrowRightIcon } from '@mui/x-date-pickers';
-import { getAllUser, createUser, deleteUserById, updateUserById, getUserById } from '~/apiService/userService';
-import { toast } from 'react-toastify';
 import CreateProduct from '~/components/CreateProduct/CreateProduct';
 import { getAllProduct } from '~/apiService/productService';
 import EditProduct from '~/components/EditProduct/EditProduct';
+import { getAllUser, createUser, deleteUserById, updateUserById, getUserById } from '~/apiService/userService';
 
 const cx = classNames.bind(styles);
 

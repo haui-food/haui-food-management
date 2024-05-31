@@ -2,7 +2,6 @@ import config from '~/config';
 
 import { NotFoundLayout, AuthLayout, DefaultLayout } from '~/Layouts';
 
-import Home from '~/pages/Home';
 import SignIn from '~/pages/SignIn';
 import NotFound from '~/pages/NotFound';
 import Forbidden from '~/pages/Forbidden';
@@ -22,14 +21,9 @@ const publicRoutes = [
   { path: config.routes.notFound, component: NotFound, layout: NotFoundLayout },
   { path: config.routes.forbidden, component: Forbidden, layout: NotFoundLayout },
   { path: config.routes.internalServer, component: ServerError, layout: NotFoundLayout },
-  // { path: config.routes.home, component: Home },
-  // { path: config.routes.dashboard, component: Dashboard, layout: DefaultLayout },
-  // { path: config.routes.users, component: Users, layout: DefaultLayout },
-  // { path: config.routes.account, component: Account, layout: DefaultLayout },
 ];
 
 const privateRoutes = [
-  { path: config.routes.home, component: Home },
   { path: config.routes.dashboard, component: Dashboard, layout: DefaultLayout },
   { path: config.routes.users, component: Users, layout: DefaultLayout },
   { path: config.routes.account, component: Account, layout: DefaultLayout },
