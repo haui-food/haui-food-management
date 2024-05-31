@@ -11,6 +11,7 @@
     "btn04": "Abort",
     "btn05": "Back to home",
     "btn06": "Add category",
+    "btn07": "View",
     "btnLogin": "Login",
     "btnLoginLoading": "...Logging in"
   },
@@ -19,7 +20,8 @@
     "tp02": "Password",
     "lb01": "Show password",
     "lb02": "selected",
-    "lb03": "Rows per page"
+    "lb03": "Rows per page",
+    "lb04": "Not available"
   },
   "errors": {
     "err01": "Please enter email.",

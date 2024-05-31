@@ -309,12 +309,12 @@ const EnhancedTableToolbar = (props) => {
 
         {numSelected > 0 && (
           <>
-            <Tooltip title="View">
+            <Tooltip title={t('button.btn07')}>
               <IconButton disabled={isEdit} onClick={openEditModal}>
                 <RateReviewOutlinedIcon fontSize="large" />
               </IconButton>
             </Tooltip>
-            <Tooltip title="Delete">
+            <Tooltip title={t('button.btn01')}>
               <IconButton onClick={openConfirmModal}>
                 <DeleteIcon />
               </IconButton>
@@ -535,13 +535,13 @@ export default function Contact() {
                                 />
                               </TableCell>
                               <TableCell component="th" id={labelId} scope="row">
-                                {row.fullname ? row.fullname : 'Không có'}
+                                {row.fullname ? row.fullname : t('form.lb04')}
                               </TableCell>
                               <TableCell component="th" scope="row">
                                 {row.email}
                               </TableCell>
                               <TableCell component="th" scope="row">
-                                {row.phone ? row.phone : 'Không có'}
+                                {row.phone ? row.phone : t('form.lb04')}
                               </TableCell>
                               <TableCell align="center">{row.message}</TableCell>
                             </TableRow>

@@ -20,7 +20,7 @@ function ViewContact({ contactCredentials }) {
           <div className={cx('form__text-input', 'form__text-input--sm')}>
             <input
               readOnly
-              value={contactCredentials.fullname ? contactCredentials.fullname : 'Không có'}
+              value={contactCredentials.fullname ? contactCredentials.fullname : t('form.lb04')}
               type="text"
               id="fullname"
               name="fullname"
@@ -58,7 +58,7 @@ function ViewContact({ contactCredentials }) {
           <div className={cx('form__text-input', 'form__text-input--sm')}>
             <input
               readOnly
-              value={contactCredentials.phone ? contactCredentials.phone : 'Không có'}
+              value={contactCredentials.phone ? contactCredentials.phone : t('form.lb04')}
               type="phone"
               id="phone"
               name="phone"
