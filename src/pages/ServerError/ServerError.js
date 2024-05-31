@@ -18,7 +18,7 @@ function ServerError() {
         <div className={cx('central-body')}>
           <img loading="lazy" className={cx('image-500')} src={images.internalServer} alt="500" />
           <Link to={routes.home} className={cx('btn-go-home')}>
-            {t('button.btn02')}
+            {t('button.btn05')}
           </Link>
         </div>
         <div className={cx('objects')}>

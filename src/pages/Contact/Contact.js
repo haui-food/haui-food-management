@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import classNames from 'classnames/bind';
+import { useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
-import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 
 import { alpha } from '@mui/material/styles';
@@ -26,27 +26,18 @@ import Switch from '@mui/material/Switch';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
 import { visuallyHidden } from '@mui/utils';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { Avatar } from '@mui/material';
-import TextField from '@mui/material/TextField';
 import { ArrowLeftIcon, ArrowRightIcon } from '@mui/x-date-pickers';
+import TextField from '@mui/material/TextField';
+import RateReviewOutlinedIcon from '@mui/icons-material/RateReviewOutlined';
 
-import styles from './Category.module.scss';
+import styles from './Contact.module.scss';
 import 'react-loading-skeleton/dist/skeleton.css';
 
 import RealTime from '~/components/RealTime';
-import Button from '~/components/Button';
-import { EditIcon, PlusIcon } from '~/components/Icons';
 import ConfirmModal from '~/components/ConfirmModal';
 import FormModal from '~/components/FormModal';
-import CreateCategory from '~/components/CreateCategory';
-import EditCategory from '~/components/EditCategory';
-import {
-  getAllCategory,
-  createCategory,
-  getCategoryById,
-  updateCategoryById,
-  deleteCategoryById,
-} from '~/apiService/categoryService';
+import ViewContact from '~/components/ViewContact';
+import { getAllContacts, getContactById, deleteContactById } from '~/apiService/contactService';
 
 const cx = classNames.bind(styles);
 
@@ -143,9 +134,10 @@ const EnhancedTableHead = (props) => {
   const { t } = useTranslation();
 
   const headCells = [
-    { id: 'image', numeric: false, disablePadding: false, label: t('category.title01') },
-    { id: 'name', numeric: false, disablePadding: true, label: t('category.title02') },
-    { id: 'slug', numeric: true, disablePadding: false, label: 'Slug' },
+    { id: 'fullname', numeric: false, disablePadding: false, label: t('users.title04') },
+    { id: 'email', numeric: false, disablePadding: false, label: t('users.title05') },
+    { id: 'phone', numeric: false, disablePadding: false, label: t('users.title06') },
+    { id: 'message', numeric: true, disablePadding: false, label: t('contact.title01') },
   ];
   const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
   const createSortHandler = (property) => (event) => {
@@ -173,7 +165,7 @@ const EnhancedTableHead = (props) => {
             padding={headCell.disablePadding ? 'none' : 'normal'}
             sortDirection={orderBy === headCell.id ? order : false}
           >
-            {headCell.id === 'image' ? (
+            {headCell.id === 'message' ? (
               headCell.label
             ) : (
               <TableSortLabel
@@ -211,59 +203,14 @@ const EnhancedTableToolbar = (props) => {
   const { numSelected, isEdit } = props;
   const { selected, setSelected } = props;
   const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
-  const [editModalIsOpen, setEditModalIsOpen] = useState(false);
-  const [createModalIsOpen, setCreateModalIsOpen] = useState(false);
+  const [viewModalIsOpen, setViewModalIsOpen] = useState(false);
 
-  const [categoryCredentials, setCategoryCredentials] = useState({
-    categoryName: '',
-    categoryImage: null,
+  const [contactCredentials, setContactCredentials] = useState({
+    fullname: '',
+    email: null,
+    phone: null,
+    message: null,
   });
-  const [currentName, setCurrentName] = useState('');
-  const [currentImage, setCurrentImage] = useState();
-
-  const handleInputChange = (e) => {
-    setCurrentName(e.target.value);
-  };
-
-  console.log(categoryCredentials.categoryImage);
-
-  const handleSelectImage = (e) => {
-    const file = e.target.files[0];
-    setCategoryCredentials((prevState) => ({
-      ...prevState,
-      categoryImage: file,
-    }));
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setCurrentImage(reader.result);
-      };
-      try {
-        reader.readAsDataURL(file);
-      } catch (error) {
-        console.error('Error reading the file:', error);
-        toast.error('Đã xảy ra lỗi khi đọc file.');
-      }
-    }
-  };
-
-  const handleCreateUser = () => {
-    try {
-      dispatch(createCategory({ name: currentName, image: currentImage })).then((result) => {
-        if (result.payload.code === 201) {
-          toast.success(result.payload.message);
-          setCreateModalIsOpen(false);
-          setTimeout(() => {
-            window.location.href = '/categories';
-          }, 1000);
-          return;
-        }
-        toast.error(result.payload.message);
-      });
-    } catch (error) {
-      toast.error(error.message);
-    }
-  };
 
   const openConfirmModal = () => {
     setConfirmModalIsOpen(true);
@@ -274,33 +221,21 @@ const EnhancedTableToolbar = (props) => {
   };
 
   const openEditModal = () => {
-    setEditModalIsOpen(true);
+    setViewModalIsOpen(true);
   };
 
   const closeEditModal = () => {
-    setEditModalIsOpen(false);
-    setCurrentImage(null);
-    setCurrentName('');
-  };
-
-  const openCreateModal = () => {
-    setCreateModalIsOpen(true);
-  };
-
-  const closeCreateModal = () => {
-    setCreateModalIsOpen(false);
-    setCurrentImage(null);
-    setCurrentName('');
+    setViewModalIsOpen(false);
   };
 
   const handleDelete = () => {
     try {
       for (let i = 0; i < selected.length; i++) {
-        dispatch(deleteCategoryById(selected[i])).then((result) => {
+        dispatch(deleteContactById(selected[i])).then((result) => {
           if (result.payload.code === 200) {
             toast.success(result.payload.message);
             setTimeout(() => {
-              window.location.href = '/categories';
+              window.location.href = '/contacts';
             }, 1000);
           } else {
             toast.error(result.payload.message);
@@ -313,44 +248,23 @@ const EnhancedTableToolbar = (props) => {
     closeConfirmModal();
   };
 
-  const handleEdit = () => {
-    const data = {};
-    if (currentName) {
-      data.name = currentName;
-    }
-    if (currentImage) {
-      data.image = currentImage;
-    }
-    dispatch(updateCategoryById({ categoryId: selected[0], categoryCredentials: data })).then((result) => {
-      if (result.payload.code === 200) {
-        closeEditModal();
-        toast.success(result.payload.message);
-        setTimeout(() => {
-          window.location.href = '/categories';
-        }, 1000);
-        return;
-      }
-      toast.error(result.payload.message);
-    });
-  };
-
-  const handleCreate = () => {
-    closeEditModal();
-  };
-
   useEffect(() => {
     if (selected && selected.length > 0) {
-      dispatch(getCategoryById(selected[0])).then((result) => {
-        setCategoryCredentials({
-          ...categoryCredentials,
-          categoryName: result.payload.data.name,
-          categoryImage: result.payload.data.image,
+      dispatch(getContactById(selected[0])).then((result) => {
+        setContactCredentials({
+          ...contactCredentials,
+          fullname: result.payload.data.fullname,
+          email: result.payload.data.email,
+          phone: result.payload.data.phone,
+          message: result.payload.data.message,
         });
       });
     } else {
-      setCategoryCredentials({
-        categoryName: '',
-        categoryImage: null,
+      setContactCredentials({
+        fullname: '',
+        email: null,
+        phone: null,
+        message: null,
       });
     }
   }, [selected.length]);
@@ -375,7 +289,7 @@ const EnhancedTableToolbar = (props) => {
         ) : (
           <>
             <Typography sx={{ flex: '1 1 100%' }} variant="h6" component="div">
-              {t('category.heading02')}
+              {t('contact.heading02')}
             </Typography>
             <TextField
               label={t('users.inp01')}
@@ -393,66 +307,33 @@ const EnhancedTableToolbar = (props) => {
           </>
         )}
 
-        {numSelected > 0 ? (
+        {numSelected > 0 && (
           <>
+            <Tooltip title="View">
+              <IconButton disabled={isEdit} onClick={openEditModal}>
+                <RateReviewOutlinedIcon fontSize="large" />
+              </IconButton>
+            </Tooltip>
             <Tooltip title="Delete">
               <IconButton onClick={openConfirmModal}>
                 <DeleteIcon />
               </IconButton>
             </Tooltip>
-            <Tooltip title="Edit">
-              <IconButton disabled={isEdit} onClick={openEditModal}>
-                <EditIcon />
-              </IconButton>
-            </Tooltip>
           </>
-        ) : (
-          <Button onClick={openCreateModal} leftIcon={<PlusIcon />} addUser primary>
-            {t('button.btn06')}
-          </Button>
         )}
       </Toolbar>
 
       <ConfirmModal
-        title={t('category.title03')}
-        desc={isEdit ? t('category.desc01') : t('category.desc02')}
+        title={t('contact.title02')}
+        desc={isEdit ? t('contact.desc01') : t('contact.desc02')}
         type={t('button.btn01')}
         isOpen={confirmModalIsOpen}
         closeModal={closeConfirmModal}
         handle={handleDelete}
       />
 
-      <FormModal
-        title={t('category.title04')}
-        type={t('button.btn03')}
-        isOpen={editModalIsOpen}
-        closeModal={closeEditModal}
-        handleEdit={handleEdit}
-      >
-        <EditCategory
-          categoryCredentials={categoryCredentials}
-          handleInputChange={handleInputChange}
-          handleSelectImage={handleSelectImage}
-          currentImage={currentImage}
-          currentName={currentName}
-        />
-      </FormModal>
-
-      <FormModal
-        title={t('category.title05')}
-        type={t('button.btn02')}
-        isOpen={createModalIsOpen}
-        closeModal={closeCreateModal}
-        handle={handleCreate}
-        handleCreateUser={handleCreateUser}
-      >
-        <CreateCategory
-          handleInputChange={handleInputChange}
-          handleSelectImage={handleSelectImage}
-          categoryCredentials={categoryCredentials}
-          currentImage={currentImage}
-          currentName={currentName}
-        />
+      <FormModal readOnly title={t('contact.title03')} isOpen={viewModalIsOpen} closeModal={closeEditModal}>
+        <ViewContact contactCredentials={contactCredentials} />
       </FormModal>
     </div>
   );
@@ -463,7 +344,7 @@ EnhancedTableToolbar.propTypes = {
   selected: PropTypes.array.isRequired,
 };
 
-export default function Category() {
+export default function Contact() {
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const [order, setOrder] = useState('asc');
@@ -510,7 +391,6 @@ export default function Category() {
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
-    console.log('clicked');
   };
 
   const handleChangeRowsPerPage = (event) => {
@@ -543,7 +423,12 @@ export default function Category() {
   };
 
   const filteredRows = useMemo(() => {
-    return rows?.filter((row) => row.name && row.name.toLowerCase().includes(searchKeyword.toLowerCase()));
+    return rows?.filter(
+      (row) =>
+        (row.fullname && row.fullname.toLowerCase().includes(searchKeyword.toLowerCase())) ||
+        (row.email && row.email.toLowerCase().includes(searchKeyword.toLowerCase())) ||
+        (row.phone && row.phone.toLowerCase().includes(searchKeyword.toLowerCase())),
+    );
   }, [rows, searchKeyword]);
 
   const isSelected = (id) => selected.indexOf(id) !== -1;
@@ -560,8 +445,8 @@ export default function Category() {
   );
 
   useEffect(() => {
-    dispatch(getAllCategory({ limit: rowsPerPage, page: currentPage })).then((result) => {
-      setRows(result.payload.categories);
+    dispatch(getAllContacts({ limit: rowsPerPage, page: currentPage })).then((result) => {
+      setRows(result.payload.contacts);
       setLoading(false);
       setTotalPage(result.payload.totalPage);
     });
@@ -569,7 +454,7 @@ export default function Category() {
 
   return (
     <div className={cx('category')}>
-      <h1 className={cx('category__heading')}>{t('category.heading01')}</h1>
+      <h1 className={cx('category__heading')}>{t('contact.heading01')}</h1>
       <RealTime />
       <ThemeProvider theme={theme}>
         <Box className={cx('category__list')}>
@@ -616,14 +501,17 @@ export default function Category() {
                                   style={{ marginLeft: '-10px' }}
                                 />
                               </TableCell>
-                              <TableCell style={{ width: '80px' }}>
-                                <div className={cx('skeleton-avatar')}></div>
-                              </TableCell>
-                              <TableCell>
+                              <TableCell component="th" id={labelId} scope="row">
                                 <div className={cx('skeleton-name')}></div>
                               </TableCell>
-                              <TableCell>
+                              <TableCell component="th" scope="row">
                                 <div className={cx('skeleton-email')}></div>
+                              </TableCell>
+                              <TableCell align="center">
+                                <div className={cx('skeleton-phone')}></div>
+                              </TableCell>
+                              <TableCell align="center">
+                                <div className={cx('skeleton-content')}></div>
                               </TableCell>
                             </TableRow>
                           ) : (
@@ -633,7 +521,7 @@ export default function Category() {
                               role="checkbox"
                               aria-checked={isItemSelected}
                               tabIndex={-1}
-                              key={row.id}
+                              key={row._id}
                               selected={isItemSelected}
                               sx={{ cursor: 'pointer' }}
                             >
@@ -646,13 +534,16 @@ export default function Category() {
                                   }}
                                 />
                               </TableCell>
-                              <TableCell align="center">
-                                <Avatar alt={row.name} src={row.image} />
+                              <TableCell component="th" id={labelId} scope="row">
+                                {row.fullname ? row.fullname : 'Không có'}
                               </TableCell>
-                              <TableCell component="th" id={labelId} scope="row" padding="none">
-                                {row.name}
+                              <TableCell component="th" scope="row">
+                                {row.email}
                               </TableCell>
-                              <TableCell align="center">{row.slug}</TableCell>
+                              <TableCell component="th" scope="row">
+                                {row.phone ? row.phone : 'Không có'}
+                              </TableCell>
+                              <TableCell align="center">{row.message}</TableCell>
                             </TableRow>
                           )}
                         </>

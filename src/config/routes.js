@@ -8,6 +8,7 @@ const routes = {
   users: '/users',
   account: 'account',
   categories: '/categories',
+  contacts: '/contacts',
   shopDashboard: '/shop/home',
   shopOders: '/shop/orders',
   shopProducts: '/shop/products',
