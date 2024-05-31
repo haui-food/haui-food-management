@@ -10,3 +10,33 @@ export const getAllProduct = createAsyncThunk('product/getAll', async ({ limit, 
     return rejectWithValue({ ...error });
   }
 });
+
+export const updateProduct = createAsyncThunk(
+  'product/update',
+  async ({ productData, avatar, productId }, { rejectWithValue }) => {
+    try {
+      const customHeaders = {
+        'Content-Type': 'multipart/form-data',
+        // Các header khác nếu cần
+      };
+      //  Tạo một đối tượng FormData
+      const formData = new FormData();
+
+      // Thêm dữ liệu người dùng vào formData
+      Object.keys(productData).forEach((key) => {
+        formData.append(key, productData[key]);
+      });
+
+      // Thêm ảnh vào formData
+      if (avatar) {
+        formData.append('avatar', avatar);
+      }
+
+      const response = await callApi('put', `v1/products/${productId}`, null, formData, customHeaders);
+
+      return response;
+    } catch (error) {
+      return rejectWithValue({ ...error });
+    }
+  },
+);

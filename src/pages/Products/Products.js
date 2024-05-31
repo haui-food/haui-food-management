@@ -23,8 +23,6 @@ import Tooltip from '@mui/material/Tooltip';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
-import CheckIcon from '@mui/icons-material/Check';
-import CloseIcon from '@mui/icons-material/Close';
 import { visuallyHidden } from '@mui/utils';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import 'react-loading-skeleton/dist/skeleton.css';
@@ -33,18 +31,16 @@ import styles from './Product.module.scss';
 import RealTime from '~/components/RealTime';
 import Button from '~/components/Button';
 import { EditIcon, PlusIcon } from '~/components/Icons';
-import { Avatar, Chip } from '@mui/material';
+import { Avatar } from '@mui/material';
 import ConfirmModal from '~/components/ConfirmModal';
 import FormModal from '~/components/FormModal';
-import EditUser from '~/components/EditUser';
-import CreateUser from '~/components/CreateUser';
 import TextField from '@mui/material/TextField';
 import { useDispatch } from 'react-redux';
 import { ArrowLeftIcon, ArrowRightIcon } from '@mui/x-date-pickers';
-import { getAllUser, createUser, deleteUserById, updateUserById, getUserById } from '~/apiService/userService';
+import { createUser, deleteUserById, updateUserById } from '~/apiService/userService';
 import { toast } from 'react-toastify';
 import CreateProduct from '~/components/CreateProduct/CreateProduct';
-import { getAllProduct } from '~/apiService/productService';
+import { getAllProduct, updateProduct } from '~/apiService/productService';
 import EditProduct from '~/components/EditProduct/EditProduct';
 
 const cx = classNames.bind(styles);
@@ -211,21 +207,30 @@ EnhancedTableHead.propTypes = {
 const EnhancedTableToolbar = (props) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const { numSelected, isEdit } = props;
-  const { selected } = props;
-  const { currentProductArray } = props;
+  const { numSelected, isEdit, selected, currentProductArray } = props;
   const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
   const [editModalIsOpen, setEditModalIsOpen] = useState(false);
   const [createModalIsOpen, setCreateModalIsOpen] = useState(false);
 
   const [ProductCredentials, setProductCredentials] = useState({});
+  const [oldProductCredentials, setOldProductCredentials] = useState({});
+  const [imageSelected, setImageSelected] = useState(null);
 
-  const handleInputChange = (e) => {
-    const { name, type, checked, value } = e.target;
-    setProductCredentials((prevState) => ({
-      ...prevState,
-      [name]: type === 'checkbox' ? checked : value,
-    }));
+  const handleInputChange = (e, category) => {
+    if (e) {
+      const { name, value } = e.target;
+      setProductCredentials((prevState) => ({
+        ...prevState,
+        [name]: value,
+      }));
+    }
+
+    if (category) {
+      setProductCredentials((prevState) => ({
+        ...prevState,
+        category: category,
+      }));
+    }
   };
 
   const handleCreateUser = () => {
@@ -292,16 +297,32 @@ const EnhancedTableToolbar = (props) => {
   };
 
   const handleEdit = () => {
-    dispatch(updateUserById({ userid: selected[0], ProductCredentials })).then((result) => {
+    // console.log(ProductCredentials);
+
+    const productData = {
+      name: ProductCredentials?.name,
+      description: ProductCredentials?.description,
+      price: ProductCredentials?.price,
+      category: ProductCredentials?.category?._id,
+    };
+
+    // kiểm tra xem có thay dữ liệu không
+    if (JSON.stringify(productData) === JSON.stringify(oldProductCredentials) && !imageSelected) {
+      toast.info('Không có thay đổi nào');
+      return;
+    }
+
+    dispatch(
+      updateProduct({
+        productData: productData,
+        avatar: imageSelected,
+        productId: selected[0],
+      }),
+    ).then((result) => {
       if (result.payload.code === 200) {
-        closeEditModal();
-        toast.success(result.payload.message);
-        setTimeout(() => {
-          window.location.href = '/users';
-        }, 1000);
-        return;
+      } else {
+        toast.error(result.payload.message);
       }
-      toast.error(result.payload.message);
     });
   };
 
@@ -309,17 +330,29 @@ const EnhancedTableToolbar = (props) => {
     closeEditModal();
   };
 
-  console.log(ProductCredentials);
+  // lấy sản thông tin sản phẩm đã được chọn, category là 1 object để lấy cả tên và id
   useEffect(() => {
     if (selected?.length === 1) {
-      console.log(selected);
-      console.log(currentProductArray);
       const selectedProduct = currentProductArray.filter((product) => product._id === selected[0]);
-      setProductCredentials(selectedProduct[0]);
-      console.log(selectedProduct);
+      setProductCredentials({
+        name: selectedProduct[0].name,
+        description: selectedProduct[0].description ?? '',
+        price: selectedProduct[0].price,
+        category: { name: selectedProduct[0]?.category?.name ?? '', _id: selectedProduct[0]?.category?._id ?? '' },
+        image: selectedProduct[0].image,
+      });
+      setOldProductCredentials({
+        name: selectedProduct[0].name,
+        description: selectedProduct[0]?.description ?? '',
+        price: selectedProduct[0].price,
+        category: selectedProduct[0]?.category?._id ?? '',
+      });
     }
+    //gán lại giá trị cho image selected mỗi khi đóng mở modal
+    setImageSelected(null);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selected?.length]);
+  }, [selected?.length, editModalIsOpen]);
 
   return (
     <div>
@@ -341,7 +374,7 @@ const EnhancedTableToolbar = (props) => {
         ) : (
           <>
             <Typography sx={{ flex: '1 1 100%' }} variant="h6" component="div">
-              {t('users.title02')}
+              Sản phẩm
             </Typography>
             <TextField
               label={t('users.inp01')}
@@ -374,7 +407,7 @@ const EnhancedTableToolbar = (props) => {
           </>
         ) : (
           <Button onClick={openCreateModal} leftIcon={<PlusIcon />} addUser primary>
-            {t('users.btn01')}
+            Thêm sản phẩm
           </Button>
         )}
       </Toolbar>
@@ -399,9 +432,12 @@ const EnhancedTableToolbar = (props) => {
         closeModal={closeEditModal}
         handleEdit={handleEdit}
       >
-        {/* <EditUser ProductCredentials={ProductCredentials} handleInputChange={handleInputChange} /> */}
-
-        <EditProduct productCredentials={ProductCredentials} handleInputChange={handleInputChange} />
+        {/* truyền thông tin sản phẩm và các hàm set lai thông tin sản phẩm khi thay đổi */}
+        <EditProduct
+          productCredentials={ProductCredentials}
+          handleInputChange={handleInputChange}
+          onImageChange={setImageSelected}
+        />
       </FormModal>
 
       <FormModal
@@ -412,7 +448,6 @@ const EnhancedTableToolbar = (props) => {
         handle={handleCreate}
         handleCreateUser={handleCreateUser}
       >
-        {/* <CreateUser handleInputChange={handleInputChange} userCredentials={userCredentials} /> */}
         <CreateProduct handleInputChange={handleInputChange} />
       </FormModal>
     </div>
@@ -525,18 +560,19 @@ export default function Products() {
     [order, orderBy, page, rowsPerPage, filteredRows],
   );
 
+  //lấy thông tin tất cả các sản phẩm
   useEffect(() => {
     dispatch(getAllProduct({ limit: rowsPerPage, page: currentPage })).then((result) => {
-      // console.log(result);
       setRows(result.payload.products);
       setLoading(false);
       setTotalPage(result.payload.totalPage);
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage, rowsPerPage]);
 
   return (
     <div className={cx('user')}>
-      <h1 className={cx('user__heading')}>{t('users.title01')}</h1>
+      <h1 className={cx('user__heading')}>Danh sách sản phẩm</h1>
       <RealTime />
       <ThemeProvider theme={theme}>
         <Box className={cx('user__list')}>
@@ -632,7 +668,7 @@ export default function Products() {
                             <TableCell component="th" id={labelId} scope="row" padding="none">
                               {row?.name}
                             </TableCell>
-                            <TableCell align="center">{row?.description}</TableCell>
+                            <TableCell align="center">{row?.description ?? ''}</TableCell>
                             <TableCell align="center">{row?.price}</TableCell>
                             <TableCell align="center">{row?.shop?.fullname}</TableCell>
                             <TableCell align="center">{row?.category?.name}</TableCell>
