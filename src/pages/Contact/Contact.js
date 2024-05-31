@@ -352,7 +352,7 @@ export default function Contact() {
   const [selected, setSelected] = useState([]);
   const [page, setPage] = useState(0);
   const [dense, setDense] = useState(true);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rowsPerPage, setRowsPerPage] = useState(15);
   const [searchKeyword, setSearchKeyword] = useState('');
   const [rows, setRows] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -535,13 +535,13 @@ export default function Contact() {
                                 />
                               </TableCell>
                               <TableCell component="th" id={labelId} scope="row">
-                                {row.fullname ? row.fullname : t('form.lb04')}
+                                {row.fullname && row.fullname}
                               </TableCell>
                               <TableCell component="th" scope="row">
                                 {row.email}
                               </TableCell>
                               <TableCell component="th" scope="row">
-                                {row.phone ? row.phone : t('form.lb04')}
+                                {row.phone && row.phone}
                               </TableCell>
                               <TableCell align="center">{row.message}</TableCell>
                             </TableRow>
