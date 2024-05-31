@@ -20,7 +20,7 @@ function ViewContact({ contactCredentials }) {
           <div className={cx('form__text-input', 'form__text-input--sm')}>
             <input
               readOnly
-              value={contactCredentials.fullname ? contactCredentials.fullname : t('form.lb04')}
+              value={contactCredentials.fullname && contactCredentials.fullname}
               type="text"
               id="fullname"
               name="fullname"
@@ -58,7 +58,7 @@ function ViewContact({ contactCredentials }) {
           <div className={cx('form__text-input', 'form__text-input--sm')}>
             <input
               readOnly
-              value={contactCredentials.phone ? contactCredentials.phone : t('form.lb04')}
+              value={contactCredentials.phone && contactCredentials.phone}
               type="phone"
               id="phone"
               name="phone"
@@ -68,7 +68,10 @@ function ViewContact({ contactCredentials }) {
             <PhoneIcon className={cx('icon')} />
           </div>
         </div>
+        <div className={cx('form__group')}></div>
+      </div>
 
+      <div className={cx('form__row')}>
         <div className={cx('form__group')}>
           <label htmlFor="message" className={cx('form__label', 'form__label--medium')}>
             {t('contact.title01')}

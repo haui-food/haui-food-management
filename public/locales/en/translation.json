@@ -20,8 +20,7 @@
     "tp02": "Password",
     "lb01": "Show password",
     "lb02": "selected",
-    "lb03": "Rows per page",
-    "lb04": "Not available"
+    "lb03": "Rows per page"
   },
   "errors": {
     "err01": "Please enter email.",
