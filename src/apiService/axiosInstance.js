@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { getLocalStorageItem, updateFieldInLocalStorage } from '~/utils/localStorage';
-import { jwtDecode } from 'jwt-decode';
+import { getLocalStorageItem, addOrUpdateFieldInLocalStorage } from '~/utils/localStorage';
+import config from '~/config';
 
 const axiosInstance = axios.create({
   baseURL: process.env.REACT_APP_API_BASE_URL || 'https://api.hauifood.com/',
@@ -14,44 +14,80 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(async (config) => {
   const token = getLocalStorageItem('accessToken');
   if (token) {
-    // const refreshToken = getLocalStorageItem('refreshToken');
-    // const tokenDecoded = jwtDecode(token);
-    // const currentTimeInSeconds = Math.floor(Date.now() / 1000);
-    // if (tokenDecoded.exp < currentTimeInSeconds) {
-    //   // Token đã hết hạn, thực hiện làm mới token
-    //   const res = await axiosInstance.post('/v1/auth/refresh-tokens', { refreshToken });
-    //   const newAccessToken = res.data.data.accessToken;
-    //   localStorage.setItem('accessToken', newAccessToken);
-    //   config.headers['Authorization'] = `Bearer ${newAccessToken}`;
-    // } else {
-    //   config.headers['Authorization'] = `Bearer ${token}`;
-    // }
-
     config.headers['Authorization'] = `Bearer ${token}`;
   }
-
   return config;
 });
 
 axiosInstance.interceptors.response.use(
   function (response) {
-    if (response.status === 202) {
-    }
-    return response.data;
+    return { ...response.data, url: response.config.url };
   },
 
-  function (error) {
+  async function (error) {
+    const originalRequest = error.config;
+
+    // Kiểm tra nếu mã trạng thái là 401 và không phải là lỗi từ phía request refresh token
+    if (
+      error.response.data.code === 401 &&
+      ['jwt expired', 'jwt hết hạn', 'jwt已过期'].includes(error.response.data.message) &&
+      !originalRequest._retry &&
+      !error.config.url.includes('refresh-tokens')
+    ) {
+      originalRequest._retry = true;
+      try {
+        // Gọi endpoint refresh token ở đây và nhận lại access token mới
+        const refreshToken = getLocalStorageItem('refreshToken');
+        const response1 = await axiosInstance.post('v1/auth/refresh-tokens', { refreshToken: refreshToken });
+
+        const newAccessToken = response1.data.accessToken;
+        // Lưu trữ access token mới vào local storage hoặc nơi phù hợp khác
+        addOrUpdateFieldInLocalStorage(null, 'accessToken', newAccessToken);
+        // Cập nhật access token mới vào header của request ban đầu
+        originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
+        // Thử gọi lại request ban đầu với access token mới
+        return axiosInstance(originalRequest);
+      } catch (refreshError) {
+        // Xử lý lỗi khi không thể refresh token (ví dụ: đăng xuất người dùng)
+        localStorage.removeItem('user');
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+        // window.location.href = config.routes.login;
+        return Promise.reject(refreshError);
+        // return Promise.reject({ code: refreshError.code, message: refreshError.message, config: refreshError.config });
+      }
+    }
+
     if (error.response) {
       const { code, message } = error.response.data;
-      // console.log(error.response);
-      return Promise.reject({ success: false, message: message, code: code });
+      return Promise.reject({ success: false, message: message, code: code, url: error.config.url });
     } else {
       // Nếu không có phản hồi từ máy chủ
-      console.log(error);
-      // Trả về một object có cấu trúc tùy chỉnh
       return Promise.reject({ success: false, message: 'Network error', code: 0 });
     }
   },
 );
+
+// axiosInstance.interceptors.response.use(
+//   function (response) {
+//     console.log(response);
+//     if (response.status === 202) {
+//     }
+//     return response.data;
+//   },
+
+//   function (error) {
+//     if (error.response) {
+//       const { code, message } = error.response.data;
+//       // console.log(error.response);
+//       return Promise.reject({ success: false, message: message, code: code });
+//     } else {
+//       // Nếu không có phản hồi từ máy chủ
+//       console.log(error);
+//       // Trả về một object có cấu trúc tùy chỉnh
+//       return Promise.reject({ success: false, message: 'Network error', code: 0 });
+//     }
+//   },
+// );
 
 export default axiosInstance;

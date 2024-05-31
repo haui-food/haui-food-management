@@ -2,9 +2,8 @@ import { useEffect, useMemo, useState } from 'react';
 import classNames from 'classnames/bind';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
-import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
-import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
+import { useDispatch } from 'react-redux';
 
 import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -25,15 +24,13 @@ import Tooltip from '@mui/material/Tooltip';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 import DeleteIcon from '@mui/icons-material/DeleteOutlined';
-import CheckIcon from '@mui/icons-material/Check';
-import CloseIcon from '@mui/icons-material/Close';
 import { visuallyHidden } from '@mui/utils';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { Avatar, Chip } from '@mui/material';
-import TextField from '@mui/material/TextField';
+import { Avatar } from '@mui/material';
 import { ArrowLeftIcon, ArrowRightIcon } from '@mui/x-date-pickers';
+import TextField from '@mui/material/TextField';
 
-import styles from './User.module.scss';
+import styles from './Product.module.scss';
 import 'react-loading-skeleton/dist/skeleton.css';
 
 import RealTime from '~/components/RealTime';
@@ -41,8 +38,9 @@ import Button from '~/components/Button';
 import { EditIcon, PlusIcon } from '~/components/Icons';
 import ConfirmModal from '~/components/ConfirmModal';
 import FormModal from '~/components/FormModal';
-import EditUser from '~/components/EditUser';
-import CreateUser from '~/components/CreateUser';
+import CreateProduct from '~/components/CreateProduct/CreateProduct';
+import { getAllProduct } from '~/apiService/productService';
+import EditProduct from '~/components/EditProduct/EditProduct';
 import { getAllUser, createUser, deleteUserById, updateUserById, getUserById } from '~/apiService/userService';
 
 const cx = classNames.bind(styles);
@@ -126,30 +124,27 @@ const getComparator = (order, orderBy) => {
 };
 
 const stableSort = (array, comparator) => {
-  const stabilizedThis = array.map((el, index) => [el, index]);
-  stabilizedThis.sort((a, b) => {
+  const stabilizedThis = array?.map((el, index) => [el, index]);
+  stabilizedThis?.sort((a, b) => {
     const order = comparator(a[0], b[0]);
     if (order !== 0) return order;
 
     return a[1] - b[1];
   });
-  return stabilizedThis.map((el) => el[0]);
+  return stabilizedThis?.map((el) => el[0]);
 };
 
 const EnhancedTableHead = (props) => {
   const { t } = useTranslation();
 
   const headCells = [
-    { id: 'avatar', numeric: false, disablePadding: false, label: t('users.title03') },
-    { id: 'fullname', numeric: false, disablePadding: true, label: t('users.title04') },
-    { id: 'email', numeric: true, disablePadding: false, label: t('users.title05') },
-    { id: 'phone', numeric: true, disablePadding: false, label: t('users.title06') },
-    { id: 'dateOfBirth', numeric: true, disablePadding: false, label: t('users.title07') },
-    { id: 'gender', numeric: true, disablePadding: false, label: t('users.title08') },
-    { id: 'isVerify', numeric: false, disablePadding: true, label: t('users.title09') },
-    { id: 'isLocked', numeric: false, disablePadding: true, label: t('users.title10') },
-    { id: 'lastActive', numeric: true, disablePadding: false, label: t('users.title11') },
-    { id: 'role', numeric: true, disablePadding: false, label: t('users.title12') },
+    { id: 'image', numeric: false, disablePadding: false, label: 'Ảnh sản phẩm' },
+    { id: 'name', numeric: false, disablePadding: true, label: 'Tên sản phẩm' },
+    { id: 'description', numeric: true, disablePadding: false, label: 'Mô tả sản phẩm' },
+    { id: 'price', numeric: true, disablePadding: false, label: 'Giá' },
+    { id: 'shop', numeric: true, disablePadding: false, label: 'Cửa hàng' },
+    { id: 'category', numeric: true, disablePadding: false, label: 'Thể loại' },
+    { id: 'slug', numeric: false, disablePadding: true, label: 'Slug' },
   ];
   const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
   const createSortHandler = (property) => (event) => {
@@ -170,7 +165,7 @@ const EnhancedTableHead = (props) => {
             }}
           />
         </TableCell>
-        {headCells.map((headCell) => (
+        {headCells?.map((headCell) => (
           <TableCell
             key={headCell.id}
             align={headCell.numeric ? 'center' : 'left'}
@@ -213,26 +208,17 @@ const EnhancedTableToolbar = (props) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const { numSelected, isEdit } = props;
-  const { selected, setSelected } = props;
+  const { selected } = props;
+  const { currentProductArray } = props;
   const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
   const [editModalIsOpen, setEditModalIsOpen] = useState(false);
   const [createModalIsOpen, setCreateModalIsOpen] = useState(false);
 
-  const [userCredentials, setUserCredentials] = useState({
-    fullname: '',
-    email: '',
-    password: '',
-    phone: '',
-    dateOfBirth: '',
-    gender: 'male',
-    isVerify: false,
-    isLocked: false,
-    role: 'user',
-  });
+  const [ProductCredentials, setProductCredentials] = useState({});
 
   const handleInputChange = (e) => {
     const { name, type, checked, value } = e.target;
-    setUserCredentials((prevState) => ({
+    setProductCredentials((prevState) => ({
       ...prevState,
       [name]: type === 'checkbox' ? checked : value,
     }));
@@ -240,7 +226,7 @@ const EnhancedTableToolbar = (props) => {
 
   const handleCreateUser = () => {
     try {
-      dispatch(createUser(userCredentials)).then((result) => {
+      dispatch(createUser(ProductCredentials)).then((result) => {
         if (result.payload.code === 201) {
           toast.success(result.payload.message);
           setCreateModalIsOpen(false);
@@ -282,8 +268,8 @@ const EnhancedTableToolbar = (props) => {
 
   const handleDelete = () => {
     try {
-      console.log(selected);
-      for (let i = 0; i < selected.length; i++) {
+      // console.log(selected);
+      for (let i = 0; i < selected?.length; i++) {
         dispatch(deleteUserById(selected[i])).then((result) => {
           if (result.payload.code === 200) {
             toast.success(result.payload.message);
@@ -302,7 +288,7 @@ const EnhancedTableToolbar = (props) => {
   };
 
   const handleEdit = () => {
-    dispatch(updateUserById({ userid: selected[0], userCredentials })).then((result) => {
+    dispatch(updateUserById({ userid: selected[0], ProductCredentials })).then((result) => {
       if (result.payload.code === 200) {
         closeEditModal();
         toast.success(result.payload.message);
@@ -319,36 +305,17 @@ const EnhancedTableToolbar = (props) => {
     closeEditModal();
   };
 
+  console.log(ProductCredentials);
   useEffect(() => {
-    if (selected && selected.length > 0) {
-      dispatch(getUserById(selected[0])).then((result) => {
-        setUserCredentials({
-          ...userCredentials,
-          fullname: result.payload.data.fullname,
-          email: result.payload.data.email,
-          password: result.payload.data.password,
-          phone: result.payload.data.phone,
-          dateOfBirth: result.payload.data.dateOfBirth,
-          gender: result.payload.data.gender,
-          isVerify: result.payload.data.isVerify,
-          isLocked: result.payload.data.isLocked,
-          role: result.payload.data.role,
-        });
-      });
-    } else {
-      setUserCredentials({
-        fullname: '',
-        email: '',
-        password: '',
-        phone: '',
-        dateOfBirth: '',
-        gender: 'male',
-        isVerify: false,
-        isLocked: false,
-        role: 'user',
-      });
+    if (selected?.length === 1) {
+      console.log(selected);
+      console.log(currentProductArray);
+      const selectedProduct = currentProductArray.filter((product) => product._id === selected[0]);
+      setProductCredentials(selectedProduct[0]);
+      console.log(selectedProduct);
     }
-  }, [selected.length]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selected?.length]);
 
   return (
     <div>
@@ -365,7 +332,7 @@ const EnhancedTableToolbar = (props) => {
       >
         {numSelected > 0 ? (
           <Typography sx={{ flex: '1 1 100%' }} color="inherit" variant="subtitle1" component="div">
-            {numSelected} {t('form.lb02')}
+            {numSelected} selected
           </Typography>
         ) : (
           <>
@@ -390,12 +357,12 @@ const EnhancedTableToolbar = (props) => {
 
         {numSelected > 0 ? (
           <>
-            <Tooltip title={t('button.btn01')}>
+            <Tooltip title="Delete">
               <IconButton onClick={openConfirmModal}>
                 <DeleteIcon />
               </IconButton>
             </Tooltip>
-            <Tooltip title={t('button.btn03')}>
+            <Tooltip title="Edit">
               <IconButton disabled={isEdit} onClick={openEditModal}>
                 <EditIcon />
               </IconButton>
@@ -428,7 +395,9 @@ const EnhancedTableToolbar = (props) => {
         closeModal={closeEditModal}
         handleEdit={handleEdit}
       >
-        <EditUser userCredentials={userCredentials} handleInputChange={handleInputChange} />
+        {/* <EditUser ProductCredentials={ProductCredentials} handleInputChange={handleInputChange} /> */}
+
+        <EditProduct productCredentials={ProductCredentials} handleInputChange={handleInputChange} />
       </FormModal>
 
       <FormModal
@@ -439,7 +408,8 @@ const EnhancedTableToolbar = (props) => {
         handle={handleCreate}
         handleCreateUser={handleCreateUser}
       >
-        <CreateUser handleInputChange={handleInputChange} userCredentials={userCredentials} />
+        {/* <CreateUser handleInputChange={handleInputChange} userCredentials={userCredentials} /> */}
+        <CreateProduct handleInputChange={handleInputChange} />
       </FormModal>
     </div>
   );
@@ -450,11 +420,11 @@ EnhancedTableToolbar.propTypes = {
   selected: PropTypes.array.isRequired,
 };
 
-export default function Users() {
+export default function Products() {
   const dispatch = useDispatch();
   const { t } = useTranslation();
   const [order, setOrder] = useState('asc');
-  const [orderBy, setOrderBy] = useState('calories');
+  const [orderBy, setOrderBy] = useState('name');
   const [selected, setSelected] = useState([]);
   const [page, setPage] = useState(0);
   const [dense, setDense] = useState(true);
@@ -464,6 +434,7 @@ export default function Users() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPage, setTotalPage] = useState(null);
   const [loading, setLoading] = useState(true);
+
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
@@ -472,7 +443,7 @@ export default function Users() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelected = rows.map((n) => n._id);
+      const newSelected = rows?.map((n) => n._id);
       setSelected(newSelected);
       return;
     }
@@ -486,18 +457,18 @@ export default function Users() {
     if (selectedIndex === -1) {
       newSelected = newSelected.concat(selected, _id);
     } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
+      newSelected = newSelected.concat(selected?.slice(1));
+    } else if (selectedIndex === selected?.length - 1) {
+      newSelected = newSelected.concat(selected?.slice(0, -1));
     } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
+      newSelected = newSelected.concat(selected?.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
     }
     setSelected(newSelected);
   };
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
-    console.log('clicked');
+    // console.log('clicked');
   };
 
   const handleChangeRowsPerPage = (event) => {
@@ -530,56 +501,30 @@ export default function Users() {
   };
 
   const filteredRows = useMemo(() => {
-    return rows.filter(
+    return rows?.filter(
       (row) =>
-        row.fullname.toLowerCase().includes(searchKeyword.toLowerCase()) ||
-        row.email.toLowerCase().includes(searchKeyword.toLowerCase()),
+        row?.name?.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+        row?.description?.toLowerCase().includes(searchKeyword.toLowerCase()),
     );
   }, [rows, searchKeyword]);
 
   const isSelected = (id) => selected.indexOf(id) !== -1;
 
-  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+  const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows?.length) : 0;
 
   const visibleRows = useMemo(
     () =>
-      stableSort(filteredRows, getComparator(order, orderBy)).slice(
+      stableSort(filteredRows, getComparator(order, orderBy))?.slice(
         page * rowsPerPage,
         page * rowsPerPage + rowsPerPage,
       ),
     [order, orderBy, page, rowsPerPage, filteredRows],
   );
 
-  const convertDate = (dateString) => {
-    const date = new Date(dateString);
-
-    const day = date.getDate().toString().padStart(2, '0');
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const year = date.getFullYear();
-
-    const formattedDate = `${day}/${month}/${year}`;
-    return formattedDate;
-  };
-
-  const convertISODate = (isoDateString) => {
-    const date = new Date(isoDateString);
-
-    const year = date.getFullYear();
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const day = date.getDate().toString().padStart(2, '0');
-
-    const hour = date.getHours().toString().padStart(2, '0');
-    const minute = date.getMinutes().toString().padStart(2, '0');
-    const second = date.getSeconds().toString().padStart(2, '0');
-
-    const formattedDate = `${day}/${month}/${year} ${hour}:${minute}:${second}`;
-
-    return formattedDate;
-  };
-
   useEffect(() => {
-    dispatch(getAllUser({ limit: rowsPerPage, page: currentPage })).then((result) => {
-      setRows(result.payload.users);
+    dispatch(getAllProduct({ limit: rowsPerPage, page: currentPage })).then((result) => {
+      // console.log(result);
+      setRows(result.payload.products);
       setLoading(false);
       setTotalPage(result.payload.totalPage);
     });
@@ -593,28 +538,29 @@ export default function Users() {
         <Box className={cx('user__list')}>
           <Paper sx={{ width: '100%', mb: 2 }}>
             <EnhancedTableToolbar
-              numSelected={selected.length}
-              isEdit={selected.length > 1}
+              numSelected={selected?.length}
+              isEdit={selected?.length > 1}
               handleChangeSearch={(e) => {
                 handleChangeSearch(e);
               }}
               selected={selected}
+              currentProductArray={rows}
             />
             <TableContainer>
               <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle" size={dense ? 'small' : 'medium'}>
                 <EnhancedTableHead
-                  numSelected={selected.length}
+                  numSelected={selected?.length}
                   order={order}
                   orderBy={orderBy}
                   onSelectAllClick={handleSelectAllClick}
                   onRequestSort={handleRequestSort}
-                  rowCount={rows.length}
+                  rowCount={rows?.length}
                 />
 
                 {/* Body */}
 
                 <TableBody>
-                  {visibleRows.map((row, index) => {
+                  {visibleRows?.map((row, index) => {
                     const isItemSelected = isSelected(row._id);
                     const labelId = `enhanced-table-checkbox-${index}`;
 
@@ -655,15 +601,6 @@ export default function Users() {
                             <TableCell>
                               <div className={cx('skeleton-isVerify')}></div>
                             </TableCell>
-                            <TableCell>
-                              <div className={cx('skeleton-isLocked')}></div>
-                            </TableCell>
-                            <TableCell>
-                              <div className={cx('skeleton-lastActive')}></div>
-                            </TableCell>
-                            <TableCell>
-                              <div className={cx('skeleton-role')}></div>
-                            </TableCell>
                           </TableRow>
                         ) : (
                           <TableRow
@@ -672,7 +609,7 @@ export default function Users() {
                             role="checkbox"
                             aria-checked={isItemSelected}
                             tabIndex={-1}
-                            key={row.id}
+                            key={row._id}
                             selected={isItemSelected}
                             sx={{ cursor: 'pointer' }}
                           >
@@ -686,56 +623,17 @@ export default function Users() {
                               />
                             </TableCell>
                             <TableCell align="center">
-                              <Avatar alt={row.fullname} src={row.avatar} />
+                              <Avatar alt={row.name} src={row?.image} />
                             </TableCell>
                             <TableCell component="th" id={labelId} scope="row" padding="none">
-                              {row.fullname}
+                              {row?.name}
                             </TableCell>
-                            <TableCell align="center">{row.email}</TableCell>
-                            <TableCell align="center">{row.phone}</TableCell>
-                            <TableCell align="left">{convertDate(row.dateOfBirth)}</TableCell>
-                            <TableCell align="left">
-                              <Chip
-                                label={row.gender}
-                                variant="outlined"
-                                style={{
-                                  color: row.gender === 'male' ? '#5ab0f5' : '#ec407a',
-                                  borderColor: row.gender === 'male' ? '#64b5f6' : '#ec407a',
-                                  backgroundColor: row.gender === 'male' ? '#64b5f633' : '#ec407a14',
-                                }}
-                              />
-                            </TableCell>
-                            <TableCell align="left">
-                              {row.isVerify ? (
-                                <CheckIcon style={{ color: 'var(--primary-color)' }} />
-                              ) : (
-                                <CloseIcon style={{ color: '#f44336' }} />
-                              )}
-                            </TableCell>
-                            <TableCell align="left">
-                              {row.isLocked ? (
-                                <CheckIcon style={{ color: 'var(--primary-color)' }} />
-                              ) : (
-                                <CloseIcon style={{ color: '#f44336' }} />
-                              )}
-                            </TableCell>
-                            <TableCell align="left">{convertISODate(row.lastActive)}</TableCell>
-                            <TableCell align="center">
-                              <Chip
-                                label={row.role}
-                                variant="outlined"
-                                style={{
-                                  color: row.role === 'admin' ? '#f44336' : row.role === 'shop' ? '#ff9800' : '#4caf50',
-                                  borderColor:
-                                    row.role === 'admin' ? '#f44336' : row.role === 'shop' ? '#ff9800' : '#4caf50',
-                                  backgroundColor:
-                                    row.role === 'admin'
-                                      ? '#f443361c'
-                                      : row.role === 'shop'
-                                      ? '#ff980029'
-                                      : '#4caf5029',
-                                }}
-                              />
+                            <TableCell align="center">{row?.description}</TableCell>
+                            <TableCell align="center">{row?.price}</TableCell>
+                            <TableCell align="center">{row?.shop?.fullname}</TableCell>
+                            <TableCell align="center">{row?.category?.name}</TableCell>
+                            <TableCell align="left" padding="none">
+                              {row?.slug.trim()}
                             </TableCell>
                           </TableRow>
                         )}
@@ -777,7 +675,7 @@ export default function Users() {
             <TablePagination
               rowsPerPageOptions={[10, 15, 25]}
               component="div"
-              count={rows.length}
+              count={rows?.length}
               rowsPerPage={rowsPerPage}
               page={page}
               onPageChange={handleChangePage}
