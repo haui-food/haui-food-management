@@ -12,6 +12,7 @@ const routes = {
   shopDashboard: '/shop/home',
   shopOders: '/shop/orders',
   shopProducts: '/shop/products',
+  products: '/products',
   shopChats: '/shop/chats',
 };
 
