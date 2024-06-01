@@ -29,13 +29,14 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Avatar } from '@mui/material';
 import TextField from '@mui/material/TextField';
 import { ArrowLeftIcon, ArrowRightIcon } from '@mui/x-date-pickers';
+import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 
 import styles from './Category.module.scss';
 import 'react-loading-skeleton/dist/skeleton.css';
 
 import RealTime from '~/components/RealTime';
 import Button from '~/components/Button';
-import { EditIcon, PlusIcon } from '~/components/Icons';
+import { EditIcon, MenuIcon, PlusIcon } from '~/components/Icons';
 import ConfirmModal from '~/components/ConfirmModal';
 import FormModal from '~/components/FormModal';
 import CreateCategory from '~/components/CreateCategory';
@@ -213,6 +214,7 @@ const EnhancedTableToolbar = (props) => {
   const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
   const [editModalIsOpen, setEditModalIsOpen] = useState(false);
   const [createModalIsOpen, setCreateModalIsOpen] = useState(false);
+  const [showMenu, setShowMenu] = useState(false);
 
   const [categoryCredentials, setCategoryCredentials] = useState({
     categoryName: '',
@@ -338,6 +340,10 @@ const EnhancedTableToolbar = (props) => {
     closeEditModal();
   };
 
+  const handleCloseMenu = () => {
+    setShowMenu(false);
+  };
+
   useEffect(() => {
     if (selected && selected.length > 0) {
       dispatch(getCategoryById(selected[0])).then((result) => {
@@ -407,9 +413,25 @@ const EnhancedTableToolbar = (props) => {
             </Tooltip>
           </>
         ) : (
-          <Button onClick={openCreateModal} leftIcon={<PlusIcon />} addUser primary>
-            {t('button.btn06')}
-          </Button>
+          <>
+            <button className={cx('category__menu')} onClick={() => setShowMenu(!showMenu)}>
+              <MenuIcon />
+            </button>
+            <div onClick={handleCloseMenu} className={cx('overlay', showMenu && 'overlay--show')}></div>
+            <div className={cx('category__btn-group', showMenu && 'category__btn-group--show')}>
+              <Button
+                onClick={handleCloseMenu}
+                primary
+                addUser
+                leftIcon={<FileDownloadOutlinedIcon fontSize="medium" />}
+              >
+                {t('button.btn08')}
+              </Button>
+              <Button onClick={openCreateModal} leftIcon={<PlusIcon />} addUser primary>
+                {t('button.btn06')}
+              </Button>
+            </div>
+          </>
         )}
       </Toolbar>
 

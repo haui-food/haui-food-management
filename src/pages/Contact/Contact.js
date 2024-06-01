@@ -29,10 +29,12 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { ArrowLeftIcon, ArrowRightIcon } from '@mui/x-date-pickers';
 import TextField from '@mui/material/TextField';
 import RateReviewOutlinedIcon from '@mui/icons-material/RateReviewOutlined';
+import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 
 import styles from './Contact.module.scss';
 import 'react-loading-skeleton/dist/skeleton.css';
 
+import Button from '~/components/Button';
 import RealTime from '~/components/RealTime';
 import ConfirmModal from '~/components/ConfirmModal';
 import FormModal from '~/components/FormModal';
@@ -304,6 +306,9 @@ const EnhancedTableToolbar = (props) => {
               }}
               className={cx('text-field')}
             />
+            <Button primary addUser leftIcon={<FileDownloadOutlinedIcon fontSize="medium" />}>
+              Xuất file Excel
+            </Button>
           </>
         )}
 

@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 
 import { alpha } from '@mui/material/styles';
@@ -32,18 +33,27 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Avatar, Chip, FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 import TextField from '@mui/material/TextField';
 import { ArrowLeftIcon, ArrowRightIcon } from '@mui/x-date-pickers';
+import RateReviewOutlinedIcon from '@mui/icons-material/RateReviewOutlined';
+import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 
 import styles from './User.module.scss';
 import 'react-loading-skeleton/dist/skeleton.css';
 
 import RealTime from '~/components/RealTime';
 import Button from '~/components/Button';
-import { EditIcon, PlusIcon } from '~/components/Icons';
+import { EditIcon, MenuIcon, PlusIcon } from '~/components/Icons';
 import ConfirmModal from '~/components/ConfirmModal';
 import FormModal from '~/components/FormModal';
 import EditUser from '~/components/EditUser';
 import CreateUser from '~/components/CreateUser';
-import { getAllUser, createUser, deleteUserById, updateUserById, getUserById } from '~/apiService/userService';
+import {
+  getAllUser,
+  createUser,
+  deleteUserById,
+  updateUserById,
+  getUserById,
+  exportUsers,
+} from '~/apiService/userService';
 
 const cx = classNames.bind(styles);
 
@@ -211,12 +221,14 @@ EnhancedTableHead.propTypes = {
 
 const EnhancedTableToolbar = (props) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { numSelected, isEdit } = props;
+  const { numSelected, isEdit, searchKeyword } = props;
   const { selected, setSelected } = props;
   const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
   const [editModalIsOpen, setEditModalIsOpen] = useState(false);
   const [createModalIsOpen, setCreateModalIsOpen] = useState(false);
+  const [showMenu, setShowMenu] = useState(false);
 
   const [userCredentials, setUserCredentials] = useState({
     fullname: '',
@@ -319,6 +331,20 @@ const EnhancedTableToolbar = (props) => {
     closeEditModal();
   };
 
+  const handleCloseMenu = () => {
+    setShowMenu(false);
+  };
+
+  const handleExportFile = () => {
+    dispatch(exportUsers()).then((result) => {
+      // if (result.payload.code === 200) {
+      //   toast.success(result.payload.message);
+      //   return;
+      // }
+      // toast.error(result.payload.message);
+    });
+  };
+
   useEffect(() => {
     if (selected && selected.length > 0) {
       dispatch(getUserById(selected[0])).then((result) => {
@@ -369,7 +395,7 @@ const EnhancedTableToolbar = (props) => {
           </Typography>
         ) : (
           <>
-            <Typography sx={{ flex: '1 1 100%' }} variant="h6" component="div">
+            <Typography sx={{ flex: '1 1 100%', fontSize: '2rem' }} variant="h6" component="div">
               {t('users.title02')}
             </Typography>
             <TextField
@@ -402,9 +428,67 @@ const EnhancedTableToolbar = (props) => {
             </Tooltip>
           </>
         ) : (
-          <Button onClick={openCreateModal} leftIcon={<PlusIcon />} addUser primary>
-            {t('users.btn01')}
-          </Button>
+          <>
+            <button className={cx('user__menu')} onClick={() => setShowMenu(!showMenu)}>
+              <MenuIcon />
+            </button>
+            <div onClick={handleCloseMenu} className={cx('overlay', showMenu && 'overlay--show')}></div>
+            <div className={cx('user__btn-group', showMenu && 'user__btn-group--show')}>
+              <FormControl className={cx('user__select-role')} size="small">
+                <InputLabel sx={{ fontSize: '1.6rem' }} id="select-role">
+                  {t('users.title12')}
+                </InputLabel>
+                <Select
+                  sx={{ fontSize: '1.5rem' }}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    props.handleChangeSearch(e);
+                    value !== 'All' ? navigate(`?role=${value.toLowerCase()}`) : navigate(``);
+                    handleCloseMenu();
+                  }}
+                  defaultValue={'All'}
+                  labelId="select-role"
+                  id="select-role"
+                  label="Role"
+                >
+                  <MenuItem sx={{ fontSize: '1.5rem' }} value={'All'}>
+                    All
+                  </MenuItem>
+                  <MenuItem sx={{ fontSize: '1.5rem' }} value={'User'}>
+                    User
+                  </MenuItem>
+                  <MenuItem sx={{ fontSize: '1.5rem' }} value={'Shop'}>
+                    Shop
+                  </MenuItem>
+                  <MenuItem sx={{ fontSize: '1.5rem' }} value={'Admin'}>
+                    Admin
+                  </MenuItem>
+                </Select>
+              </FormControl>
+              <Button
+                onClick={() => {
+                  handleCloseMenu();
+                  handleExportFile();
+                }}
+                primary
+                addUser
+                leftIcon={<FileDownloadOutlinedIcon fontSize="medium" />}
+              >
+                {t('button.btn08')}
+              </Button>
+              <Button
+                onClick={() => {
+                  openCreateModal();
+                  // handleCloseMenu();
+                }}
+                leftIcon={<PlusIcon />}
+                addUser
+                primary
+              >
+                {t('users.btn01')}
+              </Button>
+            </div>
+          </>
         )}
       </Toolbar>
 
@@ -510,7 +594,7 @@ export default function Users() {
   };
 
   const handleChangeSearch = (e) => {
-    setSearchKeyword(e.target.value);
+    e.target.value !== 'All' ? setSearchKeyword(e.target.value) : setSearchKeyword('');
   };
 
   const handleNextPage = () => {
@@ -589,39 +673,8 @@ export default function Users() {
   return (
     <div className={cx('user')}>
       <h1 className={cx('user__heading')}>{t('users.title01')}</h1>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <RealTime />
 
-        <FormControl sx={{ width: '100px', fontSize: '2rem' }} size="small">
-          <InputLabel sx={{ fontSize: '1.6rem' }} id="select-role">
-            {t('users.title12')}
-          </InputLabel>
-          <Select
-            sx={{ fontSize: '1.5rem' }}
-            onChange={(e) => {
-              const value = e.target.value;
-              value !== 'All' ? setSearchKeyword(e.target.value) : setSearchKeyword('');
-            }}
-            defaultValue={'All'}
-            labelId="select-role"
-            id="select-role"
-            label="Role"
-          >
-            <MenuItem sx={{ fontSize: '1.5rem' }} value={'All'}>
-              All
-            </MenuItem>
-            <MenuItem sx={{ fontSize: '1.5rem' }} value={'User'}>
-              User
-            </MenuItem>
-            <MenuItem sx={{ fontSize: '1.5rem' }} value={'Shop'}>
-              Shop
-            </MenuItem>
-            <MenuItem sx={{ fontSize: '1.5rem' }} value={'Admin'}>
-              Admin
-            </MenuItem>
-          </Select>
-        </FormControl>
-      </div>
+      <RealTime />
 
       <ThemeProvider theme={theme}>
         <Box className={cx('user__list')}>
@@ -633,6 +686,7 @@ export default function Users() {
                 handleChangeSearch(e);
               }}
               selected={selected}
+              searchKeyword={searchKeyword}
             />
             <TableContainer>
               <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle" size={dense ? 'small' : 'medium'}>
