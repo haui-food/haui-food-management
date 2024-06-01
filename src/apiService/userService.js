@@ -49,3 +49,12 @@ export const deleteUserById = createAsyncThunk('user/deleteById', async (userid,
     return rejectWithValue(error.message);
   }
 });
+
+export const exportUsers = createAsyncThunk('user/exportUsers', async (_, { rejectWithValue }) => {
+  try {
+    const res = await callApi('GET', `/v1/users/exports?`, {}, {});
+    return res.data;
+  } catch (error) {
+    return rejectWithValue({ ...error });
+  }
+});

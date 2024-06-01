@@ -12,6 +12,7 @@
     "btn05": "Back to home",
     "btn06": "Add category",
     "btn07": "View",
+    "btn08": "Export Excel file",
     "btnLogin": "Login",
     "btnLoginLoading": "...Logging in"
   },

@@ -12,6 +12,7 @@
     "btn05": "返回首页",
     "btn06": "添加类别",
     "btn07": "看法",
+    "btn08": "导出Excel文件",
     "btnLogin": "登录",
     "btnLoginLoading": "...登录中"
   },

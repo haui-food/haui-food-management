@@ -29,13 +29,14 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Avatar } from '@mui/material';
 import { ArrowLeftIcon, ArrowRightIcon } from '@mui/x-date-pickers';
 import TextField from '@mui/material/TextField';
+import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 
 import styles from './Product.module.scss';
 import 'react-loading-skeleton/dist/skeleton.css';
 
 import RealTime from '~/components/RealTime';
 import Button from '~/components/Button';
-import { EditIcon, PlusIcon } from '~/components/Icons';
+import { EditIcon, MenuIcon, PlusIcon } from '~/components/Icons';
 import ConfirmModal from '~/components/ConfirmModal';
 import FormModal from '~/components/FormModal';
 import CreateProduct from '~/components/CreateProduct/CreateProduct';
@@ -213,6 +214,7 @@ const EnhancedTableToolbar = (props) => {
   const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
   const [editModalIsOpen, setEditModalIsOpen] = useState(false);
   const [createModalIsOpen, setCreateModalIsOpen] = useState(false);
+  const [showMenu, setShowMenu] = useState(false);
 
   const [ProductCredentials, setProductCredentials] = useState({});
 
@@ -305,7 +307,10 @@ const EnhancedTableToolbar = (props) => {
     closeEditModal();
   };
 
-  console.log(ProductCredentials);
+  const handleCloseMenu = () => {
+    setShowMenu(false);
+  };
+
   useEffect(() => {
     if (selected?.length === 1) {
       console.log(selected);
@@ -369,9 +374,20 @@ const EnhancedTableToolbar = (props) => {
             </Tooltip>
           </>
         ) : (
-          <Button onClick={openCreateModal} leftIcon={<PlusIcon />} addUser primary>
-            {t('users.btn01')}
-          </Button>
+          <>
+            <button className={cx('product__menu')} onClick={() => setShowMenu(!showMenu)}>
+              <MenuIcon />
+            </button>
+            <div onClick={handleCloseMenu} className={cx('overlay', showMenu && 'overlay--show')}></div>
+            <div className={cx('product__btn-group', showMenu && 'product__btn-group--show')}>
+              <Button onClick={handleCloseMenu} primary addUser leftIcon={<FileDownloadOutlinedIcon fontSize="medium" />}>
+                {t('button.btn08')}
+              </Button>
+              <Button onClick={openCreateModal} leftIcon={<PlusIcon />} addUser primary>
+                {t('users.btn01')}
+              </Button>
+            </div>
+          </>
         )}
       </Toolbar>
 
@@ -531,11 +547,11 @@ export default function Products() {
   }, [currentPage, rowsPerPage]);
 
   return (
-    <div className={cx('user')}>
-      <h1 className={cx('user__heading')}>{t('users.title01')}</h1>
+    <div className={cx('product')}>
+      <h1 className={cx('product__heading')}>{t('users.title01')}</h1>
       <RealTime />
       <ThemeProvider theme={theme}>
-        <Box className={cx('user__list')}>
+        <Box className={cx('product__list')}>
           <Paper sx={{ width: '100%', mb: 2 }}>
             <EnhancedTableToolbar
               numSelected={selected?.length}

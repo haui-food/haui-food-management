@@ -1,5 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { getAllUser, createUser, deleteUserById, updateUserById, getUserById } from '~/apiService/userService';
+import {
+  getAllUser,
+  createUser,
+  deleteUserById,
+  updateUserById,
+  getUserById,
+  exportUsers,
+} from '~/apiService/userService';
 
 const userSlice = createSlice({
   name: 'user',
@@ -73,6 +80,19 @@ const userSlice = createSlice({
         state.message = action.payload.message;
       })
       .addCase(getUserById.rejected, (state, action) => {
+        state.loading = false;
+        state.message = action.payload.message;
+      })
+      .addCase(exportUsers.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(exportUsers.fulfilled, (state, action) => {
+        state.loading = false;
+        // state.user = action.payload.data;
+        // state.message = action.payload.message;
+      })
+      .addCase(exportUsers.rejected, (state, action) => {
         state.loading = false;
         state.message = action.payload.message;
       });
