@@ -589,12 +589,12 @@ export default function Users() {
   return (
     <div className={cx('user')}>
       <h1 className={cx('user__heading')}>{t('users.title01')}</h1>
-      <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <RealTime />
-  
-        <FormControl sx={{ width: '100px', height: '45px', fontSize: '2rem' }}>
+
+        <FormControl sx={{ width: '100px', fontSize: '2rem' }} size="small">
           <InputLabel sx={{ fontSize: '1.6rem' }} id="select-role">
-            Role
+            {t('users.title12')}
           </InputLabel>
           <Select
             sx={{ fontSize: '1.5rem' }}
