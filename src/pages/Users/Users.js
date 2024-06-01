@@ -29,7 +29,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import { visuallyHidden } from '@mui/utils';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { Avatar, Chip } from '@mui/material';
+import { Avatar, Chip, FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 import TextField from '@mui/material/TextField';
 import { ArrowLeftIcon, ArrowRightIcon } from '@mui/x-date-pickers';
 
@@ -533,7 +533,8 @@ export default function Users() {
     return rows.filter(
       (row) =>
         row.fullname.toLowerCase().includes(searchKeyword.toLowerCase()) ||
-        row.email.toLowerCase().includes(searchKeyword.toLowerCase()),
+        row.email.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+        row.role.toLowerCase().includes(searchKeyword.toLowerCase()),
     );
   }, [rows, searchKeyword]);
 
@@ -588,7 +589,40 @@ export default function Users() {
   return (
     <div className={cx('user')}>
       <h1 className={cx('user__heading')}>{t('users.title01')}</h1>
-      <RealTime />
+      <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+        <RealTime />
+  
+        <FormControl sx={{ width: '100px', height: '45px', fontSize: '2rem' }}>
+          <InputLabel sx={{ fontSize: '1.6rem' }} id="select-role">
+            Role
+          </InputLabel>
+          <Select
+            sx={{ fontSize: '1.5rem' }}
+            onChange={(e) => {
+              const value = e.target.value;
+              value !== 'All' ? setSearchKeyword(e.target.value) : setSearchKeyword('');
+            }}
+            defaultValue={'All'}
+            labelId="select-role"
+            id="select-role"
+            label="Role"
+          >
+            <MenuItem sx={{ fontSize: '1.5rem' }} value={'All'}>
+              All
+            </MenuItem>
+            <MenuItem sx={{ fontSize: '1.5rem' }} value={'User'}>
+              User
+            </MenuItem>
+            <MenuItem sx={{ fontSize: '1.5rem' }} value={'Shop'}>
+              Shop
+            </MenuItem>
+            <MenuItem sx={{ fontSize: '1.5rem' }} value={'Admin'}>
+              Admin
+            </MenuItem>
+          </Select>
+        </FormControl>
+      </div>
+
       <ThemeProvider theme={theme}>
         <Box className={cx('user__list')}>
           <Paper sx={{ width: '100%', mb: 2 }}>
