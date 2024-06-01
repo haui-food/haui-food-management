@@ -13,7 +13,7 @@ export const getAllProduct = createAsyncThunk('product/getAll', async ({ limit, 
 
 export const updateProduct = createAsyncThunk(
   'product/update',
-  async ({ productData, avatar, productId }, { rejectWithValue }) => {
+  async ({ productData, image, productId }, { rejectWithValue }) => {
     try {
       const customHeaders = {
         'Content-Type': 'multipart/form-data',
@@ -28,8 +28,8 @@ export const updateProduct = createAsyncThunk(
       });
 
       // Thêm ảnh vào formData
-      if (avatar) {
-        formData.append('avatar', avatar);
+      if (image) {
+        formData.append('image', image);
       }
 
       const response = await callApi('put', `v1/products/${productId}`, null, formData, customHeaders);
@@ -41,35 +41,32 @@ export const updateProduct = createAsyncThunk(
   },
 );
 
-export const createProduct = createAsyncThunk(
-  'product/create',
-  async ({ productData, avatar }, { rejectWithValue }) => {
-    try {
-      const customHeaders = {
-        'Content-Type': 'multipart/form-data',
-        // Các header khác nếu cần
-      };
-      //  Tạo một đối tượng FormData
-      const formData = new FormData();
+export const createProduct = createAsyncThunk('product/create', async ({ productData, image }, { rejectWithValue }) => {
+  try {
+    const customHeaders = {
+      'Content-Type': 'multipart/form-data',
+      // Các header khác nếu cần
+    };
+    //  Tạo một đối tượng FormData
+    const formData = new FormData();
 
-      // Thêm dữ liệu người dùng vào formData
-      Object.keys(productData).forEach((key) => {
-        formData.append(key, productData[key]);
-      });
+    // Thêm dữ liệu người dùng vào formData
+    Object.keys(productData).forEach((key) => {
+      formData.append(key, productData[key]);
+    });
 
-      // Thêm ảnh vào formData
-      if (avatar) {
-        formData.append('avatar', avatar);
-      }
-
-      const response = await callApi('post', `v1/products`, null, formData, customHeaders);
-
-      return response;
-    } catch (error) {
-      return rejectWithValue({ ...error });
+    // Thêm ảnh vào formData
+    if (image) {
+      formData.append('image', image);
     }
-  },
-);
+
+    const response = await callApi('post', `v1/products`, null, formData, customHeaders);
+
+    return response;
+  } catch (error) {
+    return rejectWithValue({ ...error });
+  }
+});
 
 export const deleteProductById = createAsyncThunk('product/deleteById', async (productId, { rejectWithValue }) => {
   try {

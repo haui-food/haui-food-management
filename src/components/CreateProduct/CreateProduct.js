@@ -47,7 +47,7 @@ const ComboBox = ({ onValueChange, value }) => {
   );
 };
 
-function CreateProduct({ handleInputChange, productCredentials, onImageChange, onValidate, onError, handleValidate }) {
+function CreateProduct({ handleInputChange, productCredentials, onImageChange, onError, handleValidate }) {
   const { t } = useTranslation();
 
   const [selectedCategory, setSelectedCategory] = useState();
@@ -72,15 +72,11 @@ function CreateProduct({ handleInputChange, productCredentials, onImageChange, o
     }
   };
 
-  console.log(productCredentials);
 
   const validate = (e) => {
     handleValidate(e);
   };
 
-  // useEffect(() => {
-  //   onValidate(validate);
-  // }, [onValidate]);
 
   return (
     <form action="" className={cx('form')} autoComplete="off">

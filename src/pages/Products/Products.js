@@ -147,7 +147,7 @@ const EnhancedTableHead = (props) => {
     { id: 'category', numeric: true, disablePadding: false, label: 'Thể loại' },
     { id: 'slug', numeric: false, disablePadding: true, label: 'Slug' },
   ];
-  const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
+  const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, onAddProduct } = props;
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
   };
@@ -208,7 +208,7 @@ EnhancedTableHead.propTypes = {
 const EnhancedTableToolbar = (props) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const { numSelected, isEdit, selected, currentProductArray } = props;
+  const { numSelected, isEdit, selected, currentProductArray, onAddProduct, onUpdateProduct } = props;
   const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
   const [editModalIsOpen, setEditModalIsOpen] = useState(false);
   const [createModalIsOpen, setCreateModalIsOpen] = useState(false);
@@ -268,7 +268,7 @@ const EnhancedTableToolbar = (props) => {
     return hasError;
   };
 
-  const handleCreateUser = () => {
+  const handleCreateProduct = () => {
     let isSubmit = true;
     const productData = {
       name: ProductCredentials?.name,
@@ -277,7 +277,9 @@ const EnhancedTableToolbar = (props) => {
       category: ProductCredentials?.category?._id,
     };
 
-    console.log(validate());
+    if (!validate()) {
+      isSubmit = false;
+    }
 
     if (!productData.category) {
       setError((prevState) => ({
@@ -288,16 +290,27 @@ const EnhancedTableToolbar = (props) => {
     }
 
     if (!isSubmit) {
+      toast.info('Vui lòng nhập đúng thông tin các trường');
       return;
     }
 
     dispatch(
       createProduct({
         productData: productData,
-        avatar: imageSelected,
+        image: imageSelected,
       }),
     ).then((result) => {
-      console.log(result);
+      if (result.payload.code === 201) {
+        toast.success(result.payload.message);
+        console.log(result.payload);
+        // setTimeout(() => {
+        //   window.location.href = '/products';
+        // }, 1000);
+        onAddProduct(result.payload.data);
+        closeCreateModal();
+        return;
+      }
+      toast.error(result.payload.message);
     });
   };
 
@@ -365,11 +378,15 @@ const EnhancedTableToolbar = (props) => {
     dispatch(
       updateProduct({
         productData: productData,
-        avatar: imageSelected,
+        image: imageSelected,
         productId: selected[0],
       }),
     ).then((result) => {
       if (result.payload.code === 200) {
+        toast.success(result.payload.message);
+        console.log(result.payload);
+        onUpdateProduct(result.payload.data);
+        closeEditModal();
       } else {
         toast.error(result.payload.message);
       }
@@ -471,11 +488,11 @@ const EnhancedTableToolbar = (props) => {
       </Toolbar>
 
       <ConfirmModal
-        title="Xác nhận xóa người dùng"
+        title="Xác nhận xóa sản phẩm"
         desc={
           isEdit
-            ? 'Bạn có chắc chắn muốn xóa tất cả những người dùng này không?'
-            : 'Bạn có chắc chắn muốn xóa người dùng này không?'
+            ? 'Bạn có chắc chắn muốn xóa tất cả những sản phẩm này không?'
+            : 'Bạn có chắc chắn muốn xóa sản phẩm này không?'
         }
         type="Xóa"
         isOpen={confirmModalIsOpen}
@@ -484,7 +501,7 @@ const EnhancedTableToolbar = (props) => {
       />
 
       <FormModal
-        title="Sửa thông tin người dùng"
+        title="Sửa thông tin sản phẩm"
         type="Sửa"
         isOpen={editModalIsOpen}
         closeModal={closeEditModal}
@@ -504,7 +521,7 @@ const EnhancedTableToolbar = (props) => {
         isOpen={createModalIsOpen}
         closeModal={closeCreateModal}
         handle={handleCreate}
-        handleCreateUser={handleCreateUser}
+        handleCreateUser={handleCreateProduct}
       >
         <CreateProduct
           productCredentials={ProductCredentials}
@@ -624,6 +641,16 @@ export default function Products() {
     [order, orderBy, page, rowsPerPage, filteredRows],
   );
 
+  const handleAddProduct = (newProduct) => {
+    setRows((preRows) => {
+      return [newProduct, ...preRows];
+    });
+  };
+
+  const handleUpdateProduct = (updateProduct) => {
+    setRows((prevRows) => prevRows.map((product) => (product._id === updateProduct._id ? updateProduct : product)));
+  };
+
   //lấy thông tin tất cả các sản phẩm
   useEffect(() => {
     dispatch(getAllProduct({ limit: rowsPerPage, page: currentPage })).then((result) => {
@@ -649,6 +676,8 @@ export default function Products() {
               }}
               selected={selected}
               currentProductArray={rows}
+              onAddProduct={handleAddProduct}
+              onUpdateProduct={handleUpdateProduct}
             />
             <TableContainer>
               <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle" size={dense ? 'small' : 'medium'}>
