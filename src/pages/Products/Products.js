@@ -208,7 +208,16 @@ EnhancedTableHead.propTypes = {
 const EnhancedTableToolbar = (props) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const { numSelected, isEdit, selected, currentProductArray, onAddProduct, onUpdateProduct, onDeleteProduct } = props;
+  const {
+    numSelected,
+    isEdit,
+    selected,
+    currentProductArray,
+    onAddProduct,
+    onUpdateProduct,
+    onDeleteProduct,
+    searchKeyword,
+  } = props;
   const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
   const [editModalIsOpen, setEditModalIsOpen] = useState(false);
   const [createModalIsOpen, setCreateModalIsOpen] = useState(false);
@@ -418,6 +427,14 @@ const EnhancedTableToolbar = (props) => {
     setShowMenu(false);
   };
 
+  const handleExportFile = () => {
+    const token = JSON.parse(localStorage.getItem('accessToken'));
+    if (searchKeyword) {
+      return `https://api.hauifood.com/v1/products/exports?keyword=${searchKeyword}&token=${token}`;
+    }
+    return `https://api.hauifood.com/v1/products/exports?token=${token}`;
+  };
+
   // lấy sản thông tin sản phẩm đã được chọn, category là 1 object để lấy cả tên và id
   useEffect(() => {
     if (selected?.length === 1) {
@@ -470,7 +487,7 @@ const EnhancedTableToolbar = (props) => {
           </Typography>
         ) : (
           <>
-            <Typography sx={{ flex: '1 1 100%' }} variant="h6" component="div">
+            <Typography sx={{ flex: '1 1 100%', fontSize: '2.2rem' }} variant="h6" component="div">
               Sản phẩm
             </Typography>
             <TextField
@@ -509,11 +526,19 @@ const EnhancedTableToolbar = (props) => {
             </button>
             <div onClick={handleCloseMenu} className={cx('overlay', showMenu && 'overlay--show')}></div>
             <div className={cx('product__btn-group', showMenu && 'product__btn-group--show')}>
-              <Button onClick={handleCloseMenu} primary addUser leftIcon={<FileDownloadOutlinedIcon fontSize="medium" />}>
+              <Button
+                onClick={handleCloseMenu}
+                primary
+                addUser
+                target="_blank"
+                rel="noreferrer"
+                href={handleExportFile()}
+                leftIcon={<FileDownloadOutlinedIcon fontSize="medium" />}
+              >
                 {t('button.btn08')}
               </Button>
               <Button onClick={openCreateModal} leftIcon={<PlusIcon />} addUser primary>
-                Thêm sản phẩm
+                {t('button.btn06')}
               </Button>
             </div>
           </>
@@ -724,6 +749,7 @@ export default function Products() {
               onAddProduct={handleAddProduct}
               onUpdateProduct={handleUpdateProduct}
               onDeleteProduct={handleDeleteProduct}
+              searchKeyword={searchKeyword}
             />
             <TableContainer>
               <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle" size={dense ? 'small' : 'medium'}>
