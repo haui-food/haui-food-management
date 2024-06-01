@@ -209,8 +209,7 @@ EnhancedTableHead.propTypes = {
 const EnhancedTableToolbar = (props) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const { numSelected, isEdit } = props;
-  const { selected, setSelected } = props;
+  const { numSelected, isEdit, selected, setSelected, searchKeyword } = props;
   const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
   const [editModalIsOpen, setEditModalIsOpen] = useState(false);
   const [createModalIsOpen, setCreateModalIsOpen] = useState(false);
@@ -344,6 +343,14 @@ const EnhancedTableToolbar = (props) => {
     setShowMenu(false);
   };
 
+  const handleExportFile = () => {
+    const token = JSON.parse(localStorage.getItem('accessToken'));
+    if (searchKeyword) {
+      return `https://api.hauifood.com/v1/categories/exports?keyword=${searchKeyword}&token=${token}`;
+    }
+    return `https://api.hauifood.com/v1/categories/exports?token=${token}`;
+  };
+
   useEffect(() => {
     if (selected && selected.length > 0) {
       dispatch(getCategoryById(selected[0])).then((result) => {
@@ -423,6 +430,9 @@ const EnhancedTableToolbar = (props) => {
                 onClick={handleCloseMenu}
                 primary
                 addUser
+                target="_blank"
+                rel="noreferrer"
+                href={handleExportFile()}
                 leftIcon={<FileDownloadOutlinedIcon fontSize="medium" />}
               >
                 {t('button.btn08')}
@@ -603,6 +613,7 @@ export default function Category() {
                 handleChangeSearch(e);
               }}
               selected={selected}
+              searchKeyword={searchKeyword}
             />
             <TableContainer>
               <Table sx={{ minWidth: 650 }} aria-labelledby="tableTitle" size={dense ? 'small' : 'medium'}>

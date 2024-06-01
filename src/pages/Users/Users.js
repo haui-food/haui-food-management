@@ -336,13 +336,11 @@ const EnhancedTableToolbar = (props) => {
   };
 
   const handleExportFile = () => {
-    dispatch(exportUsers()).then((result) => {
-      // if (result.payload.code === 200) {
-      //   toast.success(result.payload.message);
-      //   return;
-      // }
-      // toast.error(result.payload.message);
-    });
+    const token = JSON.parse(localStorage.getItem('accessToken'));
+    if (searchKeyword) {
+      return `https://api.hauifood.com/v1/users/exports?keyword=${searchKeyword}&token=${token}`;
+    }
+    return `https://api.hauifood.com/v1/users/exports?token=${token}`;
   };
 
   useEffect(() => {
@@ -395,7 +393,7 @@ const EnhancedTableToolbar = (props) => {
           </Typography>
         ) : (
           <>
-            <Typography sx={{ flex: '1 1 100%', fontSize: '2rem' }} variant="h6" component="div">
+            <Typography sx={{ flex: '1 1 100%', fontSize: '2.2rem' }} variant="h6" component="div">
               {t('users.title02')}
             </Typography>
             <TextField
@@ -466,12 +464,12 @@ const EnhancedTableToolbar = (props) => {
                 </Select>
               </FormControl>
               <Button
-                onClick={() => {
-                  handleCloseMenu();
-                  handleExportFile();
-                }}
+                onClick={handleCloseMenu}
                 primary
                 addUser
+                target="_blank"
+                rel="noreferrer"
+                href={handleExportFile()}
                 leftIcon={<FileDownloadOutlinedIcon fontSize="medium" />}
               >
                 {t('button.btn08')}
@@ -485,7 +483,7 @@ const EnhancedTableToolbar = (props) => {
                 addUser
                 primary
               >
-                {t('users.btn01')}
+                {t('button.btn06')}
               </Button>
             </div>
           </>
