@@ -45,7 +45,7 @@ const ComboBox = ({ onValueChange, value }) => {
   );
 };
 
-function EditProduct({ handleInputChange, productCredentials, onImageChange }) {
+function EditProduct({ handleInputChange, productCredentials, onImageChange, onError, handleValidate }) {
   const { t } = useTranslation();
 
   const [selectedCategory, setSelectedCategory] = useState();
@@ -77,6 +77,10 @@ function EditProduct({ handleInputChange, productCredentials, onImageChange }) {
     }
   };
 
+  const validate = (e) => {
+    handleValidate(e);
+  };
+
   return (
     <form action="" className={cx('form')} autoComplete="off">
       <div className={cx('form__row', 'form__row--three')}>
@@ -85,10 +89,16 @@ function EditProduct({ handleInputChange, productCredentials, onImageChange }) {
           <label htmlFor="category-name" className={cx('form__label', 'form__label--medium')}>
             Tên sản phẩm
           </label>
-          <div className={cx('form__text-input', 'form__text-input--sm')}>
+          <div className={cx('form__text-input', 'form__text-input--sm', { 'form-error': onError?.name })}>
             <input
               value={productCredentials?.name}
-              onChange={(e) => handleInputChange(e)}
+              onChange={(e) => {
+                handleInputChange(e);
+                validate(e);
+              }}
+              onBlur={(e) => {
+                validate(e);
+              }}
               type="text"
               id="name"
               name="name"
@@ -97,6 +107,7 @@ function EditProduct({ handleInputChange, productCredentials, onImageChange }) {
             />
             <CategoryOutlinedIcon fontSize="large" className={cx('icon')} />
           </div>
+          {onError?.name && <p className={cx('form__error-message')}>{onError?.name}</p>}
         </div>
       </div>
 
@@ -127,10 +138,16 @@ function EditProduct({ handleInputChange, productCredentials, onImageChange }) {
           <label htmlFor="category-name" className={cx('form__label', 'form__label--medium')}>
             Giá
           </label>
-          <div className={cx('form__text-input', 'form__text-input--sm')}>
+          <div className={cx('form__text-input', 'form__text-input--sm', { 'form-error': onError?.price })}>
             <input
               value={productCredentials?.price}
-              onChange={(e) => handleInputChange(e)}
+              onChange={(e) => {
+                handleInputChange(e);
+                validate(e);
+              }}
+              onBlur={(e) => {
+                validate(e);
+              }}
               type="text"
               id="price"
               name="price"
@@ -139,6 +156,7 @@ function EditProduct({ handleInputChange, productCredentials, onImageChange }) {
             />
             <CategoryOutlinedIcon fontSize="large" className={cx('icon')} />
           </div>
+          {onError?.price && <p className={cx('form__error-message')}>{onError?.price}</p>}
         </div>
       </div>
 
@@ -150,6 +168,7 @@ function EditProduct({ handleInputChange, productCredentials, onImageChange }) {
           </label>
 
           <ComboBox onValueChange={handleCategoryChange} value={selectedCategory} />
+          {onError?.category && <p className={cx('form__error-message')}>{onError?.category}</p>}
         </div>
       </div>
 

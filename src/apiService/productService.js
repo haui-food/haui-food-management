@@ -70,7 +70,7 @@ export const createProduct = createAsyncThunk('product/create', async ({ product
 
 export const deleteProductById = createAsyncThunk('product/deleteById', async (productId, { rejectWithValue }) => {
   try {
-    const res = await callApi('DELETE', `/v1/categories/${productId}`, {}, {});
+    const res = await callApi('DELETE', `/v1/products/${productId}`, {}, {});
     return res;
   } catch (error) {
     return rejectWithValue(error);

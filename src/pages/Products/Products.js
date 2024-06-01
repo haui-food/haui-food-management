@@ -40,7 +40,6 @@ import ConfirmModal from '~/components/ConfirmModal';
 import FormModal from '~/components/FormModal';
 import EditProduct from '~/components/EditProduct/EditProduct';
 
-import { createUser, deleteUserById } from '~/apiService/userService';
 import CreateProduct from '~/components/CreateProduct/CreateProduct';
 import { createProduct, deleteProductById, getAllProduct, updateProduct } from '~/apiService/productService';
 
@@ -147,7 +146,7 @@ const EnhancedTableHead = (props) => {
     { id: 'category', numeric: true, disablePadding: false, label: 'Thể loại' },
     { id: 'slug', numeric: false, disablePadding: true, label: 'Slug' },
   ];
-  const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort, onAddProduct } = props;
+  const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
   };
@@ -208,7 +207,7 @@ EnhancedTableHead.propTypes = {
 const EnhancedTableToolbar = (props) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const { numSelected, isEdit, selected, currentProductArray, onAddProduct, onUpdateProduct } = props;
+  const { numSelected, isEdit, selected, currentProductArray, onAddProduct, onUpdateProduct, onDeleteProduct } = props;
   const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
   const [editModalIsOpen, setEditModalIsOpen] = useState(false);
   const [createModalIsOpen, setCreateModalIsOpen] = useState(false);
@@ -346,9 +345,7 @@ const EnhancedTableToolbar = (props) => {
         console.log(result);
         if (result.payload.code === 200) {
           toast.success(result.payload.message);
-          // setTimeout(() => {
-          //   window.location.href = '/users';
-          // }, 1000);
+          onDeleteProduct(result.payload.data);
           return;
         } else {
           toast.error(result.payload.message);
@@ -362,12 +359,30 @@ const EnhancedTableToolbar = (props) => {
   const handleEdit = () => {
     // console.log(ProductCredentials);
 
+    let isSubmit = true;
     const productData = {
       name: ProductCredentials?.name,
       description: ProductCredentials?.description,
       price: ProductCredentials?.price,
       category: ProductCredentials?.category?._id,
     };
+
+    if (!validate()) {
+      isSubmit = false;
+    }
+
+    if (!productData.category) {
+      setError((prevState) => ({
+        ...prevState,
+        category: 'Thể loại sản phẩm không được để trống',
+      }));
+      isSubmit = false;
+    }
+
+    if (!isSubmit) {
+      toast.info('Vui lòng nhập đúng thông tin các trường');
+      return;
+    }
 
     // kiểm tra xem có thay dữ liệu không
     if (JSON.stringify(productData) === JSON.stringify(oldProductCredentials) && !imageSelected) {
@@ -425,6 +440,7 @@ const EnhancedTableToolbar = (props) => {
     }
     //gán lại giá trị cho image selected mỗi khi đóng mở modal
     setImageSelected(null);
+    setError({});
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selected?.length, editModalIsOpen, createModalIsOpen]);
@@ -512,6 +528,8 @@ const EnhancedTableToolbar = (props) => {
           productCredentials={ProductCredentials}
           handleInputChange={handleInputChange}
           onImageChange={setImageSelected}
+          onError={error}
+          handleValidate={validate}
         />
       </FormModal>
 
@@ -642,13 +660,23 @@ export default function Products() {
   );
 
   const handleAddProduct = (newProduct) => {
-    setRows((preRows) => {
-      return [newProduct, ...preRows];
+    // setRows((preRows) => {
+    //   return [newProduct, ...preRows];
+    // });
+
+    dispatch(getAllProduct({ limit: rowsPerPage, page: currentPage })).then((result) => {
+      setRows(result.payload.products);
+      setLoading(false);
+      setTotalPage(result.payload.totalPage);
     });
   };
 
   const handleUpdateProduct = (updateProduct) => {
     setRows((prevRows) => prevRows.map((product) => (product._id === updateProduct._id ? updateProduct : product)));
+  };
+
+  const handleDeleteProduct = (deleteProduct) => {
+    setRows((prevRows) => prevRows.filter((product) => product._id !== deleteProduct._id));
   };
 
   //lấy thông tin tất cả các sản phẩm
@@ -678,6 +706,7 @@ export default function Products() {
               currentProductArray={rows}
               onAddProduct={handleAddProduct}
               onUpdateProduct={handleUpdateProduct}
+              onDeleteProduct={handleDeleteProduct}
             />
             <TableContainer>
               <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle" size={dense ? 'small' : 'medium'}>
