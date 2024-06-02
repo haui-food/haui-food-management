@@ -26,7 +26,7 @@ const EmptyComponent = () => {
 
 const Skeleton = () => {
   return (
-    <div className={cx('skeleton')}>
+    <div className={cx('skeleton')} style={{ marginTop: '20px' }}>
       <div className={cx('skeleton-header')}>
         <div className={cx('skeleton-header-image')}></div>
         <div className={cx('skeleton-header-name')}></div>
@@ -50,7 +50,7 @@ const Product = ({ product, status }) => {
   const handleChangeStatus = (status) => {
     dispatch(changeStatus({ orderId: product._id, status })).then((result) => {
       if (result.payload.code !== 200) {
-        return toast.error('Có lỗi xảy ra, vui lòng thử lại sau!');
+        return toast.error(result.message);
       }
       toast.success(result.payload.message);
       setTimeout(() => {
@@ -231,7 +231,7 @@ const Orders = () => {
         setLoading(false);
       });
     }
-  }, [dispatch, status]);
+  }, [status]);
 
   const getCurrentOrders = () => {
     switch (currentCategory.status) {
