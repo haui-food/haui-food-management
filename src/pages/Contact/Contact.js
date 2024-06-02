@@ -122,14 +122,14 @@ const getComparator = (order, orderBy) => {
 };
 
 const stableSort = (array, comparator) => {
-  const stabilizedThis = array.map((el, index) => [el, index]);
+  const stabilizedThis = array && array.map((el, index) => [el, index]);
   stabilizedThis.sort((a, b) => {
     const order = comparator(a[0], b[0]);
     if (order !== 0) return order;
 
     return a[1] - b[1];
   });
-  return stabilizedThis.map((el) => el[0]);
+  return stabilizedThis?.map((el) => el[0]);
 };
 
 const EnhancedTableHead = (props) => {
@@ -160,31 +160,32 @@ const EnhancedTableHead = (props) => {
             }}
           />
         </TableCell>
-        {headCells.map((headCell) => (
-          <TableCell
-            key={headCell.id}
-            align={headCell.numeric ? 'center' : 'left'}
-            padding={headCell.disablePadding ? 'none' : 'normal'}
-            sortDirection={orderBy === headCell.id ? order : false}
-          >
-            {headCell.id === 'message' ? (
-              headCell.label
-            ) : (
-              <TableSortLabel
-                active={orderBy === headCell.id}
-                direction={orderBy === headCell.id ? order : 'asc'}
-                onClick={createSortHandler(headCell.id)}
-              >
-                {headCell.label}
-                {orderBy === headCell.id ? (
-                  <Box component="span" sx={visuallyHidden}>
-                    {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                  </Box>
-                ) : null}
-              </TableSortLabel>
-            )}
-          </TableCell>
-        ))}
+        {headCells &&
+          headCells.map((headCell) => (
+            <TableCell
+              key={headCell.id}
+              align={headCell.numeric ? 'center' : 'left'}
+              padding={headCell.disablePadding ? 'none' : 'normal'}
+              sortDirection={orderBy === headCell.id ? order : false}
+            >
+              {headCell.id === 'message' ? (
+                headCell.label
+              ) : (
+                <TableSortLabel
+                  active={orderBy === headCell.id}
+                  direction={orderBy === headCell.id ? order : 'asc'}
+                  onClick={createSortHandler(headCell.id)}
+                >
+                  {headCell.label}
+                  {orderBy === headCell.id ? (
+                    <Box component="span" sx={visuallyHidden}>
+                      {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                    </Box>
+                  ) : null}
+                </TableSortLabel>
+              )}
+            </TableCell>
+          ))}
       </TableRow>
     </TableHead>
   );
@@ -202,7 +203,7 @@ EnhancedTableHead.propTypes = {
 const EnhancedTableToolbar = (props) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const { numSelected, isEdit, selected, setSelected, searchKeyword } = props;
+  const { numSelected, isEdit, selected, setSelected, searchKeyword, handleDeleteCategory, resetSelected } = props;
   const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
   const [viewModalIsOpen, setViewModalIsOpen] = useState(false);
 
@@ -235,9 +236,8 @@ const EnhancedTableToolbar = (props) => {
         dispatch(deleteContactById(selected[i])).then((result) => {
           if (result.payload.code === 200) {
             toast.success(result.payload.message);
-            setTimeout(() => {
-              window.location.href = '/contacts';
-            }, 1000);
+            handleDeleteCategory(result.payload.data);
+            resetSelected();
           } else {
             toast.error(result.payload.message);
           }
@@ -262,10 +262,10 @@ const EnhancedTableToolbar = (props) => {
       dispatch(getContactById(selected[0])).then((result) => {
         setContactCredentials({
           ...contactCredentials,
-          fullname: result.payload.data.fullname,
-          email: result.payload.data.email,
-          phone: result.payload.data.phone,
-          message: result.payload.data.message,
+          fullname: result.payload.data?.fullname,
+          email: result.payload.data?.email,
+          phone: result.payload.data?.phone,
+          message: result.payload.data?.message,
         });
       });
     } else {
@@ -385,7 +385,7 @@ export default function Contact() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelected = rows.map((n) => n._id);
+      const newSelected = rows && rows.map((n) => n._id);
       setSelected(newSelected);
       return;
     }
@@ -441,6 +441,14 @@ export default function Contact() {
     setCurrentPage(currentPage - 1);
   };
 
+  const handleDeleteCategory = (deleteContact) => {
+    setRows((prevRows) => prevRows.filter((contact) => contact._id !== deleteContact._id));
+  };
+
+  const resetSelected = () => {
+    setSelected([]);
+  };
+
   const filteredRows = useMemo(() => {
     return rows?.filter(
       (row) =>
@@ -472,11 +480,11 @@ export default function Contact() {
   }, [currentPage, rowsPerPage]);
 
   return (
-    <div className={cx('category')}>
-      <h1 className={cx('category__heading')}>{t('contact.heading01')}</h1>
+    <div className={cx('contact')}>
+      <h1 className={cx('contact__heading')}>{t('contact.heading01')}</h1>
       <RealTime />
       <ThemeProvider theme={theme}>
-        <Box className={cx('category__list')}>
+        <Box className={cx('contact__list')}>
           <Paper sx={{ width: '100%', mb: 2 }}>
             <EnhancedTableToolbar
               numSelected={selected.length}
@@ -486,6 +494,8 @@ export default function Contact() {
               }}
               selected={selected}
               searchKeyword={searchKeyword}
+              handleDeleteCategory={handleDeleteCategory}
+              resetSelected={resetSelected}
             />
             <TableContainer>
               <Table sx={{ minWidth: 650 }} aria-labelledby="tableTitle" size={dense ? 'small' : 'medium'}>
