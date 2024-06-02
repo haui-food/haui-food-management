@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { getOrdersByStatus } from '~/apiService/shopService';
+import { getOrdersByStatus, changeStatus } from '~/apiService/shopService';
 
 const shopSlice = createSlice({
   name: 'shop',
@@ -20,6 +20,16 @@ const shopSlice = createSlice({
         state.orders = action.payload;
       })
       .addCase(getOrdersByStatus.rejected, (state, action) => {
+        state.loading = false;
+      })
+      .addCase(changeStatus.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(changeStatus.fulfilled, (state, action) => {
+        state.loading = false;
+        state.orders = action.payload;
+      })
+      .addCase(changeStatus.rejected, (state, action) => {
         state.loading = false;
       });
   },
