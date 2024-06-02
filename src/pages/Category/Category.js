@@ -44,7 +44,6 @@ import EditCategory from '~/components/EditCategory';
 import {
   getAllCategory,
   createCategory,
-  getCategoryById,
   updateCategoryById,
   deleteCategoryById,
 } from '~/apiService/categoryService';
@@ -503,6 +502,7 @@ EnhancedTableToolbar.propTypes = {
 export default function Category() {
   const dispatch = useDispatch();
   const { t } = useTranslation();
+
   const [order, setOrder] = useState('asc');
   const [orderBy, setOrderBy] = useState('calories');
   const [selected, setSelected] = useState([]);
