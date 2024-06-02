@@ -217,6 +217,7 @@ const EnhancedTableToolbar = (props) => {
     onUpdateProduct,
     onDeleteProduct,
     searchKeyword,
+    onResetListProduct,
   } = props;
   const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
   const [editModalIsOpen, setEditModalIsOpen] = useState(false);
@@ -316,7 +317,10 @@ const EnhancedTableToolbar = (props) => {
         // setTimeout(() => {
         //   window.location.href = '/products';
         // }, 1000);
-        onAddProduct(result.payload.data);
+        // onAddProduct(result.payload.data);
+
+        onResetListProduct();
+
         closeCreateModal();
         return;
       }
@@ -356,7 +360,9 @@ const EnhancedTableToolbar = (props) => {
         console.log(result);
         if (result.payload.code === 200) {
           toast.success(result.payload.message);
-          onDeleteProduct(result.payload.data);
+          // onDeleteProduct(result.payload.data);
+          onResetListProduct();
+
           return;
         } else {
           toast.error(result.payload.message);
@@ -410,8 +416,8 @@ const EnhancedTableToolbar = (props) => {
     ).then((result) => {
       if (result.payload.code === 200) {
         toast.success(result.payload.message);
-        console.log(result.payload);
-        onUpdateProduct(result.payload.data);
+        // onUpdateProduct(result.payload.data);
+        onResetListProduct();
         closeEditModal();
       } else {
         toast.error(result.payload.message);
@@ -717,6 +723,16 @@ export default function Products() {
     setRows((prevRows) => prevRows.map((product) => (product._id === updateProduct._id ? updateProduct : product)));
   };
 
+  const handleResetListProduct = () => {
+    dispatch(getAllProduct({ limit: rowsPerPage, page: 1 })).then((result) => {
+      setRows(result.payload.products);
+      setLoading(false);
+      setCurrentPage(1);
+      setTotalPage(result.payload.totalPage);
+      setSelected([]);
+    });
+  };
+
   const handleDeleteProduct = (deleteProduct) => {
     setRows((prevRows) => prevRows.filter((product) => product._id !== deleteProduct._id));
   };
@@ -749,6 +765,7 @@ export default function Products() {
               onAddProduct={handleAddProduct}
               onUpdateProduct={handleUpdateProduct}
               onDeleteProduct={handleDeleteProduct}
+              onResetListProduct={handleResetListProduct}
               searchKeyword={searchKeyword}
             />
             <TableContainer>
