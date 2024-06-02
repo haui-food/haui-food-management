@@ -209,30 +209,39 @@ EnhancedTableHead.propTypes = {
 const EnhancedTableToolbar = (props) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const { numSelected, isEdit, selected, setSelected, searchKeyword } = props;
+  const {
+    numSelected,
+    isEdit,
+    selected,
+    setSelected,
+    resetSelected,
+    searchKeyword,
+    currentProductArray,
+    handleCreateCategory,
+    handleUpdateCategory,
+    handleDeleteCategory,
+  } = props;
   const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
   const [editModalIsOpen, setEditModalIsOpen] = useState(false);
   const [createModalIsOpen, setCreateModalIsOpen] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
 
   const [categoryCredentials, setCategoryCredentials] = useState({
-    categoryName: '',
-    categoryImage: null,
+    name: '',
+    image: null,
   });
   const [currentName, setCurrentName] = useState('');
-  const [currentImage, setCurrentImage] = useState();
+  const [currentImage, setCurrentImage] = useState(null);
 
   const handleInputChange = (e) => {
     setCurrentName(e.target.value);
   };
 
-  console.log(categoryCredentials.categoryImage);
-
   const handleSelectImage = (e) => {
     const file = e.target.files[0];
     setCategoryCredentials((prevState) => ({
       ...prevState,
-      categoryImage: file,
+      image: file,
     }));
     if (file) {
       const reader = new FileReader();
@@ -245,24 +254,6 @@ const EnhancedTableToolbar = (props) => {
         console.error('Error reading the file:', error);
         toast.error('Đã xảy ra lỗi khi đọc file.');
       }
-    }
-  };
-
-  const handleCreateUser = () => {
-    try {
-      dispatch(createCategory({ name: currentName, image: currentImage })).then((result) => {
-        if (result.payload.code === 201) {
-          toast.success(result.payload.message);
-          setCreateModalIsOpen(false);
-          setTimeout(() => {
-            window.location.href = '/categories';
-          }, 1000);
-          return;
-        }
-        toast.error(result.payload.message);
-      });
-    } catch (error) {
-      toast.error(error.message);
     }
   };
 
@@ -294,24 +285,30 @@ const EnhancedTableToolbar = (props) => {
     setCurrentName('');
   };
 
-  const handleDelete = () => {
+  const handleCreate = () => {
+    closeEditModal();
+  };
+
+  const handleCloseMenu = () => {
+    setShowMenu(false);
+  };
+
+  const handleCreateUser = () => {
     try {
-      for (let i = 0; i < selected.length; i++) {
-        dispatch(deleteCategoryById(selected[i])).then((result) => {
-          if (result.payload.code === 200) {
-            toast.success(result.payload.message);
-            setTimeout(() => {
-              window.location.href = '/categories';
-            }, 1000);
-          } else {
-            toast.error(result.payload.message);
-          }
-        });
-      }
+      dispatch(createCategory({ name: currentName, image: categoryCredentials.image })).then((result) => {
+        if (result.payload.code === 201) {
+          toast.success(result.payload.message);
+          setCreateModalIsOpen(false);
+          handleCreateCategory(result.payload.data);
+          setCurrentName('');
+          setCurrentImage(null);
+          return;
+        }
+        toast.error(result.payload.message);
+      });
     } catch (error) {
-      toast.error({ ...error });
+      toast.error(error.message);
     }
-    closeConfirmModal();
   };
 
   const handleEdit = () => {
@@ -322,25 +319,35 @@ const EnhancedTableToolbar = (props) => {
     if (currentImage) {
       data.image = currentImage;
     }
-    dispatch(updateCategoryById({ categoryId: selected[0], categoryCredentials: data })).then((result) => {
+    dispatch(updateCategoryById({ categoryId: selected[0], data: data })).then((result) => {
       if (result.payload.code === 200) {
         closeEditModal();
         toast.success(result.payload.message);
-        setTimeout(() => {
-          window.location.href = '/categories';
-        }, 1000);
+        handleUpdateCategory(result.payload.data);
+        setCategoryCredentials(result.payload.data);
         return;
       }
       toast.error(result.payload.message);
     });
   };
 
-  const handleCreate = () => {
-    closeEditModal();
-  };
-
-  const handleCloseMenu = () => {
-    setShowMenu(false);
+  const handleDelete = () => {
+    try {
+      for (let i = 0; i < selected.length; i++) {
+        dispatch(deleteCategoryById(selected[i])).then((result) => {
+          if (result.payload.code === 200) {
+            toast.success(result.payload.message);
+            handleDeleteCategory(result.payload.data);
+            resetSelected();
+          } else {
+            toast.error(result.payload.message);
+          }
+        });
+      }
+    } catch (error) {
+      toast.error({ ...error });
+    }
+    closeConfirmModal();
   };
 
   const handleExportFile = () => {
@@ -353,17 +360,15 @@ const EnhancedTableToolbar = (props) => {
 
   useEffect(() => {
     if (selected && selected.length > 0) {
-      dispatch(getCategoryById(selected[0])).then((result) => {
-        setCategoryCredentials({
-          ...categoryCredentials,
-          categoryName: result.payload.data.name,
-          categoryImage: result.payload.data.image,
-        });
+      const selectedProduct = currentProductArray.filter((product) => product._id === selected[0]);
+      setCategoryCredentials({
+        name: selectedProduct[0].name,
+        image: selectedProduct[0].image,
       });
     } else {
       setCategoryCredentials({
-        categoryName: '',
-        categoryImage: null,
+        name: '',
+        image: null,
       });
     }
   }, [selected.length]);
@@ -503,7 +508,7 @@ export default function Category() {
   const [selected, setSelected] = useState([]);
   const [page, setPage] = useState(0);
   const [dense, setDense] = useState(true);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rowsPerPage, setRowsPerPage] = useState(15);
   const [searchKeyword, setSearchKeyword] = useState('');
   const [rows, setRows] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -542,7 +547,6 @@ export default function Category() {
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
-    console.log('clicked');
   };
 
   const handleChangeRowsPerPage = (event) => {
@@ -591,6 +595,24 @@ export default function Category() {
     [order, orderBy, page, rowsPerPage, filteredRows],
   );
 
+  const resetSelected = () => {
+    setSelected([]);
+  };
+
+  const handleCreateCategory = (createCategory) => {
+    setRows((prevRows) => [createCategory, ...prevRows]);
+  };
+
+  const handleUpdateCategory = (updateCategory) => {
+    setRows((prevRows) =>
+      prevRows.map((category) => (category._id === updateCategory._id ? updateCategory : category)),
+    );
+  };
+
+  const handleDeleteCategory = (deleteCategory) => {
+    setRows((prevRows) => prevRows.filter((category) => category._id !== deleteCategory._id));
+  };
+
   useEffect(() => {
     dispatch(getAllCategory({ limit: rowsPerPage, page: currentPage })).then((result) => {
       setRows(result.payload.categories);
@@ -613,7 +635,12 @@ export default function Category() {
                 handleChangeSearch(e);
               }}
               selected={selected}
+              resetSelected={resetSelected}
               searchKeyword={searchKeyword}
+              currentProductArray={rows}
+              handleCreateCategory={handleCreateCategory}
+              handleUpdateCategory={handleUpdateCategory}
+              handleDeleteCategory={handleDeleteCategory}
             />
             <TableContainer>
               <Table sx={{ minWidth: 650 }} aria-labelledby="tableTitle" size={dense ? 'small' : 'medium'}>

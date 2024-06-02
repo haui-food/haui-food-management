@@ -68,7 +68,7 @@ const categorySlice = createSlice({
       })
       .addCase(updateCategoryById.rejected, (state, action) => {
         state.loading = false;
-        state.message = action.payload.message;
+        state.message = action.payload?.message;
       })
       .addCase(deleteCategoryById.pending, (state) => {
         state.loading = true;
