@@ -20,7 +20,7 @@ function EditCategory({ handleInputChange, handleSelectImage, categoryCredential
           </label>
           <div className={cx('form__text-input', 'form__text-input--sm')}>
             <input
-              value={currentName || categoryCredentials.categoryName}
+              value={currentName || categoryCredentials.name}
               onChange={(e) => handleInputChange(e)}
               type="text"
               id="category-name"
@@ -41,7 +41,7 @@ function EditCategory({ handleInputChange, handleSelectImage, categoryCredential
 
           <img
             className={cx('currentImage')}
-            src={currentImage || categoryCredentials.categoryImage || images.noImage}
+            src={currentImage || categoryCredentials.image || images.noImage}
             alt=""
           />
 

@@ -20,7 +20,7 @@ function CreateCategory({ handleInputChange, handleSelectImage, categoryCredenti
           </label>
           <div className={cx('form__text-input', 'form__text-input--sm')}>
             <input
-              value={currentName || categoryCredentials.categoryName}
+              value={currentName || categoryCredentials.name}
               onChange={(e) => handleInputChange(e)}
               type="text"
               id="category-name"
