@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import classNames from 'classnames/bind';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
+import { useDispatch } from 'react-redux';
 
 import styles from './Dashboard.module.scss';
 
@@ -19,19 +20,20 @@ import GaugeChart from '~/components/Charts/GaugeChart';
 import RecentOrder from '~/components/RecentOrder';
 import { ArrowLeftIcon, ArrowRightIcon } from '@mui/x-date-pickers';
 import Canvas from '~/components/Canvas';
+import { getStatisticalData, getStatisticalRevenue, getStatisticalPerformance } from '~/apiService/dashboardService';
+import { toast } from 'react-toastify';
 
 const cx = classNames.bind(styles);
 
 const DashBoard = () => {
   const { t } = useTranslation();
   const revenueRef = useRef();
+  const dispatch = useDispatch();
 
-  const [data, setData] = useState([
-    { imgUrl: item1, data: '714k', name: t('dashboards.desc02'), border: '#21b77e' },
-    { imgUrl: item2, data: '2m', name: t('dashboards.desc03'), border: '#3584e8' },
-    { imgUrl: item3, data: '1.2m', name: t('dashboards.desc04'), border: '#fab72e' },
-    { imgUrl: item4, data: '2.3k', name: t('dashboards.desc05'), border: '#fc8c66' },
-  ]);
+  const [statisticalData, setStatisticalData] = useState({});
+  const [statisticalRevenue, setStatisticalRevenue] = useState([]);
+  const [statisticalPerformance, setStatisticalPerformance] = useState([]);
+  const [data, setData] = useState([]);
   const [sortTypeData, setSortTypeData] = useState([
     { name: t('dashboards.cb01'), type: 'week' },
     { name: t('dashboards.cb02'), type: 'month' },
@@ -74,7 +76,6 @@ const DashBoard = () => {
     const refreshAccessToken = async () => {
       try {
         const res = await axios.post('https://api.hauifood.com/v1/auth/refresh-tokens', { refreshToken: refreshToken });
-        console.log(res);
       } catch (error) {
         console.error('Error refreshing token:', error);
         // Xử lý lỗi khi không thể làm mới token, ví dụ: đăng xuất người dùng
@@ -83,6 +84,62 @@ const DashBoard = () => {
 
     refreshAccessToken();
   }, []);
+
+  const formatData = (data) => {
+    if (data >= 1000 && data < 10000) {
+      return `${data / 1000}K`;
+    } else if (data >= 10000) {
+      return `${data / 10000}M`;
+    } else {
+      return `${data}`;
+    }
+  };
+
+  useEffect(() => {
+    const statisticalBy = currentSortType.type;
+    console.log(statisticalBy);
+    Promise.all([
+      dispatch(getStatisticalData({ statisticalBy })),
+      dispatch(getStatisticalRevenue({ statisticalBy })),
+      dispatch(getStatisticalPerformance({ statisticalBy })),
+    ]).then(([result1, result2, result3]) => {
+      if (result1.payload.code === 200 && result2.payload.code === 200 && result3.payload.code === 200) {
+        setStatisticalData(result1.payload.data);
+        setStatisticalRevenue(result2.payload.data);
+        setStatisticalPerformance(result3.payload.data);
+        setData([
+          {
+            imgUrl: item1,
+            data: `${result1.payload.data.sales?.toLocaleString('vi-VN')} VND`,
+            name: t('dashboards.desc02'),
+            border: '#21b77e',
+          },
+          {
+            imgUrl: item2,
+            data: formatData(result1.payload.data.newUser),
+            name: t('dashboards.desc03'),
+            border: '#3584e8',
+          },
+          {
+            imgUrl: item3,
+            data: formatData(result1.payload.data.order),
+            name: t('dashboards.desc04'),
+            border: '#fab72e',
+          },
+          {
+            imgUrl: item4,
+            data: formatData(result1.payload.data.message),
+            name: t('dashboards.desc05'),
+            border: '#fc8c66',
+          },
+        ]);
+      } else {
+        toast.error(result1.payload.message);
+        toast.error(result2.payload.message);
+        toast.error(result3.payload.message);
+      }
+    });
+  }, [currentSortType]);
 
   return (
     <div className={cx('dashboard')}>
@@ -142,7 +199,7 @@ const DashBoard = () => {
           <div className={cx('dashboard-revenue-chart-header')}>
             <h5>{t('users.title16')}</h5>
           </div>
-          <RevenueChart sortType={currentSortType} />
+          <RevenueChart sortType={currentSortType} dataRevenue={statisticalRevenue} />
         </div>
 
         <div className={cx('dashboard--pape--chart-circle')}>
@@ -150,14 +207,14 @@ const DashBoard = () => {
             <h5>{t('dashboards.desc07')}</h5>
           </div>
           <div className={cx('pie-chart')}>
-            <PieChart />
+            <PieChart dataChart={statisticalData.statusOrder} />
           </div>
         </div>
 
         <div className={cx('dashboard-container')}>
           <div className={cx('hybrid-chart')}>
             <h5>{t('users.desc03')}</h5>
-            <TwinBarChart sortType={currentSortType} />
+            <TwinBarChart sortType={currentSortType} dataPerformance={statisticalPerformance} />
           </div>
 
           <div className={cx('group-chart-wrapper')}>

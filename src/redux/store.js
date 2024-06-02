@@ -4,6 +4,7 @@ import userSlice from '~/features/userSlice';
 import categorySlice from '~/features/categorySlice';
 import contactSlice from '~/features/contactSlice';
 import shopSlice from '~/features/shopSlice';
+import dashboardSlice from '~/features/dashboardSilce';
 
 export default configureStore({
   reducer: {
@@ -12,5 +13,6 @@ export default configureStore({
     category: categorySlice,
     contact: contactSlice,
     shop: shopSlice,
+    dashboard: dashboardSlice,
   },
 });

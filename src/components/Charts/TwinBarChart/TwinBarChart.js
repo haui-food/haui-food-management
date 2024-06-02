@@ -15,37 +15,6 @@ import { useTranslation } from 'react-i18next';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend);
 
-const dataSets = {
-  week: {
-    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-    values1: [400, 300, 320, 106, 783, 111, 133],
-    values2: [100, 200, 120, 46, 13, 41, 33],
-  },
-  month: {
-    labels: [
-      1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31,
-    ],
-    values1: [
-      400, 300, 320, 106, 783, 111, 133, 400, 300, 320, 106, 783, 111, 133, 400, 300, 320, 106, 783, 111, 133, 400, 300,
-      320, 106, 783, 111, 133, 123, 123, 123,
-    ],
-    values2: [
-      200, 200, 120, 16, 383, 101, 103, 300, 200, 120, 26, 783, 111, 133, 400, 300, 320, 106, 783, 111, 133, 400, 300,
-      320, 106, 783, 111, 133, 123, 123, 123,
-    ],
-  },
-  quarter: {
-    labels: ['Q1', 'Q2', 'Q3', 'Q4'],
-    values1: [800, 400, 350, 500],
-    values2: [500, 600, 250, 400],
-  },
-  year: {
-    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-    values1: [1000, 1200, 1900, 900, 1000, 2000, 1500, 1000, 1200, 1900, 900, 1000],
-    values2: [800, 400, 350, 500, 800, 400, 350, 500, 800, 400, 350, 500],
-  },
-};
-
 const options = {
   scales: {
     y: {
@@ -59,9 +28,45 @@ const options = {
   },
 };
 
-const TwinBarChart = ({ sortType }) => {
+const TwinBarChart = ({ sortType, dataPerformance }) => {
   const { t } = useTranslation();
+
   const [filteredData, setFilteredData] = useState(null);
+
+  // const array0 =
+  //   dataPerformance && sortType === 'month' ? dataPerformance.map((item) => (new Date()).getDate(item.date)) : [];
+  const array1 = dataPerformance ? dataPerformance.map((item) => item.totalAccess) : [];
+  const array2 = dataPerformance ? dataPerformance.map((item) => item.totalOrder) : [];
+
+  // console.log(array0);
+  console.log(array1);
+  console.log(array2);
+  const dataSets = {
+    week: {
+      labels: ['Sun', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Mon'],
+      values1: array1,
+      values2: array2,
+    },
+    month: {
+      labels: [
+        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31,
+      ],
+      values1: array1,
+      values2: array2,
+    },
+    quarter: {
+      labels: ['Q1', 'Q2', 'Q3', 'Q4'],
+      values1: array1,
+      values2: array2,
+    },
+    year: {
+      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+      values1: array1,
+      values2: array2,
+    },
+  };
+
+
 
   useEffect(() => {
     const filtered = dataSets[sortType.type];
@@ -74,6 +79,8 @@ const TwinBarChart = ({ sortType }) => {
       setFilteredData(newData);
     }
   }, [sortType.type]);
+
+  console.log(filteredData);
 
   return (
     <div>
