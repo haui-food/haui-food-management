@@ -7,9 +7,10 @@ import styles from './Order.module.scss';
 
 import deliveryGif from '../../assets/images/shop/deliver.gif';
 import empty from '../../assets/images/shop/empty.png';
-import { getOrdersByStatus, changeStatus } from '~/apiService/shopService';
+import { getOrdersByStatus, changeStatus, cancelOrder } from '~/apiService/shopService';
 import { ArrowDownIcon } from '~/components/Icons';
 import { convertIso8601ToDatetime } from '~/utils/convertDate';
+import { convertToVND } from '~/utils/convertMoney';
 
 const cx = classNames.bind(styles);
 
@@ -50,7 +51,20 @@ const Product = ({ product, status }) => {
   const handleChangeStatus = (status) => {
     dispatch(changeStatus({ orderId: product._id, status })).then((result) => {
       if (result.payload.code !== 200) {
-        return toast.error(result.message);
+        return toast.error(result.payload.message);
+      }
+      toast.success(result.payload.message);
+      setTimeout(() => {
+        window.location.href = '/shop/orders';
+      }, 1000);
+    });
+  };
+
+  const handleCancelOrder = () => {
+    dispatch(cancelOrder({ orderId: product._id })).then((result) => {
+      console.log(result);
+      if (result.payload.code !== 200) {
+        return toast.error(result.payload.message);
       }
       toast.success(result.payload.message);
       setTimeout(() => {
@@ -86,7 +100,7 @@ const Product = ({ product, status }) => {
                 <p className={cx('quantity')}>X {cart?.quantity}</p>
               </div>
             </div>
-            <div className={cx('price')}>{cart.product?.price}</div>
+            <div className={cx('price')}>{convertToVND(cart.product?.price)}</div>
           </div>
         ))}
       </div>
@@ -97,20 +111,17 @@ const Product = ({ product, status }) => {
         <p className={cx('payment')}>Hình thức thanh toán: Thanh toán khi nhận hàng</p>
         <div className={cx('total')}>
           <p>Tổng tiền</p>
-          <p>{product.totalMoney}</p>
+          <p>{convertToVND(product.totalMoney)}</p>
         </div>
       </div>
       <div className={cx('btn-active', { 'btn-active-change-width': changeHeight })}>
-        {/* {status === 'rejected' && (
-          <button className={cx('btn-restore', { 'btn-restore-change-width': changeHeight })}>Hoàn tác</button>
-        )} */}
         {status === 'pending' && (
           <div className={cx('group-btn')}>
             <button
               className={cx('btn-cancel', { 'btn-restore-change-width': changeHeight })}
               onClick={() => handleChangeStatus({ status: 'reject' })}
             >
-              Hủy đơn
+              Từ chối
             </button>
             <button
               className={cx('btn-restore', { 'btn-restore-change-width': changeHeight })}
@@ -121,21 +132,37 @@ const Product = ({ product, status }) => {
           </div>
         )}
         {status === 'confirmed' && (
-          <button
-            className={cx('btn-restore', { 'btn-restore-change-width': changeHeight })}
-            onClick={() => handleChangeStatus({ status: 'shipping' })}
-          >
-            Giao hàng
-          </button>
+          <div className={cx('group-btn')}>
+            <button
+              className={cx('btn-cancel', { 'btn-restore-change-width': changeHeight })}
+              onClick={() => handleCancelOrder()}
+            >
+              Hủy đơn
+            </button>
+            <button
+              className={cx('btn-restore', { 'btn-restore-change-width': changeHeight })}
+              onClick={() => handleChangeStatus({ status: 'shipping' })}
+            >
+              Giao hàng
+            </button>
+          </div>
         )}
 
         {status === 'shipping' && (
-          <button
-            className={cx('btn-restore', { 'btn-restore-change-width': changeHeight })}
-            onClick={() => handleChangeStatus({ status: 'success' })}
-          >
-            Hoàn thành
-          </button>
+          <div className={cx('group-btn')}>
+            <button
+              className={cx('btn-cancel', { 'btn-restore-change-width': changeHeight })}
+              onClick={() => handleCancelOrder()}
+            >
+              Hủy đơn
+            </button>
+            <button
+              className={cx('btn-restore', { 'btn-restore-change-width': changeHeight })}
+              onClick={() => handleChangeStatus({ status: 'success' })}
+            >
+              Hoàn thành
+            </button>
+          </div>
         )}
 
         {/* {status === 'success' && (
@@ -159,7 +186,7 @@ const Orders = () => {
     { status: 'confirmed', name: 'Đã xác nhận' },
     { status: 'shipping', name: 'Đang giao' },
     { status: 'success', name: 'Đã giao' },
-    { status: 'rejected', name: 'Đã hủy' },
+    { status: 'rejected', name: 'Từ chối' },
   ];
 
   const [currentCategory, setCurrentCategory] = useState(categories[0]);
@@ -231,6 +258,10 @@ const Orders = () => {
         setLoading(false);
       });
     }
+
+    // if(status === "cancel"){
+
+    // }
   }, [status]);
 
   const getCurrentOrders = () => {
