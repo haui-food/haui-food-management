@@ -1,15 +1,16 @@
 import * as React from 'react';
 import { PieChart } from '@mui/x-charts/PieChart';
 
-const data = [
-  { id: 0, value: 27.7, label: 'series A', color: '#1877F2' },
-  { id: 1, value: 34.7, label: 'series B', color: '#F5CE43' },
-  { id: 2, value: 9.2, label: 'series C', color: '#42DCF7' },
-  { id: 3, value: 28.4, label: 'series E', color: '#FF5630' },
-  { id: 4, value: 58.4, label: 'series E', color: 'orange' },
-];
+export default function PieActiveArc({ dataChart }) {
+  const data = [
+    { id: 0, value: dataChart?.pending, label: 'Pending', color: '#1877F2' },
+    { id: 1, value: dataChart?.canceled, label: 'Canceled', color: '#F5CE43' },
+    { id: 2, value: dataChart?.confirmed, label: 'Confirmed', color: '#42DCF7' },
+    { id: 3, value: dataChart?.reject, label: 'Reject', color: '#FF5630' },
+    { id: 4, value: dataChart?.shipping, label: 'Shipping', color: 'orange' },
+    { id: 4, value: dataChart?.success, label: 'Success', color: 'orange' },
+  ];
 
-export default function PieActiveArc() {
   return (
     <PieChart
       series={[
