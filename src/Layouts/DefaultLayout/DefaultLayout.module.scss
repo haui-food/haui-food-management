@@ -41,7 +41,7 @@
       background-color: #fafafa;
       z-index: 999;
 
-      @include media-breakpoint-down(lg) {
+      @include media-breakpoint-down(xl) {
         transform: translateX(-100%);
       }
       @include media-breakpoint-down(md) {
@@ -67,7 +67,7 @@
       transition: padding-left 0.4s linear;
       z-index: 0;
 
-      @include media-breakpoint-down(lg) {
+      @include media-breakpoint-down(xl) {
         padding-left: 0;
       }
       @include media-breakpoint-down(md) {

@@ -10,8 +10,9 @@
     "btn03": "Edit",
     "btn04": "Abort",
     "btn05": "Back to home",
-    "btn06": "Add category",
+    "btn06": "Add new",
     "btn07": "View",
+    "btn08": "Export Excel file",
     "btnLogin": "Login",
     "btnLoginLoading": "...Logging in"
   },
@@ -88,7 +89,6 @@
     "title16": "Revenue",
     "inp01": "Search",
     "inp02": "Enter text",
-    "btn01": "Add new user",
     "desc01": "Rows per page",
     "desc02": "Dense pending",
     "desc03": "Website Performance Overview",

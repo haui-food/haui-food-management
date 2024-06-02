@@ -29,10 +29,12 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { ArrowLeftIcon, ArrowRightIcon } from '@mui/x-date-pickers';
 import TextField from '@mui/material/TextField';
 import RateReviewOutlinedIcon from '@mui/icons-material/RateReviewOutlined';
+import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 
 import styles from './Contact.module.scss';
 import 'react-loading-skeleton/dist/skeleton.css';
 
+import Button from '~/components/Button';
 import RealTime from '~/components/RealTime';
 import ConfirmModal from '~/components/ConfirmModal';
 import FormModal from '~/components/FormModal';
@@ -200,8 +202,7 @@ EnhancedTableHead.propTypes = {
 const EnhancedTableToolbar = (props) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const { numSelected, isEdit } = props;
-  const { selected, setSelected } = props;
+  const { numSelected, isEdit, selected, setSelected, searchKeyword } = props;
   const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
   const [viewModalIsOpen, setViewModalIsOpen] = useState(false);
 
@@ -246,6 +247,14 @@ const EnhancedTableToolbar = (props) => {
       toast.error({ ...error });
     }
     closeConfirmModal();
+  };
+
+  const handleExportFile = () => {
+    const token = JSON.parse(localStorage.getItem('accessToken'));
+    if (searchKeyword) {
+      return `https://api.hauifood.com/v1/contacts/exports?keyword=${searchKeyword}&token=${token}`;
+    }
+    return `https://api.hauifood.com/v1/contacts/exports?token=${token}`;
   };
 
   useEffect(() => {
@@ -304,6 +313,16 @@ const EnhancedTableToolbar = (props) => {
               }}
               className={cx('text-field')}
             />
+            <Button
+              primary
+              addUser
+              target="_blank"
+              rel="noreferrer"
+              href={handleExportFile()}
+              leftIcon={<FileDownloadOutlinedIcon fontSize="medium" />}
+            >
+              {t('button.btn08')}
+            </Button>
           </>
         )}
 
@@ -466,6 +485,7 @@ export default function Contact() {
                 handleChangeSearch(e);
               }}
               selected={selected}
+              searchKeyword={searchKeyword}
             />
             <TableContainer>
               <Table sx={{ minWidth: 650 }} aria-labelledby="tableTitle" size={dense ? 'small' : 'medium'}>

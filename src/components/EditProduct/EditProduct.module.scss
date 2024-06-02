@@ -22,7 +22,15 @@
     padding: 0 10px;
   }
 }
+.form__error-message {
+  color: #f44336;
+  margin-top: 7px;
+  font-size: 1.6rem;
+}
 
+.form-error {
+  border: 1px solid #f44336 !important;
+}
 .currentImage {
   margin-bottom: 10px;
   width: 100%;

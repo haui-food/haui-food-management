@@ -38,7 +38,7 @@ const privateRoutes = [
   },
   {
     path: config.routes.shopProducts,
-    component: ShopProducts,
+    component: Products,
     layout: DefaultLayout,
   },
 ];

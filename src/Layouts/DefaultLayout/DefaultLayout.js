@@ -23,7 +23,7 @@ function DefaultLayout({ children }) {
 
   useEffect(() => {
     const handleResize = () => {
-      setIsOpenNav(window.innerWidth > 992);
+      setIsOpenNav(window.innerWidth > 1200);
     };
 
     window.addEventListener('resize', handleResize);

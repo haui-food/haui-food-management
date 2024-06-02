@@ -5,8 +5,8 @@
 .user {
   padding: 20px 40px;
   width: 100%;
-  @include media-breakpoint-down(lg) {
-    padding: 20px;
+  @include media-breakpoint-down(xl) {
+    padding: 15px 20px;
   }
 
   &__heading {
@@ -20,6 +20,70 @@
     width: auto;
     min-height: 400px;
     overflow: auto;
+  }
+
+  &__menu {
+    display: none;
+    width: 40px;
+    height: 40px;
+    padding: 8px;
+    background-color: transparent;
+    cursor: pointer;
+    @include media-breakpoint-down(lg) {
+      display: block;
+    }
+  }
+
+  &__btn-group {
+    display: flex;
+    align-items: center;
+
+    @include media-breakpoint-down(lg) {
+      position: fixed;
+      top: 240px;
+      right: 20px;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 15px;
+      padding: 20px;
+      visibility: hidden;
+      width: 50%;
+      opacity: 0;
+      border-radius: 8px;
+      background-color: var(--white);
+      transition: visibility, opacity;
+      transition-duration: 0.3s;
+      z-index: 99999;
+    }
+
+    @include media-breakpoint-down(lg) {
+      width: 30%;
+      right: 20px;
+    }
+
+    @include media-breakpoint-down(md) {
+      width: 50%;
+    }
+
+    @include media-breakpoint-down(sm) {
+      width: 90%;
+    }
+
+    &--show {
+      visibility: visible;
+      opacity: 1;
+    }
+  }
+
+  &__select-role {
+    margin: 0 8px !important;
+    width: 100% !important;
+    min-width: 100px !important;
+    font-size: 2rem !important;
+
+    @include media-breakpoint-down(lg) {
+      margin: 0 !important;
+    }
   }
 }
 
@@ -134,7 +198,7 @@
     position: relative;
     // align-items: ;
 
-    @include media-breakpoint-down(md) {
+    @include media-breakpoint-down(lg) {
       height: 120px;
       align-items: start !important;
     }
@@ -145,17 +209,11 @@
     }
 
     .text-field {
-      @include media-breakpoint-down(md) {
-        position: absolute;
-        margin-top: 10px;
-        margin-bottom: 80px;
-        width: 90%;
-      }
-
-      @include media-breakpoint-down(sm) {
+      @include media-breakpoint-down(lg) {
         position: absolute;
         margin-top: 50px;
-        margin-bottom: 20px;
+        margin-bottom: 80px;
+        width: 90%;
       }
     }
   }
