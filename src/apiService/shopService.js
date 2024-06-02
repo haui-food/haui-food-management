@@ -9,3 +9,12 @@ export const getOrdersByStatus = createAsyncThunk('order/getAll', async ({ statu
     return rejectWithValue({ ...error });
   }
 });
+
+export const changeStatus = createAsyncThunk('order/changeStatus', async ({ orderId, status }, { rejectWithValue }) => {
+  try {
+    const res = await callApi('PUT', `/v1/orders/${orderId}/status`, {}, status);
+    return res;
+  } catch (error) {
+    return rejectWithValue({ ...error });
+  }
+});

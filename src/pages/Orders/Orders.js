@@ -7,11 +7,9 @@ import styles from './Order.module.scss';
 
 import deliveryGif from '../../assets/images/shop/deliver.gif';
 import empty from '../../assets/images/shop/empty.png';
-import { getOrdersByStatus } from '~/apiService/shopService';
+import { getOrdersByStatus, changeStatus } from '~/apiService/shopService';
 import { ArrowDownIcon } from '~/components/Icons';
 import { convertIso8601ToDatetime } from '~/utils/convertDate';
-import RecentOrder from '~/components/RecentOrder';
-import { getOrders } from '~/apiService/shopService';
 
 const cx = classNames.bind(styles);
 
@@ -26,12 +24,39 @@ const EmptyComponent = () => {
   );
 };
 
-const Product = ({ product }) => {
+const Skeleton = () => {
+  return (
+    <div className={cx('skeleton')}>
+      <div className={cx('skeleton-header')}>
+        <div className={cx('skeleton-header-image')}></div>
+        <div className={cx('skeleton-header-name')}></div>
+      </div>
+      <div className={cx('skeleton-content')}></div>
+      <div className={cx('skeleton-line-one')}></div>
+      <div className={cx('skeleton-line-two')}></div>
+    </div>
+  );
+};
+
+const Product = ({ product, status }) => {
+  const dispatch = useDispatch();
   const cartDetails = product.cartDetails;
   const [changeHeight, setChangeHeight] = useState(false);
 
   const handleChangeWidth = () => {
     setChangeHeight(!changeHeight);
+  };
+
+  const handleChangeStatus = (status) => {
+    dispatch(changeStatus({ orderId: product._id, status })).then((result) => {
+      if (result.payload.code !== 200) {
+        return toast.error('Có lỗi xảy ra, vui lòng thử lại sau!');
+      }
+      toast.success(result.payload.message);
+      setTimeout(() => {
+        window.location.href = '/shop/orders';
+      }, 1000);
+    });
   };
 
   return (
@@ -53,15 +78,15 @@ const Product = ({ product }) => {
           <div key={idx} className={cx('product-wrapper', { 'first-product-wrapper': idx === 0 })}>
             <div className={cx('product-desc-container')}>
               <div className={cx('image-wrapper')}>
-                <img src={cart.product.image} alt={cart.product.name} className={cx({ change: changeHeight })} />
+                <img src={cart.product?.image} alt={cart.product?.name} className={cx({ change: changeHeight })} />
               </div>
               <div className={cx('desc')}>
-                <h3 className={cx('title')}>{cart.product.name}</h3>
-                <p className={cx('describe')}>{cart.product.description}</p>
-                <p className={cx('quantity')}>X {cart.quantity}</p>
+                <h3 className={cx('title')}>{cart.product?.name}</h3>
+                <p className={cx('describe')}>{cart.product?.description}</p>
+                <p className={cx('quantity')}>X {cart?.quantity}</p>
               </div>
             </div>
-            <div className={cx('price')}>{cart.product.price}</div>
+            <div className={cx('price')}>{cart.product?.price}</div>
           </div>
         ))}
       </div>
@@ -76,7 +101,51 @@ const Product = ({ product }) => {
         </div>
       </div>
       <div className={cx('btn-active', { 'btn-active-change-width': changeHeight })}>
-        <button className={cx('btn-restore', { 'btn-restore-change-width': changeHeight })}>Hoàn tác</button>
+        {/* {status === 'rejected' && (
+          <button className={cx('btn-restore', { 'btn-restore-change-width': changeHeight })}>Hoàn tác</button>
+        )} */}
+        {status === 'pending' && (
+          <div className={cx('group-btn')}>
+            <button
+              className={cx('btn-cancel', { 'btn-restore-change-width': changeHeight })}
+              onClick={() => handleChangeStatus({ status: 'reject' })}
+            >
+              Hủy đơn
+            </button>
+            <button
+              className={cx('btn-restore', { 'btn-restore-change-width': changeHeight })}
+              onClick={() => handleChangeStatus({ status: 'confirmed' })}
+            >
+              Xác nhận
+            </button>
+          </div>
+        )}
+        {status === 'confirmed' && (
+          <button
+            className={cx('btn-restore', { 'btn-restore-change-width': changeHeight })}
+            onClick={() => handleChangeStatus({ status: 'shipping' })}
+          >
+            Giao hàng
+          </button>
+        )}
+
+        {status === 'shipping' && (
+          <button
+            className={cx('btn-restore', { 'btn-restore-change-width': changeHeight })}
+            onClick={() => handleChangeStatus({ status: 'success' })}
+          >
+            Hoàn thành
+          </button>
+        )}
+
+        {/* {status === 'success' && (
+          <button
+            className={cx('btn-restore', { 'btn-restore-change-width': changeHeight })}
+            onClick={() => handleChangeStatus({ status: 'success' })}
+          >
+            Đánh giá
+          </button>
+        )} */}
       </div>
     </div>
   );
@@ -87,9 +156,9 @@ const Orders = () => {
 
   const categories = [
     { status: 'pending', name: 'Chờ xác nhận' },
+    { status: 'confirmed', name: 'Đã xác nhận' },
     { status: 'shipping', name: 'Đang giao' },
     { status: 'success', name: 'Đã giao' },
-    { status: 'confirmed', name: 'Đã xác nhận' },
     { status: 'rejected', name: 'Đã hủy' },
   ];
 
@@ -99,51 +168,70 @@ const Orders = () => {
   const [confirmedOrders, setConfirmedOrders] = useState([]);
   const [successOrders, setSuccessOrders] = useState([]);
   const [rejectedOrders, setRejectedOrders] = useState([]);
+  const [status, setStatus] = useState('pending');
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    dispatch(getOrdersByStatus({ status: 'pending' })).then((result) => {
-      if (result.payload.code !== 200) {
-        return toast.error('Có lỗi xảy ra, vui lòng thử lại sau!');
-      }
-      setPendingOrders(result.payload.data.orders);
-    });
-  }, [dispatch]);
+    setLoading(true);
+    if (status === 'pending') {
+      dispatch(getOrdersByStatus({ status: 'pending' })).then((result) => {
+        if (result.payload.code !== 200) {
+          return toast.error('Có lỗi xảy ra, vui lòng thử lại sau!');
+        }
+        setPendingOrders(result.payload.data.orders);
+        setStatus('pending');
+        setLoading(false);
+      });
+      return;
+    }
 
-  useEffect(() => {
-    dispatch(getOrdersByStatus({ status: 'shipping' })).then((result) => {
-      if (result.payload.code !== 200) {
-        return toast.error('Có lỗi xảy ra, vui lòng thử lại sau!');
-      }
-      setShippingOrders(result.payload.data.orders);
-    });
-  }, [dispatch]);
+    if (status === 'shipping') {
+      dispatch(getOrdersByStatus({ status: 'shipping' })).then((result) => {
+        console.log(result);
+        if (result.payload.code !== 200) {
+          return toast.error('Có lỗi xảy ra, vui lòng thử lại sau!');
+        }
+        setShippingOrders(result.payload.data.orders);
+        setStatus('shipping');
+        setLoading(false);
+      });
+      return;
+    }
 
-  useEffect(() => {
-    dispatch(getOrdersByStatus({ status: 'confirmed' })).then((result) => {
-      if (result.payload.code !== 200) {
-        return toast.error('Có lỗi xảy ra, vui lòng thử lại sau!');
-      }
-      setConfirmedOrders(result.payload.data.orders);
-    });
-  }, [dispatch]);
+    if (status === 'confirmed') {
+      dispatch(getOrdersByStatus({ status: 'confirmed' })).then((result) => {
+        if (result.payload.code !== 200) {
+          return toast.error('Có lỗi xảy ra, vui lòng thử lại sau!');
+        }
+        setConfirmedOrders(result.payload.data.orders);
+        setStatus('confirmed');
+        setLoading(false);
+      });
+      return;
+    }
 
-  useEffect(() => {
-    dispatch(getOrdersByStatus({ status: 'success' })).then((result) => {
-      if (result.payload.code !== 200) {
-        return toast.error('Có lỗi xảy ra, vui lòng thử lại sau!');
-      }
-      setSuccessOrders(result.payload.data.orders);
-    });
-  }, [dispatch]);
+    if (status === 'success') {
+      dispatch(getOrdersByStatus({ status: 'success' })).then((result) => {
+        if (result.payload.code !== 200) {
+          return toast.error('Có lỗi xảy ra, vui lòng thử lại sau!');
+        }
+        setSuccessOrders(result.payload.data.orders);
 
-  useEffect(() => {
-    dispatch(getOrdersByStatus({ status: 'reject' })).then((result) => {
-      if (result.payload.code !== 200) {
-        return toast.error('Có lỗi xảy ra, vui lòng thử lại sau!');
-      }
-      setRejectedOrders(result.payload.data.orders);
-    });
-  }, [dispatch]);
+        setLoading(false);
+      });
+      return;
+    }
+
+    if (status === 'rejected') {
+      dispatch(getOrdersByStatus({ status: 'reject' })).then((result) => {
+        if (result.payload.code !== 200) {
+          return toast.error('Có lỗi xảy ra, vui lòng thử lại sau!');
+        }
+        setRejectedOrders(result.payload.data.orders);
+        setLoading(false);
+      });
+    }
+  }, [dispatch, status]);
 
   const getCurrentOrders = () => {
     switch (currentCategory.status) {
@@ -179,18 +267,25 @@ const Orders = () => {
             <div
               className={cx('category-item', currentCategory.name === item.name ? 'active' : '')}
               key={idx}
-              onClick={() => setCurrentCategory(item)}
+              onClick={() => {
+                setCurrentCategory(item);
+                setStatus(item.status);
+              }}
             >
               {item.name}
             </div>
           ))}
         </div>
 
-        {currentOrders.length > 0 ? (
-          currentOrders.map((order, index) => <Product key={index} product={order} />)
+        {loading ? (
+          <Skeleton />
+        ) : currentOrders.length > 0 ? (
+          currentOrders.map((order, index) => <Product key={index} product={order} status={order.status} />)
         ) : (
           <EmptyComponent />
         )}
+
+        {/*  */}
       </div>
     </div>
   );
