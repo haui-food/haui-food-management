@@ -120,5 +120,40 @@
   },
   "toast": {
     "Unauthorized": "您无权访问。"
+  },
+  "productPage": {
+    "selected": "已选",
+    "listProductTitle": "产品列表",
+    "productTitle": "产品",
+    "header": {
+      "img": "产品图片",
+      "name": "产品名称",
+      "desc": "产品描述",
+      "productName": "店铺名称",
+      "category": "类别",
+      "price": "价格",
+      "slug": "Slug"
+    },
+    "form": {
+      "createTitle": "创建新产品",
+      "editTitle": "编辑产品信息",
+      "deleteTitle": "确认删除产品",
+      "deleteManyDesc": "您确定要删除所有这些产品吗？",
+      "deleteOneDesc": "您确定要删除此产品吗？",
+      "nameLabel": "产品名称",
+      "descLabel": "产品描述",
+      "priceLabel": "价格",
+      "categoryLabel": "类别",
+      "imgLabel": "选择图片"
+    },
+    "validate": {
+      "nameRequired": "产品名称不能为空",
+      "priceRequired": "产品价格不能为空",
+      "categoryRequired": "产品类别不能为空"
+    },
+    "toast": {
+      "noChange": "没有任何更改",
+      "inCorrectFields": "请输入正确的信息"
+    }
   }
 }

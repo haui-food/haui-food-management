@@ -120,5 +120,43 @@
   },
   "toast": {
     "unauthorized": "Bạn không có quyền truy cập"
+  },
+  "productPage": {
+    "selected": "Đã chọn",
+    "listProductTitle": "Danh sách sản phẩm",
+    "productTitle": "Sản phẩm",
+    "header": {
+      "img": "Ảnh sản phẩm",
+      "name": "Tên sản phẩm",
+      "desc": "Mô tả sản phẩm",
+      "productName": "Tên nhà hàng",
+      "category": "Thể loại",
+      "price": "Giá",
+      "slug": "Slug"
+    },
+    "form": {
+      "createTitle": "Tạo sản phẩm mới",
+      "editTitle": "Sửa thông tin sán phẩm",
+      "deleteTitle": "Xác nhận xóa sản phẩm",
+      "deleteManyDesc": "Bạn có chắc chắn muốn xóa tất cả những sản phẩm này không?",
+      "deleteOneDesc": "Bạn có chắc chắn muốn xóa sản phẩm này không?",
+      "nameLabel": "Tên sản phẩm",
+      "descLabel": "Mô tả sản phẩm",
+      "priceLabel": "Giá",
+      "categoryLabel": "Thể loại",
+      "imgLabel": "Chọn hình ảnh",
+      "createBtn": "Tạo",
+      "deleteBtn": "Xóa",
+      "updateBtn": "Sửa"
+    },
+    "validate": {
+      "nameRequired": "Tên sản phẩm không được để trống",
+      "priceRequired": "Giá sản phẩm không được để trống",
+      "categoryRequired": "Thể loại sản phẩm không được để trống"
+    },
+    "toast": {
+      "noChange": "Không có thay đổi nào",
+      "inCorrectFields": "Vui lòng nhập đúng thông tin các trường"
+    }
   }
 }

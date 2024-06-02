@@ -10,6 +10,7 @@ import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import { useDispatch } from 'react-redux';
 import { useEffect, useState } from 'react';
+
 import { getAllCategory } from '~/apiService/categoryService';
 
 const cx = classNames.bind(styles);
@@ -72,11 +73,9 @@ function CreateProduct({ handleInputChange, productCredentials, onImageChange, o
     }
   };
 
-
   const validate = (e) => {
     handleValidate(e);
   };
-
 
   return (
     <form action="" className={cx('form')} autoComplete="off">
@@ -84,7 +83,7 @@ function CreateProduct({ handleInputChange, productCredentials, onImageChange, o
         {/* product name */}
         <div className={cx('form__group')}>
           <label htmlFor="category-name" className={cx('form__label', 'form__label--medium')}>
-            Tên sản phẩm
+            {t('productPage.form.nameLabel')}
           </label>
           <div className={cx('form__text-input', 'form__text-input--sm', { 'form-error': onError?.name })}>
             <input
@@ -96,7 +95,7 @@ function CreateProduct({ handleInputChange, productCredentials, onImageChange, o
               type="text"
               id="name"
               name="name"
-              placeholder="Tên thể loại"
+              placeholder={t('productPage.form.nameLabel')}
               className={cx('form__input')}
               onBlur={(e) => {
                 validate(e);
@@ -113,7 +112,7 @@ function CreateProduct({ handleInputChange, productCredentials, onImageChange, o
       <div className={cx('form__row', 'form__row--three')}>
         <div className={cx('form__group')}>
           <label htmlFor="category-name" className={cx('form__label', 'form__label--medium')}>
-            Mô tả sản phẩm
+            {t('productPage.form.descLabel')}
           </label>
           <div className={cx('form__text-input', 'form__text-input--sm')}>
             <input
@@ -122,7 +121,7 @@ function CreateProduct({ handleInputChange, productCredentials, onImageChange, o
               type="text"
               id="description"
               name="description"
-              placeholder="Tên thể loại"
+              placeholder={t('productPage.form.descLabel')}
               className={cx('form__input')}
             />
             <CategoryOutlinedIcon fontSize="large" className={cx('icon')} />
@@ -134,7 +133,7 @@ function CreateProduct({ handleInputChange, productCredentials, onImageChange, o
       <div className={cx('form__row', 'form__row--three')}>
         <div className={cx('form__group')}>
           <label htmlFor="category-name" className={cx('form__label', 'form__label--medium')}>
-            Giá
+            {t('productPage.form.priceLabel')}
           </label>
           <div className={cx('form__text-input', 'form__text-input--sm', { 'form-error': onError?.price })}>
             <input
@@ -146,7 +145,7 @@ function CreateProduct({ handleInputChange, productCredentials, onImageChange, o
               type="text"
               id="price"
               name="price"
-              placeholder="Giá"
+              placeholder={t('productPage.form.priceLabel')}
               className={cx('form__input')}
               onBlur={(e) => {
                 validate(e);
@@ -162,7 +161,7 @@ function CreateProduct({ handleInputChange, productCredentials, onImageChange, o
       <div className={cx('form__row', 'form__row--three')}>
         <div className={cx('form__group')}>
           <label htmlFor="category-name" className={cx('form__label', 'form__label--medium')}>
-            Thể loại
+            {t('productPage.form.categoryLabel')}
           </label>
 
           <ComboBox onValueChange={handleCategoryChange} value={selectedCategory} />
@@ -174,7 +173,7 @@ function CreateProduct({ handleInputChange, productCredentials, onImageChange, o
       <div className={cx('form__row', 'form__row--three')}>
         <div className={cx('form__group')}>
           <label htmlFor="image" className={cx('form__label', 'form__label--medium', 'form__label-choose-file')}>
-            Chọn hình ảnh
+            {t('productPage.form.imgLabel')}
           </label>
 
           <img className={cx('currentImage')} src={imagePreview || images.noImage} alt="" />
