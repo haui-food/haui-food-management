@@ -10,6 +10,7 @@ import empty from '../../assets/images/shop/empty.png';
 import { getOrdersByStatus, changeStatus, cancelOrder } from '~/apiService/shopService';
 import { ArrowDownIcon } from '~/components/Icons';
 import { convertIso8601ToDatetime } from '~/utils/convertDate';
+import { convertToVND } from '~/utils/convertMoney';
 
 const cx = classNames.bind(styles);
 
@@ -99,7 +100,7 @@ const Product = ({ product, status }) => {
                 <p className={cx('quantity')}>X {cart?.quantity}</p>
               </div>
             </div>
-            <div className={cx('price')}>{cart.product?.price}</div>
+            <div className={cx('price')}>{convertToVND(cart.product?.price)}</div>
           </div>
         ))}
       </div>
@@ -110,21 +111,10 @@ const Product = ({ product, status }) => {
         <p className={cx('payment')}>Hình thức thanh toán: Thanh toán khi nhận hàng</p>
         <div className={cx('total')}>
           <p>Tổng tiền</p>
-          <p>{product.totalMoney}</p>
+          <p>{convertToVND(product.totalMoney)}</p>
         </div>
       </div>
       <div className={cx('btn-active', { 'btn-active-change-width': changeHeight })}>
-        {/* {status === 'reject' && (
-          <div className={cx('group-btn')}>
-            <button
-              className={cx('btn-cancel', { 'btn-restore-change-width': changeHeight })}
-              onClick={() => handleCancelOrder()}
-              style={{ marginRight: '0' }}
-            >
-              Hủy đơn
-            </button>
-          </div>
-        )} */}
         {status === 'pending' && (
           <div className={cx('group-btn')}>
             <button
