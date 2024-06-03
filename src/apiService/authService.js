@@ -5,8 +5,6 @@ export const loginUser = createAsyncThunk('auth/login', async (userCredentials, 
   try {
     const res = await callApi('POST', '/v1/auth/login', null, userCredentials);
 
-    // console.log(res);
-
     if (res.code === 200 && ['admin', 'shop'].includes(res.data.user.role)) {
       localStorage.setItem('accessToken', JSON.stringify(res.data.accessToken));
       localStorage.setItem('refreshToken', JSON.stringify(res.data.refreshToken));

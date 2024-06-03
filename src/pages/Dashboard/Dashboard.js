@@ -3,6 +3,7 @@ import classNames from 'classnames/bind';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
+import { toast } from 'react-toastify';
 
 import styles from './Dashboard.module.scss';
 
@@ -10,18 +11,14 @@ import item1 from '~/assets/images/dashboard/ic_glass_bag.png';
 import item2 from '~/assets/images/dashboard/ic_glass_users.png';
 import item3 from '~/assets/images/dashboard/ic_glass_buy.png';
 import item4 from '~/assets/images/dashboard/ic_glass_message.png';
-import BiaxialLineChart from '~/components/Charts/BiaxialLineChart/BiaxialLineChart';
 import PieChart from '~/components/Charts/PieChart';
 import TwinBarChart from '~/components/Charts/TwinBarChart/TwinBarChart';
 import RealTime from '~/components/RealTime';
 import { ArrowDownIcon } from '~/components/Icons';
 import RevenueChart from '~/components/Charts/RevenueChart';
 import GaugeChart from '~/components/Charts/GaugeChart';
-import RecentOrder from '~/components/RecentOrder';
-import { ArrowLeftIcon, ArrowRightIcon } from '@mui/x-date-pickers';
 import Canvas from '~/components/Canvas';
 import { getStatisticalData, getStatisticalRevenue, getStatisticalPerformance } from '~/apiService/dashboardService';
-import { toast } from 'react-toastify';
 
 const cx = classNames.bind(styles);
 
@@ -97,49 +94,65 @@ const DashBoard = () => {
 
   useEffect(() => {
     const statisticalBy = currentSortType.type;
-    console.log(statisticalBy);
-    Promise.all([
-      dispatch(getStatisticalData({ statisticalBy })),
-      dispatch(getStatisticalRevenue({ statisticalBy })),
-      dispatch(getStatisticalPerformance({ statisticalBy })),
-    ]).then(([result1, result2, result3]) => {
-      if (result1.payload.code === 200 && result2.payload.code === 200 && result3.payload.code === 200) {
-        setStatisticalData(result1.payload.data);
-        setStatisticalRevenue(result2.payload.data);
-        setStatisticalPerformance(result3.payload.data);
-        setData([
-          {
-            imgUrl: item1,
-            data: `${result1.payload.data.sales?.toLocaleString('vi-VN')} VND`,
-            name: t('dashboards.desc02'),
-            border: '#21b77e',
-          },
-          {
-            imgUrl: item2,
-            data: formatData(result1.payload.data.newUser),
-            name: t('dashboards.desc03'),
-            border: '#3584e8',
-          },
-          {
-            imgUrl: item3,
-            data: formatData(result1.payload.data.order),
-            name: t('dashboards.desc04'),
-            border: '#fab72e',
-          },
-          {
-            imgUrl: item4,
-            data: formatData(result1.payload.data.message),
-            name: t('dashboards.desc05'),
-            border: '#fc8c66',
-          },
+
+    const fetchData = async () => {
+      try {
+        const [result1, result2, result3] = await Promise.all([
+          dispatch(getStatisticalData({ statisticalBy })),
+          dispatch(getStatisticalRevenue({ statisticalBy })),
+          dispatch(getStatisticalPerformance({ statisticalBy })),
         ]);
-      } else {
-        toast.error(result1.payload.message);
-        toast.error(result2.payload.message);
-        toast.error(result3.payload.message);
+
+        if (result1.payload.code === 200 && result2.payload.code === 200 && result3.payload.code === 200) {
+          setStatisticalData(result1.payload.data);
+          setStatisticalRevenue(result2.payload.data);
+          setStatisticalPerformance(result3.payload.data);
+          setData([
+            {
+              imgUrl: item1,
+              data: `${result1.payload.data.sales?.toLocaleString('vi-VN')} VND`,
+              name: t('dashboards.desc02'),
+              border: '#21b77e',
+            },
+            {
+              imgUrl: item2,
+              data: formatData(result1.payload.data.newUser),
+              name: t('dashboards.desc03'),
+              border: '#3584e8',
+            },
+            {
+              imgUrl: item3,
+              data: formatData(result1.payload.data.order),
+              name: t('dashboards.desc04'),
+              border: '#fab72e',
+            },
+            {
+              imgUrl: item4,
+              data: formatData(result1.payload.data.message),
+              name: t('dashboards.desc05'),
+              border: '#fc8c66',
+            },
+          ]);
+        } else {
+          console.error(
+            'Error in response:',
+            result1.payload.message,
+            result2.payload.message,
+            result3.payload.message,
+          );
+          toast.error(result1.payload.message);
+          toast.error(result2.payload.message);
+          toast.error(result3.payload.message);
+        }
+      } catch (error) {
+        toast.error('An error occurred while fetching data.');
+        console.error('Fetch error:', error);
       }
-    });
-  }, [currentSortType]);
+    };
+
+    fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentSortType.type]);
 
   return (
     <div className={cx('dashboard')}>
@@ -185,15 +198,6 @@ const DashBoard = () => {
             </div>
           );
         })}
-
-        {/* <div className={cx('dashboard--pape--chart-column')}>
-          <div className={cx('revenue-header')}>
-            <h5>{t('dashboards.desc06')}</h5>
-          </div>
-          <div className={cx('bar-chart')}>
-            <BiaxialLineChart sortType={currentSortType} />
-          </div>
-        </div> */}
 
         <div className={cx('dashboard-revenue-chart')}>
           <div className={cx('dashboard-revenue-chart-header')}>
@@ -250,37 +254,8 @@ const DashBoard = () => {
                 <GaugeChart value={'40'} />
               </div>
             </div>
-
-            {/* <div className={cx('group-chart')}>
-              <h5>{t('users.title15')}</h5>
-              <div className={cx('group-chart-content')}>
-                <span>9,000,000</span>
-                <GaugeChart value={'40'} />
-              </div>
-            </div> */}
           </div>
         </div>
-
-        {/* <div className={cx('recent-orders')}>
-          <h5>Recent Orders</h5>
-          <RecentOrder />
-        </div>
-
-        <div className={cx('top-products')}>
-          <div className={cx('top-products-header')}>
-            <h5>Top Products</h5>
-
-            <div className={cx('button-group')}>
-              <button className={cx('btn-left')}>
-                <ArrowLeftIcon className={cx('icon')} />
-              </button>
-
-              <button className={cx('btn-right')}>
-                <ArrowRightIcon className={cx('icon')} />
-              </button>
-            </div>
-          </div>
-        </div> */}
       </div>
     </div>
   );

@@ -18,7 +18,6 @@ export const getStatisticalRevenue = createAsyncThunk(
   async (statisticalBy, { rejectWithValue }) => {
     try {
       const res = await callApi('POST', `/v1/dashboards/statistical-revenue`, {}, statisticalBy);
-      console.log(typeof statisticalBy);
       return res;
     } catch (error) {
       return rejectWithValue({ ...error });
@@ -31,7 +30,6 @@ export const getStatisticalPerformance = createAsyncThunk(
   async (statisticalBy, { rejectWithValue }) => {
     try {
       const res = await callApi('POST', `/v1/dashboards/statistical-performance`, {}, statisticalBy);
-      console.log(typeof statisticalBy);
       return res;
     } catch (error) {
       return rejectWithValue({ ...error });

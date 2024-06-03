@@ -72,8 +72,6 @@ function Header({ toggleNav }) {
     if (_admin) {
       setAdmin(_admin);
     }
-
-    console.log(admin);
   }, []);
 
   const handleOpenAdminMenu = () => {

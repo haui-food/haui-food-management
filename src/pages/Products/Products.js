@@ -303,10 +303,8 @@ const EnhancedTableToolbar = (props) => {
     ).then((result) => {
       if (result.payload.code === 201) {
         toast.success(result.payload.message);
-        console.log(result.payload);
-
+        onAddProduct(result.payload.data);
         onResetListProduct();
-
         closeCreateModal();
         return;
       }
@@ -340,10 +338,8 @@ const EnhancedTableToolbar = (props) => {
   };
 
   const handleDelete = () => {
-    // console.log(selected);
     for (let i = 0; i < selected?.length; i++) {
       dispatch(deleteProductById(selected[i])).then((result) => {
-        console.log(result);
         if (result.payload.code === 200) {
           toast.success(result.payload.message);
           // onDeleteProduct(result.payload.data);
@@ -360,8 +356,6 @@ const EnhancedTableToolbar = (props) => {
   };
 
   const handleEdit = () => {
-    // console.log(ProductCredentials);
-    console.log('edit');
     let isSubmit = true;
     const productData = {
       name: ProductCredentials?.name,

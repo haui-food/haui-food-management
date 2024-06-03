@@ -28,13 +28,13 @@
       position: relative;
 
       .sort-box {
-        width: 80px;
-        height: 28px;
+        width: 100px;
+        height: 35px;
         border: 1px solid rgb(173, 180, 189);
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 0 8px;
+        padding: 4px 8px;
         border-radius: 4px;
         transition: border 0.3s linear;
         font-size: 15px;
@@ -47,6 +47,16 @@
           &--active {
             transform: rotate(180deg);
           }
+        }
+
+        @include media-breakpoint-down(lg) {
+          width: 120px;
+          height: 45px;
+          font-size: 1.6rem;
+        }
+
+        @include media-breakpoint-down(md) {
+          width: 110px;
         }
       }
 
@@ -75,10 +85,18 @@
           }
         }
 
+        @include media-breakpoint-down(lg) {
+          font-size: 1.6rem;
+        }
+
         .sort-item {
-          padding: 4px 6px;
+          padding: 8px;
           background-color: #fff;
           transition: background-color 0.2s ease;
+
+          @include media-breakpoint-down(lg) {
+            padding: 10px;
+          }
         }
 
         .sort-item:first-child {
@@ -142,7 +160,7 @@
         margin-right: 24px;
       }
       h2 {
-        font-size: 2rem;
+        font-size: 1.8rem;
         font-weight: 600;
       }
       h3 {
