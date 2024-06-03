@@ -139,13 +139,13 @@ const EnhancedTableHead = (props) => {
   const { t } = useTranslation();
 
   const headCells = [
-    { id: 'image', numeric: false, disablePadding: false, label: 'Ảnh sản phẩm' },
-    { id: 'name', numeric: false, disablePadding: true, label: 'Tên sản phẩm' },
-    { id: 'description', numeric: true, disablePadding: false, label: 'Mô tả sản phẩm' },
-    { id: 'price', numeric: true, disablePadding: false, label: 'Giá' },
-    { id: 'shop', numeric: true, disablePadding: false, label: 'Cửa hàng' },
-    { id: 'category', numeric: true, disablePadding: false, label: 'Thể loại' },
-    { id: 'slug', numeric: false, disablePadding: true, label: 'Slug' },
+    { id: 'image', numeric: false, disablePadding: false, label: t('productPage.header.img') },
+    { id: 'name', numeric: false, disablePadding: true, label: t('productPage.header.name') },
+    { id: 'description', numeric: true, disablePadding: false, label: t('productPage.header.desc') },
+    { id: 'price', numeric: true, disablePadding: false, label: t('productPage.header.price') },
+    { id: 'shop', numeric: true, disablePadding: false, label: t('productPage.header.productName') },
+    { id: 'category', numeric: true, disablePadding: false, label: t('productPage.header.category') },
+    { id: 'slug', numeric: false, disablePadding: true, label: t('productPage.header.slug') },
   ];
   const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
   const createSortHandler = (property) => (event) => {
@@ -208,16 +208,7 @@ EnhancedTableHead.propTypes = {
 const EnhancedTableToolbar = (props) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const {
-    numSelected,
-    isEdit,
-    selected,
-    currentProductArray,
-    onAddProduct,
-    onUpdateProduct,
-    onDeleteProduct,
-    searchKeyword,
-  } = props;
+  const { numSelected, isEdit, selected, currentProductArray, searchKeyword, onResetListProduct } = props;
   const [confirmModalIsOpen, setConfirmModalIsOpen] = useState(false);
   const [editModalIsOpen, setEditModalIsOpen] = useState(false);
   const [createModalIsOpen, setCreateModalIsOpen] = useState(false);
@@ -256,8 +247,8 @@ const EnhancedTableToolbar = (props) => {
   const validate = (e) => {
     const inputs = e ? [e.target] : document.querySelectorAll('input');
     const validators = {
-      name: (value) => !value && 'Tên sản phẩm không được để trống',
-      price: (value) => !value && 'Giá sản phẩm không được để trống',
+      name: (value) => !value && t('productPage.validate.nameRequired'),
+      price: (value) => !value && t('productPage.validate.priceRequired'),
 
       // Thêm các trường hợp khác nếu cần
     };
@@ -294,13 +285,13 @@ const EnhancedTableToolbar = (props) => {
     if (!productData.category) {
       setError((prevState) => ({
         ...prevState,
-        category: 'Thể loại sản phẩm không được để trống',
+        category: t('productPage.validate.categoryRequired'),
       }));
       isSubmit = false;
     }
 
     if (!isSubmit) {
-      toast.info('Vui lòng nhập đúng thông tin các trường');
+      toast.info(t('productPage.toast.inCorrectFields'));
       return;
     }
 
@@ -312,10 +303,8 @@ const EnhancedTableToolbar = (props) => {
     ).then((result) => {
       if (result.payload.code === 201) {
         toast.success(result.payload.message);
-        // setTimeout(() => {
-        //   window.location.href = '/products';
-        // }, 1000);
         onAddProduct(result.payload.data);
+        onResetListProduct();
         closeCreateModal();
         return;
       }
@@ -353,7 +342,9 @@ const EnhancedTableToolbar = (props) => {
       dispatch(deleteProductById(selected[i])).then((result) => {
         if (result.payload.code === 200) {
           toast.success(result.payload.message);
-          onDeleteProduct(result.payload.data);
+          // onDeleteProduct(result.payload.data);
+          onResetListProduct();
+
           return;
         } else {
           toast.error(result.payload.message);
@@ -380,19 +371,19 @@ const EnhancedTableToolbar = (props) => {
     if (!productData.category) {
       setError((prevState) => ({
         ...prevState,
-        category: 'Thể loại sản phẩm không được để trống',
+        category: t('productPage.validate.categoryRequired'),
       }));
       isSubmit = false;
     }
 
     if (!isSubmit) {
-      toast.info('Vui lòng nhập đúng thông tin các trường');
+      toast.info(t('productPage.toast.inCorrectFields'));
       return;
     }
 
     // kiểm tra xem có thay dữ liệu không
     if (JSON.stringify(productData) === JSON.stringify(oldProductCredentials) && !imageSelected) {
-      toast.info('Không có thay đổi nào');
+      toast.info(t('productPage.toast.noChange'));
       return;
     }
 
@@ -405,7 +396,8 @@ const EnhancedTableToolbar = (props) => {
     ).then((result) => {
       if (result.payload.code === 200) {
         toast.success(result.payload.message);
-        onUpdateProduct(result.payload.data);
+        // onUpdateProduct(result.payload.data);
+        onResetListProduct();
         closeEditModal();
       } else {
         toast.error(result.payload.message);
@@ -477,12 +469,12 @@ const EnhancedTableToolbar = (props) => {
       >
         {numSelected > 0 ? (
           <Typography sx={{ flex: '1 1 100%' }} color="inherit" variant="subtitle1" component="div">
-            {numSelected} selected
+            {numSelected} {t('productPage.selected')}
           </Typography>
         ) : (
           <>
             <Typography sx={{ flex: '1 1 100%', fontSize: '2.2rem' }} variant="h6" component="div">
-              Sản phẩm
+              {t('productPage.productTitle')}
             </Typography>
             <TextField
               label={t('users.inp01')}
@@ -540,21 +532,17 @@ const EnhancedTableToolbar = (props) => {
       </Toolbar>
 
       <ConfirmModal
-        title="Xác nhận xóa sản phẩm"
-        desc={
-          isEdit
-            ? 'Bạn có chắc chắn muốn xóa tất cả những sản phẩm này không?'
-            : 'Bạn có chắc chắn muốn xóa sản phẩm này không?'
-        }
-        type="Xóa"
+        title={t('productPage.form.deleteTitle')}
+        desc={isEdit ? t('productPage.form.deleteManyDesc') : t('productPage.form.deleteOneDesc')}
+        type={t('button.btn01')}
         isOpen={confirmModalIsOpen}
         closeModal={closeConfirmModal}
         handle={handleDelete}
       />
 
       <FormModal
-        title="Sửa thông tin sản phẩm"
-        type="Sửa"
+        title={t('productPage.form.editTitle')}
+        type={t('button.btn03')}
         isOpen={editModalIsOpen}
         closeModal={closeEditModal}
         handleEdit={handleEdit}
@@ -570,8 +558,8 @@ const EnhancedTableToolbar = (props) => {
       </FormModal>
 
       <FormModal
-        title="Tạo sản phẩm mới"
-        type="Tạo"
+        title={t('productPage.form.createTitle')}
+        type={t('button.btn02')}
         isOpen={createModalIsOpen}
         closeModal={closeCreateModal}
         handle={handleCreate}
@@ -694,24 +682,15 @@ export default function Products() {
     [order, orderBy, page, rowsPerPage, filteredRows],
   );
 
-  const handleAddProduct = (newProduct) => {
-    // setRows((preRows) => {
-    //   return [newProduct, ...preRows];
-    // });
-
-    dispatch(getAllProduct({ limit: rowsPerPage, page: currentPage })).then((result) => {
+  // reset danh sách sản phẩm khi thêm, sửa, xóa
+  const handleResetListProduct = () => {
+    dispatch(getAllProduct({ limit: rowsPerPage, page: 1 })).then((result) => {
       setRows(result.payload.products);
       setLoading(false);
+      setCurrentPage(1);
       setTotalPage(result.payload.totalPage);
+      setSelected([]);
     });
-  };
-
-  const handleUpdateProduct = (updateProduct) => {
-    setRows((prevRows) => prevRows.map((product) => (product._id === updateProduct._id ? updateProduct : product)));
-  };
-
-  const handleDeleteProduct = (deleteProduct) => {
-    setRows((prevRows) => prevRows.filter((product) => product._id !== deleteProduct._id));
   };
 
   //lấy thông tin tất cả các sản phẩm
@@ -726,7 +705,7 @@ export default function Products() {
 
   return (
     <div className={cx('product')}>
-      <h1 className={cx('product__heading')}>Danh sách sản phẩm</h1>
+      <h1 className={cx('product__heading')}>{t('productPage.listProductTitle')}</h1>
       <RealTime />
       <ThemeProvider theme={theme}>
         <Box className={cx('product__list')}>
@@ -739,9 +718,7 @@ export default function Products() {
               }}
               selected={selected}
               currentProductArray={rows}
-              onAddProduct={handleAddProduct}
-              onUpdateProduct={handleUpdateProduct}
-              onDeleteProduct={handleDeleteProduct}
+              onResetListProduct={handleResetListProduct}
               searchKeyword={searchKeyword}
             />
             <TableContainer>

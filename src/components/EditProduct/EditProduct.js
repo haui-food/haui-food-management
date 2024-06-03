@@ -87,7 +87,7 @@ function EditProduct({ handleInputChange, productCredentials, onImageChange, onE
         {/* product name */}
         <div className={cx('form__group')}>
           <label htmlFor="category-name" className={cx('form__label', 'form__label--medium')}>
-            Tên sản phẩm
+            {t('productPage.form.nameLabel')}
           </label>
           <div className={cx('form__text-input', 'form__text-input--sm', { 'form-error': onError?.name })}>
             <input
@@ -102,7 +102,7 @@ function EditProduct({ handleInputChange, productCredentials, onImageChange, onE
               type="text"
               id="name"
               name="name"
-              placeholder="Tên thể loại"
+              placeholder={t('productPage.form.nameLabel')}
               className={cx('form__input')}
             />
             <CategoryOutlinedIcon fontSize="large" className={cx('icon')} />
@@ -115,7 +115,7 @@ function EditProduct({ handleInputChange, productCredentials, onImageChange, onE
       <div className={cx('form__row', 'form__row--three')}>
         <div className={cx('form__group')}>
           <label htmlFor="category-name" className={cx('form__label', 'form__label--medium')}>
-            Mô tả sản phẩm
+            {t('productPage.form.descLabel')}
           </label>
           <div className={cx('form__text-input', 'form__text-input--sm')}>
             <input
@@ -124,7 +124,7 @@ function EditProduct({ handleInputChange, productCredentials, onImageChange, onE
               type="text"
               id="description"
               name="description"
-              placeholder="Tên thể loại"
+              placeholder={t('productPage.form.descLabel')}
               className={cx('form__input')}
             />
             <CategoryOutlinedIcon fontSize="large" className={cx('icon')} />
@@ -136,7 +136,7 @@ function EditProduct({ handleInputChange, productCredentials, onImageChange, onE
       <div className={cx('form__row', 'form__row--three')}>
         <div className={cx('form__group')}>
           <label htmlFor="category-name" className={cx('form__label', 'form__label--medium')}>
-            Giá
+            {t('productPage.form.priceLabel')}
           </label>
           <div className={cx('form__text-input', 'form__text-input--sm', { 'form-error': onError?.price })}>
             <input
@@ -151,7 +151,7 @@ function EditProduct({ handleInputChange, productCredentials, onImageChange, onE
               type="text"
               id="price"
               name="price"
-              placeholder="Giá"
+              placeholder={t('productPage.form.priceLabel')}
               className={cx('form__input')}
             />
             <CategoryOutlinedIcon fontSize="large" className={cx('icon')} />
@@ -164,7 +164,7 @@ function EditProduct({ handleInputChange, productCredentials, onImageChange, onE
       <div className={cx('form__row', 'form__row--three')}>
         <div className={cx('form__group')}>
           <label htmlFor="category-name" className={cx('form__label', 'form__label--medium')}>
-            Thể loại
+            {t('productPage.form.categoryLabel')}
           </label>
 
           <ComboBox onValueChange={handleCategoryChange} value={selectedCategory} />
@@ -176,7 +176,7 @@ function EditProduct({ handleInputChange, productCredentials, onImageChange, onE
       <div className={cx('form__row', 'form__row--three')}>
         <div className={cx('form__group')}>
           <label htmlFor="image" className={cx('form__label', 'form__label--medium', 'form__label-choose-file')}>
-            Chọn hình ảnh
+            {t('productPage.form.imgLabel')}
           </label>
 
           <img

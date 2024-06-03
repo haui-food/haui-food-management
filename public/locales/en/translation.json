@@ -120,5 +120,41 @@
   },
   "toast": {
     "Unauthorized": "You do not have access."
+  },
+  
+  "productPage": {
+    "selected": "Selected",
+    "listProductTitle": "Product List",
+    "productTitle": "Product",
+    "header": {
+      "img": "Product Image",
+      "name": "Product Name",
+      "desc": "Product Description",
+      "productName": "Shop Name",
+      "category": "Category",
+      "price": "Price",
+      "slug": "Slug"
+    },
+    "form": {
+      "createTitle": "Create New Product",
+      "editTitle": "Edit Product Information",
+      "deleteTitle": "Confirm Product Deletion",
+      "deleteManyDesc": "Are you sure you want to delete all these products?",
+      "deleteOneDesc": "Are you sure you want to delete this product?",
+      "nameLabel": "Product Name",
+      "descLabel": "Product Description",
+      "priceLabel": "Price",
+      "categoryLabel": "Category",
+      "imgLabel": "Choose Image"
+    },
+    "validate": {
+      "nameRequired": "Product name cannot be empty",
+      "priceRequired": "Product price cannot be empty",
+      "categoryRequired": "Product category cannot be empty"
+    },
+    "toast": {
+      "noChange": "No changes made",
+      "inCorrectFields": "Please enter the correct information for the fields"
+    }
   }
 }
