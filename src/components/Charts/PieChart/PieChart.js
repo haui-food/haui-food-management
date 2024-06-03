@@ -3,12 +3,12 @@ import { PieChart } from '@mui/x-charts/PieChart';
 
 export default function PieActiveArc({ dataChart }) {
   const data = [
-    { id: 0, value: dataChart?.pending, label: 'Pending', color: '#1877F2' },
-    { id: 1, value: dataChart?.canceled, label: 'Canceled', color: '#F5CE43' },
-    { id: 2, value: dataChart?.confirmed, label: 'Confirmed', color: '#42DCF7' },
-    { id: 3, value: dataChart?.reject, label: 'Reject', color: '#FF5630' },
-    { id: 4, value: dataChart?.shipping, label: 'Shipping', color: 'orange' },
-    { id: 4, value: dataChart?.success, label: 'Success', color: 'orange' },
+    { id: 0, value: dataChart?.pending, label: 'Pending', color: '#ffca28' },
+    { id: 1, value: dataChart?.canceled, label: 'Canceled', color: '#cfd8dc' },
+    { id: 2, value: dataChart?.confirmed, label: 'Confirmed', color: '#26c6da' },
+    { id: 3, value: dataChart?.reject, label: 'Reject', color: '#ef5350' },
+    { id: 4, value: dataChart?.shipping, label: 'Shipping', color: '#26a69a' },
+    { id: 4, value: dataChart?.success, label: 'Success', color: '#4caf50' },
   ];
 
   return (
