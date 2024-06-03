@@ -303,7 +303,6 @@ const EnhancedTableToolbar = (props) => {
     ).then((result) => {
       if (result.payload.code === 201) {
         toast.success(result.payload.message);
-        onAddProduct(result.payload.data);
         onResetListProduct();
         closeCreateModal();
         return;
