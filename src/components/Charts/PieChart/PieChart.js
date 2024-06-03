@@ -11,10 +11,6 @@ export default function PieActiveArc({ dataChart }) {
     { id: 4, value: dataChart?.success, label: 'Success', color: '#4caf50' },
   ];
 
-  React.useEffect(() => {
-    console.log(dataChart);
-  }, []);
-
   return (
     <PieChart
       series={[

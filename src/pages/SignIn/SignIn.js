@@ -65,7 +65,6 @@ function SignIn() {
 
   const handleSubmit = (e) => {
     dispatch(loginUser(loginForm)).then((result) => {
-      console.log(result);
       if (result.payload.code === 200) {
         if (['admin'].includes(result.payload.data.user.role)) {
           toast.success(result.payload.message);

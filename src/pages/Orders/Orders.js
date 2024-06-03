@@ -62,7 +62,6 @@ const Product = ({ product, status }) => {
 
   const handleCancelOrder = () => {
     dispatch(cancelOrder({ orderId: product._id })).then((result) => {
-      console.log(result);
       if (result.payload.code !== 200) {
         return toast.error(result.payload.message);
       }
@@ -214,7 +213,6 @@ const Orders = () => {
 
     if (status === 'shipping') {
       dispatch(getOrdersByStatus({ status: 'shipping' })).then((result) => {
-        console.log(result);
         if (result.payload.code !== 200) {
           return toast.error('Có lỗi xảy ra, vui lòng thử lại sau!');
         }

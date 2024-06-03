@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Bar } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -14,19 +14,6 @@ import {
 import { useTranslation } from 'react-i18next';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, Title, Tooltip, Legend);
-
-const options = {
-  scales: {
-    y: {
-      beginAtZero: true,
-    },
-  },
-  elements: {
-    line: {
-      fill: true,
-    },
-  },
-};
 
 const TwinBarChart = ({ sortType, dataPerformance }) => {
   const { t } = useTranslation();
