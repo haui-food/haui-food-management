@@ -39,8 +39,8 @@ const TwinBarChart = ({ sortType, dataPerformance }) => {
   const array2 = dataPerformance ? dataPerformance.map((item) => item.totalOrder) : [];
 
   // console.log(array0);
-  console.log(array1);
-  console.log(array2);
+  // console.log(array1);
+  // console.log(array2);
   const dataSets = {
     week: {
       labels: ['Sun', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Mon'],
@@ -49,7 +49,8 @@ const TwinBarChart = ({ sortType, dataPerformance }) => {
     },
     month: {
       labels: [
-        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31,
+        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
+        31,
       ],
       values1: array1,
       values2: array2,
@@ -66,8 +67,6 @@ const TwinBarChart = ({ sortType, dataPerformance }) => {
     },
   };
 
-
-
   useEffect(() => {
     const filtered = dataSets[sortType.type];
     if (filtered) {
@@ -80,7 +79,7 @@ const TwinBarChart = ({ sortType, dataPerformance }) => {
     }
   }, [sortType.type]);
 
-  console.log(filteredData);
+  // console.log(filteredData);
 
   return (
     <div>

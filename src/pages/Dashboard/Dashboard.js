@@ -97,49 +97,71 @@ const DashBoard = () => {
 
   useEffect(() => {
     const statisticalBy = currentSortType.type;
-    console.log(statisticalBy);
-    Promise.all([
-      dispatch(getStatisticalData({ statisticalBy })),
-      dispatch(getStatisticalRevenue({ statisticalBy })),
-      dispatch(getStatisticalPerformance({ statisticalBy })),
-    ]).then(([result1, result2, result3]) => {
-      if (result1.payload.code === 200 && result2.payload.code === 200 && result3.payload.code === 200) {
-        setStatisticalData(result1.payload.data);
-        setStatisticalRevenue(result2.payload.data);
-        setStatisticalPerformance(result3.payload.data);
-        setData([
-          {
-            imgUrl: item1,
-            data: `${result1.payload.data.sales?.toLocaleString('vi-VN')} VND`,
-            name: t('dashboards.desc02'),
-            border: '#21b77e',
-          },
-          {
-            imgUrl: item2,
-            data: formatData(result1.payload.data.newUser),
-            name: t('dashboards.desc03'),
-            border: '#3584e8',
-          },
-          {
-            imgUrl: item3,
-            data: formatData(result1.payload.data.order),
-            name: t('dashboards.desc04'),
-            border: '#fab72e',
-          },
-          {
-            imgUrl: item4,
-            data: formatData(result1.payload.data.message),
-            name: t('dashboards.desc05'),
-            border: '#fc8c66',
-          },
+    console.log('Current sort type:', statisticalBy);
+
+    const fetchData = async () => {
+      try {
+        const [result1, result2, result3] = await Promise.all([
+          dispatch(getStatisticalData({ statisticalBy })),
+          dispatch(getStatisticalRevenue({ statisticalBy })),
+          dispatch(getStatisticalPerformance({ statisticalBy })),
         ]);
-      } else {
-        toast.error(result1.payload.message);
-        toast.error(result2.payload.message);
-        toast.error(result3.payload.message);
+
+        if (result1.payload.code === 200 && result2.payload.code === 200 && result3.payload.code === 200) {
+          setStatisticalData(result1.payload.data);
+          setStatisticalRevenue(result2.payload.data);
+          setStatisticalPerformance(result3.payload.data);
+          setData([
+            {
+              imgUrl: item1,
+              data: `${result1.payload.data.sales?.toLocaleString('vi-VN')} VND`,
+              name: t('dashboards.desc02'),
+              border: '#21b77e',
+            },
+            {
+              imgUrl: item2,
+              data: formatData(result1.payload.data.newUser),
+              name: t('dashboards.desc03'),
+              border: '#3584e8',
+            },
+            {
+              imgUrl: item3,
+              data: formatData(result1.payload.data.order),
+              name: t('dashboards.desc04'),
+              border: '#fab72e',
+            },
+            {
+              imgUrl: item4,
+              data: formatData(result1.payload.data.message),
+              name: t('dashboards.desc05'),
+              border: '#fc8c66',
+            },
+          ]);
+        } else {
+          console.error(
+            'Error in response:',
+            result1.payload.message,
+            result2.payload.message,
+            result3.payload.message,
+          );
+          toast.error(result1.payload.message);
+          toast.error(result2.payload.message);
+          toast.error(result3.payload.message);
+        }
+      } catch (error) {
+        toast.error('An error occurred while fetching data.');
+        console.error('Fetch error:', error);
       }
-    });
-  }, [currentSortType]);
+    };
+
+    fetchData();
+  }, [currentSortType.type]);
+
+  // useEffect(() => {
+  //   dispatch(getStatisticalData({ statisticalBy: currentSortType.type })).then((result) => {
+  //     console.log(result);
+  //   });
+  // }, [currentSortType.type]);
 
   return (
     <div className={cx('dashboard')}>
