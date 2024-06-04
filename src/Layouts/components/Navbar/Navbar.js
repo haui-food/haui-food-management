@@ -31,12 +31,12 @@ function Navbar({ toggleNav, isDesktop }) {
       title: t('dashboards.title03'),
       slug: 'users',
     },
-    {
-      path: config.routes.shop,
-      icon: <ShopIcon className={cx('icon')} />,
-      title: 'Shop',
-      slug: 'shop',
-    },
+    // {
+    //   path: config.routes.shop,
+    //   icon: <ShopIcon className={cx('icon')} />,
+    //   title: 'Shop',
+    //   slug: 'shop',
+    // },
     {
       path: config.routes.products,
       icon: <ProductIcon className={cx('icon')} />,

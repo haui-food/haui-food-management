@@ -294,7 +294,6 @@ const EnhancedTableToolbar = (props) => {
 
   const handleDelete = () => {
     try {
-      console.log(selected);
       for (let i = 0; i < selected.length; i++) {
         dispatch(deleteUserById(selected[i])).then((result) => {
           if (result.payload.code === 200) {
@@ -579,7 +578,6 @@ export default function Users() {
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
-    console.log('clicked');
   };
 
   const handleChangeRowsPerPage = (event) => {
