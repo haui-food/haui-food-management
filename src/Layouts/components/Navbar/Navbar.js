@@ -58,12 +58,12 @@ function Navbar({ toggleNav, isDesktop }) {
   ]);
 
   const [shopNavigation, setShopNavigation] = useState([
-    {
-      path: config.routes.shopDashboard,
-      icon: <DashBoardIcon className={cx('icon')} />,
-      title: t('dashboards.title02'),
-      slug: 'home',
-    },
+    // {
+    //   path: config.routes.shopDashboard,
+    //   icon: <DashBoardIcon className={cx('icon')} />,
+    //   title: t('dashboards.title02'),
+    //   slug: 'home',
+    // },
     {
       path: config.routes.shopProducts,
       icon: <ProductIcon className={cx('icon')} />,
@@ -76,12 +76,12 @@ function Navbar({ toggleNav, isDesktop }) {
       title: 'Đơn hàng',
       slug: 'orders',
     },
-    {
-      path: config.routes.shopChats,
-      icon: <ChatIcon className={cx('icon')} />,
-      title: 'Tin nhắn',
-      slug: 'chats',
-    },
+    // {
+    //   path: config.routes.shopChats,
+    //   icon: <ChatIcon className={cx('icon')} />,
+    //   title: 'Tin nhắn',
+    //   slug: 'chats',
+    // },
   ]);
 
   const [currentPage, setCurrentPage] = useState('');
