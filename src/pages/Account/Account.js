@@ -60,7 +60,7 @@ const Account = () => {
       };
       setGender(user.gender);
       setDateOfBirth(formatDate);
-      setPrevImage(user.avatar);
+      setPrevImage(user?.avatar);
     }
   }, [user]);
 
@@ -96,7 +96,7 @@ const Account = () => {
             <h4>{t('account.title02')}</h4>
             <div class={cx('button-group')}>
               <label>{t('account.lb01')}</label>
-              <input type="text" className={cx('input-detail-username')} defaultValue={user.fullname} />
+              <input type="text" className={cx('input-detail-username')} defaultValue={user?.fullname} />
             </div>
 
             {/* <div class={cx('button-group-wrapper')}>

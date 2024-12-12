@@ -103,7 +103,7 @@ function EditUser({ userCredentials, handleInputChange }) {
           </label>
           <div className={cx('form__text-input', 'form__text-input--sm')}>
             <input
-              value={userCredentials.fullname}
+              value={userCredentials?.fullname}
               onChange={handleInputChange}
               type="text"
               id="fullname"

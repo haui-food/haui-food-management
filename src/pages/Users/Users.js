@@ -347,15 +347,15 @@ const EnhancedTableToolbar = (props) => {
       dispatch(getUserById(selected[0])).then((result) => {
         setUserCredentials({
           ...userCredentials,
-          fullname: result.payload.data.fullname,
-          email: result.payload.data.email,
-          password: result.payload.data.password,
-          phone: result.payload.data.phone,
-          dateOfBirth: result.payload.data.dateOfBirth,
-          gender: result.payload.data.gender,
-          isVerify: result.payload.data.isVerify,
-          isLocked: result.payload.data.isLocked,
-          role: result.payload.data.role,
+          fullname: result?.payload?.data?.fullname,
+          email: result?.payload?.data?.email,
+          password: result?.payload?.data?.password,
+          phone: result?.payload?.data.phone,
+          dateOfBirth: result?.payload?.data?.dateOfBirth,
+          gender: result?.payload?.data?.gender,
+          isVerify: result?.payload?.data?.isVerify,
+          isLocked: result?.payload?.data?.isLocked,
+          role: result?.payload?.data?.role,
         });
       });
     } else {
@@ -612,9 +612,9 @@ export default function Users() {
   const filteredRows = useMemo(() => {
     return rows.filter(
       (row) =>
-        row.fullname.toLowerCase().includes(searchKeyword.toLowerCase()) ||
-        row.email.toLowerCase().includes(searchKeyword.toLowerCase()) ||
-        row.role.toLowerCase().includes(searchKeyword.toLowerCase()),
+        row?.fullname.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+        row?.email.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+        row?.role.toLowerCase().includes(searchKeyword.toLowerCase()),
     );
   }, [rows, searchKeyword]);
 
@@ -770,52 +770,53 @@ export default function Users() {
                               />
                             </TableCell>
                             <TableCell align="center">
-                              <Avatar alt={row.fullname} src={row.avatar} />
+                              <Avatar alt={row?.fullname} src={row?.avatar} />
                             </TableCell>
                             <TableCell component="th" id={labelId} scope="row" padding="none">
-                              {row.fullname}
+                              {row?.fullname}
                             </TableCell>
-                            <TableCell align="center">{row.email}</TableCell>
-                            <TableCell align="center">{row.phone}</TableCell>
-                            <TableCell align="left">{convertDate(row.dateOfBirth)}</TableCell>
+                            <TableCell align="center">{row?.email}</TableCell>
+                            <TableCell align="center">{row?.phone}</TableCell>
+                            <TableCell align="left">{convertDate(row?.dateOfBirth)}</TableCell>
                             <TableCell align="left">
                               <Chip
-                                label={row.gender}
+                                label={row?.gender}
                                 variant="outlined"
                                 style={{
-                                  color: row.gender === 'male' ? '#5ab0f5' : '#ec407a',
-                                  borderColor: row.gender === 'male' ? '#64b5f6' : '#ec407a',
-                                  backgroundColor: row.gender === 'male' ? '#64b5f633' : '#ec407a14',
+                                  color: row?.gender === 'male' ? '#5ab0f5' : '#ec407a',
+                                  borderColor: row?.gender === 'male' ? '#64b5f6' : '#ec407a',
+                                  backgroundColor: row?.gender === 'male' ? '#64b5f633' : '#ec407a14',
                                 }}
                               />
                             </TableCell>
                             <TableCell align="left">
-                              {row.isVerify ? (
+                              {row?.isVerify ? (
                                 <CheckIcon style={{ color: 'var(--primary-color)' }} />
                               ) : (
                                 <CloseIcon style={{ color: '#f44336' }} />
                               )}
                             </TableCell>
                             <TableCell align="left">
-                              {row.isLocked ? (
+                              {row?.isLocked ? (
                                 <CheckIcon style={{ color: 'var(--primary-color)' }} />
                               ) : (
                                 <CloseIcon style={{ color: '#f44336' }} />
                               )}
                             </TableCell>
-                            <TableCell align="left">{convertISODate(row.lastActive)}</TableCell>
+                            <TableCell align="left">{convertISODate(row?.lastActive)}</TableCell>
                             <TableCell align="center">
                               <Chip
-                                label={row.role}
+                                label={row?.role}
                                 variant="outlined"
                                 style={{
-                                  color: row.role === 'admin' ? '#f44336' : row.role === 'shop' ? '#ff9800' : '#4caf50',
+                                  color:
+                                    row?.role === 'admin' ? '#f44336' : row?.role === 'shop' ? '#ff9800' : '#4caf50',
                                   borderColor:
-                                    row.role === 'admin' ? '#f44336' : row.role === 'shop' ? '#ff9800' : '#4caf50',
+                                    row?.role === 'admin' ? '#f44336' : row?.role === 'shop' ? '#ff9800' : '#4caf50',
                                   backgroundColor:
-                                    row.role === 'admin'
+                                    row?.role === 'admin'
                                       ? '#f443361c'
-                                      : row.role === 'shop'
+                                      : row?.role === 'shop'
                                       ? '#ff980029'
                                       : '#4caf5029',
                                 }}

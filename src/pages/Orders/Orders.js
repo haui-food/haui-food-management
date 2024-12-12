@@ -77,9 +77,9 @@ const Product = ({ product, status }) => {
       <div className={cx('user-information')}>
         <div className={cx('user-container')}>
           <div className={cx('user-image')}>
-            <img src={product.user.avatar} alt="ảnh đại diện" />
+            <img src={product?.user?.avatar} alt="ảnh đại diện" />
           </div>
-          <span>{product.user.fullname}</span>
+          <span>{product?.user?.fullname}</span>
         </div>
 
         <button onClick={handleChangeWidth} className={cx('arrow-button')}>
@@ -91,21 +91,21 @@ const Product = ({ product, status }) => {
           <div key={idx} className={cx('product-wrapper', { 'first-product-wrapper': idx === 0 })}>
             <div className={cx('product-desc-container')}>
               <div className={cx('image-wrapper')}>
-                <img src={cart.product?.image} alt={cart.product?.name} className={cx({ change: changeHeight })} />
+                <img src={cart?.product?.image} alt={cart?.product?.name} className={cx({ change: changeHeight })} />
               </div>
               <div className={cx('desc')}>
-                <h3 className={cx('title')}>{cart.product?.name}</h3>
-                <p className={cx('describe')}>{cart.product?.description}</p>
+                <h3 className={cx('title')}>{cart?.product?.name}</h3>
+                <p className={cx('describe')}>{cart?.product?.description}</p>
                 <p className={cx('quantity')}>X {cart?.quantity}</p>
               </div>
             </div>
-            <div className={cx('price')}>{convertToVND(cart.product?.price)}</div>
+            <div className={cx('price')}>{convertToVND(cart?.product?.price)}</div>
           </div>
         ))}
       </div>
       <div className={cx('product-desc', { 'product-desc-active': changeHeight })}>
-        <p className={cx('address')}>Địa chỉ: {product.address}</p>
-        <p className={cx('note')}>Ghi chú: {product.note}</p>
+        <p className={cx('address')}>Địa chỉ: {product?.address}</p>
+        <p className={cx('note')}>Ghi chú: {product?.note}</p>
         <p className={cx('time')}>Thời gian tạo đơn: {convertIso8601ToDatetime(product.createdAt)}</p>
         <p className={cx('payment')}>Hình thức thanh toán: Thanh toán khi nhận hàng</p>
         <div className={cx('total')}>

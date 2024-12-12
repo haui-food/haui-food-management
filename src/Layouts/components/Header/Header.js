@@ -143,8 +143,8 @@ function Header({ toggleNav }) {
                     <img src={admin?.avatar} alt="ảnh" />
                   </div>
                   <div className={cx('admin-detail')}>
-                    <h5>{admin.fullname}</h5>
-                    <span>{admin.email}</span>
+                    <h5>{admin?.fullname}</h5>
+                    <span>{admin?.email}</span>
                   </div>
                 </div>
 

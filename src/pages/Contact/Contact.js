@@ -452,9 +452,9 @@ export default function Contact() {
   const filteredRows = useMemo(() => {
     return rows?.filter(
       (row) =>
-        (row.fullname && row.fullname.toLowerCase().includes(searchKeyword.toLowerCase())) ||
-        (row.email && row.email.toLowerCase().includes(searchKeyword.toLowerCase())) ||
-        (row.phone && row.phone.toLowerCase().includes(searchKeyword.toLowerCase())),
+        (row?.fullname && row?.fullname.toLowerCase().includes(searchKeyword.toLowerCase())) ||
+        (row?.email && row?.email.toLowerCase().includes(searchKeyword.toLowerCase())) ||
+        (row?.phone && row?.phone.toLowerCase().includes(searchKeyword.toLowerCase())),
     );
   }, [rows, searchKeyword]);
 

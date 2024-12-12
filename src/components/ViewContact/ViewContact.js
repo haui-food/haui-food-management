@@ -20,7 +20,7 @@ function ViewContact({ contactCredentials }) {
           <div className={cx('form__text-input', 'form__text-input--sm')}>
             <input
               readOnly
-              value={contactCredentials.fullname && contactCredentials.fullname}
+              value={contactCredentials?.fullname}
               type="text"
               id="fullname"
               name="fullname"
@@ -38,7 +38,7 @@ function ViewContact({ contactCredentials }) {
           <div className={cx('form__text-input', 'form__text-input--sm')}>
             <input
               readOnly
-              value={contactCredentials.email}
+              value={contactCredentials?.email}
               type="email"
               id="email"
               name="email"
